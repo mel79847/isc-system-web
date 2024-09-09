@@ -63,12 +63,30 @@ const PermissionTable = () => {
 
   return (
     <>
-      <Box sx={{ overflow: 'auto', height: '400px' }}> {/*TODO Hacer que el tamaño varie según el dispositivo */}
+      <Box sx={{ overflow: 'auto', height: '400px' }}>
         <Table className="border-table">
-          <TableHead className="large-header">
-          <TableRow>
-              <TableCell sx={{ backgroundColor: "#3f51b5", color: "white", fontWeight: "bold" }}>Acción</TableCell>
-              <TableCell sx={{ backgroundColor: "#3f51b5", color: "white", fontWeight: "bold" }}>Permisos</TableCell>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "white",
+                  fontWeight: "bold",
+                  width: "70%",
+                }}
+              >
+                Acción
+              </TableCell>
+              <TableCell
+                sx={{
+                  backgroundColor: "#3f51b5",
+                  color: "white",
+                  fontWeight: "bold",
+                  width: "30%",
+                }}
+              >
+                Permisos
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -76,18 +94,30 @@ const PermissionTable = () => {
               sections.map((section, sectionIndex) => (
                 <React.Fragment key={sectionIndex}>
                   <TableRow sx={{ backgroundColor: "#e0e0e0" }}> {/* Color para la categoría */}
-                    <TableCell colSpan={2} sx={{ display: "flex", alignItems: "center" }}>
-                      <IconButton onClick={() => toggleSection(sectionIndex)}>
-                        {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
-                      </IconButton>
-                      <Typography variant="h6">{section.subtitle}</Typography>
+                    <TableCell
+                      colSpan={2}
+                      sx={{
+                        padding: "0px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%", 
+                        borderBottom: '1px solid #d0d0d0',
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+                        <IconButton onClick={() => toggleSection(sectionIndex)}>
+                          {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
+                        </IconButton>
+                        <Typography variant="h6" sx={{ flexGrow: 1 }}>{section.subtitle}</Typography>
+                      </Box>
                     </TableCell>
                   </TableRow>
                   <Collapse in={openSections[sectionIndex]} timeout="auto" unmountOnExit>
                     {section.permissions.map((permission: any, permissionIndex: number) => (
                       <TableRow key={permissionIndex}>
-                        <TableCell>{permission.action}</TableCell>
-                        <TableCell>
+                        <TableCell sx={{ width: "70%" }}>{permission.action}</TableCell>
+                        <TableCell sx={{ width: "30%" }}>
                           <Switch
                             checked={permission.state}
                             onChange={handleSwitchChange(sectionIndex, permissionIndex)}
@@ -130,5 +160,6 @@ const PermissionTable = () => {
     </>
   );
 };
+
 
 export default PermissionTable
