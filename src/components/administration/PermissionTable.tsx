@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Switch, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Switch, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, Collapse} from "@mui/material";
 import getPermissions from "../../services/permissionsService";
 import { Section } from "../../models/sectionInterface";
 import { Permission } from "../../models/permissionInterface";
 import SavePermissionsModal from "../common/SavePermissionsModal";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 
 const PermissionTable = () => {
@@ -11,10 +12,12 @@ const PermissionTable = () => {
   const [listOfChanges, setListOfChanges] = useState<Permission[]>([]);
   const [buttonVisible, setButtonVisible] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [openSections, setOpenSections] = useState<boolean[]>([]);
 
   const fetchPermissions = async () => {
     const response = await getPermissions();
     setSections(response);
+    setOpenSections(new Array(response.length).fill(true)); // Inicializa todas las secciones como abiertas
   }
   useEffect(() => {
     fetchPermissions();
@@ -29,6 +32,12 @@ const PermissionTable = () => {
     } else {
       setListOfChanges(listOfChanges.filter(permission => permission !== newSections[sectionIndex].permissions[permissionIndex]));
     }
+  };
+
+  const toggleSection = (index: number) => {
+    const newOpenSections = [...openSections];
+    newOpenSections[index] = !newOpenSections[index];
+    setOpenSections(newOpenSections);
   };
 
   useEffect(() => {
@@ -57,31 +66,36 @@ const PermissionTable = () => {
       <Box sx={{ overflow: 'auto', height: '400px' }}> {/*TODO Hacer que el tamaño varie según el dispositivo */}
         <Table className="border-table">
           <TableHead className="large-header">
-            <TableRow>
-              <TableCell>Acción</TableCell>
-              <TableCell>Permisos</TableCell>
+          <TableRow>
+              <TableCell sx={{ backgroundColor: "#3f51b5", color: "white", fontWeight: "bold" }}>Acción</TableCell>
+              <TableCell sx={{ backgroundColor: "#3f51b5", color: "white", fontWeight: "bold" }}>Permisos</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {sections.length > 0 ? (
               sections.map((section, sectionIndex) => (
                 <React.Fragment key={sectionIndex}>
-                  <TableRow>
-                    <TableCell colSpan={2}>
+                  <TableRow sx={{ backgroundColor: "#e0e0e0" }}> {/* Color para la categoría */}
+                    <TableCell colSpan={2} sx={{ display: "flex", alignItems: "center" }}>
+                      <IconButton onClick={() => toggleSection(sectionIndex)}>
+                        {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
+                      </IconButton>
                       <Typography variant="h6">{section.subtitle}</Typography>
                     </TableCell>
                   </TableRow>
-                  {section.permissions.map((permission: any, permissionIndex: number) => (
-                    <TableRow key={permissionIndex}>
-                      <TableCell>{permission.action}</TableCell>
-                      <TableCell>
-                        <Switch
-                          checked={permission.state}
-                          onChange={handleSwitchChange(sectionIndex, permissionIndex)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  <Collapse in={openSections[sectionIndex]} timeout="auto" unmountOnExit>
+                    {section.permissions.map((permission: any, permissionIndex: number) => (
+                      <TableRow key={permissionIndex}>
+                        <TableCell>{permission.action}</TableCell>
+                        <TableCell>
+                          <Switch
+                            checked={permission.state}
+                            onChange={handleSwitchChange(sectionIndex, permissionIndex)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </Collapse>
                 </React.Fragment>
               ))
             ) : (
@@ -112,10 +126,9 @@ const PermissionTable = () => {
           </Button>
         </Box>
       )}
-      {showModal && (<SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={() => { }} />)}{/*TODO: implementar funcion de guardado de datos*/}
-
+      {showModal && (<SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={() => { }} />)}
     </>
-  )
-}
+  );
+};
 
 export default PermissionTable
