@@ -60,16 +60,15 @@ const PermissionTable = () => {
     setSections(newSections);
     setListOfChanges([]);
   }
-
   return (
     <>
-      <Box sx={{ overflow: 'auto', height: '400px' }}>
-        <Table className="border-table">
+      <Box sx={{ overflow: "auto", height: "400px" }}>
+        <Table className="border-table" sx={{ marginBottom: "10px" }}>
           <TableHead>
             <TableRow>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#191D88",
                   color: "white",
                   fontWeight: "bold",
                   width: "70%",
@@ -79,7 +78,7 @@ const PermissionTable = () => {
               </TableCell>
               <TableCell
                 sx={{
-                  backgroundColor: "#3f51b5",
+                  backgroundColor: "#191D88",
                   color: "white",
                   fontWeight: "bold",
                   width: "30%",
@@ -89,35 +88,27 @@ const PermissionTable = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {sections.length > 0 ? (
-              sections.map((section, sectionIndex) => (
-                <React.Fragment key={sectionIndex}>
-                  <TableRow sx={{ backgroundColor: "#e0e0e0" }}> {/* Color para la categoría */}
-                    <TableCell
-                      colSpan={2}
-                      sx={{
-                        padding: "0px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        width: "100%", 
-                        borderBottom: '1px solid #d0d0d0',
-                      }}
-                    >
-                      <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-                        <IconButton onClick={() => toggleSection(sectionIndex)}>
-                          {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
-                        </IconButton>
-                        <Typography variant="h6" sx={{ flexGrow: 1 }}>{section.subtitle}</Typography>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                  <Collapse in={openSections[sectionIndex]} timeout="auto" unmountOnExit>
+        </Table>
+  
+        {sections.length > 0 ? (
+          sections.map((section, sectionIndex) => (
+            <Box key={sectionIndex} sx={{ marginBottom: "20px" }}>
+              <Box sx={{ display: "flex", alignItems: "center", backgroundColor: "#e0e0e0", padding: "10px" }}>
+                <IconButton onClick={() => toggleSection(sectionIndex)}>
+                  {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+                <Typography variant="subtitle1" sx={{ marginLeft: "8px", color: "primary" }}>
+                  {section.subtitle}
+                </Typography>
+              </Box>
+  
+              <Collapse in={openSections[sectionIndex]} timeout="auto" unmountOnExit>
+                <Table className="border-table" sx={{ marginTop: "10px" }}>
+                  <TableBody>
                     {section.permissions.map((permission: any, permissionIndex: number) => (
                       <TableRow key={permissionIndex}>
-                        <TableCell sx={{ width: "70%" }}>{permission.action}</TableCell>
-                        <TableCell sx={{ width: "30%" }}>
+                        <TableCell>{permission.action}</TableCell>
+                        <TableCell>
                           <Switch
                             checked={permission.state}
                             onChange={handleSwitchChange(sectionIndex, permissionIndex)}
@@ -125,41 +116,44 @@ const PermissionTable = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                  </Collapse>
-                </React.Fragment>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={2}>No data available</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+                  </TableBody>
+                </Table>
+              </Collapse>
+            </Box>
+          ))
+        ) : (
+          <Typography>No data available</Typography>
+        )}
       </Box>
+  
       {buttonVisible && (
         <Box display="flex" justifyContent="flex-end" sx={{ marginTop: "20px" }}>
           <Button
             variant="contained"
             color="primary"
-            sx={{ marginRight: '20px', borderRadius: '16px' }}
-            onClick={() => { setShowModal(true) }}
+            sx={{ marginRight: "20px", borderRadius: "16px" }}
+            onClick={() => {
+              setShowModal(true);
+            }}
           >
             Guardar
           </Button>
           <Button
             variant="outlined"
             color="secondary"
-            sx={{ borderRadius: '16px' }}
+            sx={{ borderRadius: "16px" }}
             onClick={cancelChanges}
           >
             Cancelar
           </Button>
         </Box>
       )}
-      {showModal && (<SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={() => { }} />)}
+
+      {showModal && (
+        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={() => {}} />
+      )}
     </>
   );
 };
 
-
-export default PermissionTable
+export default PermissionTable;
