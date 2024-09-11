@@ -216,8 +216,8 @@ const applyFilters = () => {
           }
           children={
             <div style={{ height: 400, width: "100%" }}>
-              <Grid container style={{paddingBottom: 20}}>
-                <Grid md={4}>
+              <Grid container spacing={1} style={{paddingBottom: 20}}>
+                <Grid item xs={9} md={8}>
                   <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between m-5 mb-8 overflow-hidden">
                     <label htmlFor="table-search" className="sr-only">
                       Search
@@ -237,7 +237,7 @@ const applyFilters = () => {
                     </div>
                   </div>
                 </Grid>
-                <Grid md={4}>
+                <Grid item xs={7} md={4}>
                   <FormControl fullWidth style={{paddingTop: 20}}>
                     <InputLabel style={{paddingTop: 13}}>Rol</InputLabel>
                     <Select
