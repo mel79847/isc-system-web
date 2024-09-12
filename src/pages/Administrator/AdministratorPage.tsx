@@ -19,7 +19,7 @@ const AdministratorPage = () => {
     const fetchRoles = async () => {
       try {
         const rolesData = await getRoles();
-        setRoles(rolesData);
+        setRoles(rolesData.data);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -29,7 +29,7 @@ const AdministratorPage = () => {
 
   const handleCreate = async (roleName: string) => {
     try {
-      await addRole({ roleName, id: roles.length + 1 });
+      await addRole({ name:roleName });
       const updateRoles = await getRoles();
       setRoles(updateRoles);
     } catch (error) {
