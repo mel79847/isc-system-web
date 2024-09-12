@@ -1,6 +1,5 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
-import ContainerPage from "../../components/common/ContainerPage";
 import {
   Button,
   Dialog,
@@ -10,54 +9,69 @@ import {
   DialogTitle,
   IconButton,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { events } from "../../data/events";
 import dayjs from "dayjs";
+import ContainerPage from "../../components/common/ContainerPage";
+import { getEventsInformationsService } from "../../services/eventsService";
+import { EventInformations } from "../../models/eventInterface";
+import ConfirmDialog from "../../components/common/ConfirmDialog";
 
 const EventTable = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [events, setEvents] = useState<EventInformations[]>();
   const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const fetchEvents = async () => {
+    const res = await getEventsInformationsService();
+    if (res.success) {
+      setEvents(res.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const columns: GridColDef[] = [
     {
-      field: "startDate",
+      field: "start_date",
       headerName: "Fecha Inicio",
       headerAlign: "center",
       align: "center",
       flex: 1,
-      // TODO: change any to an interface 
+      // TODO: change any to an interface
       valueGetter: (params: any) =>
         dayjs(params.startDate).format("DD/MM/YYYY"),
     },
     {
-      field: "name",
+      field: "title",
       headerName: "Nombre del Evento",
       headerAlign: "center",
       align: "center",
       flex: 1,
     },
     {
-      field: "responsiblePerson",
+      field: "responsible_intern_id",
       headerName: "Supervisor del evento",
       headerAlign: "center",
       align: "center",
       flex: 1,
     },
     {
-      field: "pendingInterns",
+      field: "pending_interns",
       headerName: "Solicitudes de Becarios",
       headerAlign: "center",
       align: "center",
       flex: 1,
     },
     {
-      field: "selectedInterns",
+      field: "accepted_interns",
       headerName: "Becarios Seleccionados",
       headerAlign: "center",
       align: "center",
@@ -74,21 +88,21 @@ const EventTable = () => {
           <IconButton
             color="primary"
             aria-label="ver"
-            onClick={() => handleView(params.row.id_event)}
+            onClick={() => handleView(params.row.id)}
           >
             <VisibilityIcon />
           </IconButton>
           <IconButton
             color="primary"
             aria-label="editar"
-            onClick={() => handleEdit(params.row.id_event)}
+            onClick={() => handleEdit(params.row.id)}
           >
             <EditIcon />
           </IconButton>
           <IconButton
             color="secondary"
             aria-label="eliminar"
-            onClick={() => handleClickOpen(params.row.id_event)}
+            onClick={() => handleClickOpen(params.row.id)}
           >
             <DeleteIcon />
           </IconButton>
@@ -102,8 +116,7 @@ const EventTable = () => {
   };
 
   const handleView = (id: number) => {
-    // TODO: use id to show proper event details
-    navigate(`/interns`);
+    navigate(`/interns/${id}`);
   };
 
   const handleEdit = (id: string) => {
@@ -122,7 +135,7 @@ const EventTable = () => {
 
   const handleDelete = async () => {
     // TODO: add actual delete event logic
-    setOpen(false)
+    setOpen(false);
   };
 
   return (
@@ -142,9 +155,9 @@ const EventTable = () => {
     >
       <div style={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={events}
+          rows={events || []}
           columns={columns}
-          getRowId={(row) => row.id_event}
+          getRowId={(row) => row.id}
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 5 },
@@ -159,51 +172,13 @@ const EventTable = () => {
           }}
           pageSizeOptions={[5, 10]}
         />
-         <Dialog
+        <ConfirmDialog
           open={open}
-          onClose={(_, reason) => {
-            if (reason !== "backdropClick") { 
-              handleClose();
-            }
-          }}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle
-            id="alert-dialog-title"
-            sx={{ display: "flex", justifyContent: "space-between" }} 
-          >
-            {"Confirmar eliminación"}
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              ¿Estás seguro de que deseas eliminar este evento? Esta acción no
-              se puede deshacer.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancelar
-            </Button>
-            <Button onClick={handleDelete} 
-            sx={{
-              backgroundColor: "red",
-              color: "white",
-              "&:hover": { backgroundColor: "darkred" },
-            }}
-            >
-              Eliminar
-            </Button>
-          </DialogActions>
-        </Dialog>
+          onClose={handleClose}
+          onConfirm={handleDelete}
+          title="Confirmar eliminación"
+          description="¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer."
+        />
       </div>
     </ContainerPage>
   );
