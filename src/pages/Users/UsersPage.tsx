@@ -188,7 +188,7 @@ const applyFilters = () => {
 
   const fetchRoles = async () => {
     const rolesResponse = await getRoles()
-    setRoles(rolesResponse)
+    setRoles(rolesResponse.data)
   }
 
   useEffect(() => {
@@ -247,7 +247,7 @@ const applyFilters = () => {
                       onChange={handleSelectRoleChange}
                     >
                       {roles.map((rol: Role) => (
-                        <MenuItem value={rol.roleName}>{rol.roleName} ({countStudentsWithRole(rol.roleName)})</MenuItem>
+                        <MenuItem value={rol.name}>{rol.name} ({countStudentsWithRole(rol.name)})</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
