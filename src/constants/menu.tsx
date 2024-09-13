@@ -106,18 +106,19 @@ export const menu = [
     icon: <ManageAccountsIcon color="primary" />,
     roles: [ADMIN],
   },
-  {
-    key: "dashboard",
-    path: "/dashboard",
-    text: "Dashboard",
-    icon: <HomeIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
-  },
+  
   {
     key: "viewInterns", 
     path: "/eventsByInterns", 
     text: "Inscritos",
     icon: <ViewListIcon color="primary" />, 
     roles: [ADMIN, PROFESSOR],
+  },
+  {
+    key: "dashboard",
+    path: "/dashboard",
+    text: "Dashboard",
+    icon: <HomeIcon color="primary" />,
+    roles: [ADMIN, PROFESSOR,STUDENT],
   }
 ];
