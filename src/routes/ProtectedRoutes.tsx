@@ -255,14 +255,6 @@ const protectedRoutes = [
         )
       },
       {
-        path: "/create-user",
-        element: <CreateUserPage />,
-      },
-      {
-        path: "/edit-user/:id",
-        element: <CreateUserPage />,
-      },
-      {
         path: "/supervisor",
         element: (
           <RoleGuard allowedRoles={["admin", "student"]}>
