@@ -1,20 +1,92 @@
-import { Button, IconButton } from "@mui/material";
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { events } from "../../data/events";
 import ContainerPage from "../../components/common/ContainerPage";
+import { useUserStore } from "../../store/store";
+import { getInternEvents } from "../../services/internService";
+import { deleteInternFromEventService } from "../../services/eventsService";
+import { EventInternsType } from "../../models/eventInterface";
+
+interface RowData {
+  id?: number;
+  name: string;
+  startDate: string;
+  inscriptionPeriod: string;
+  cancelPeriod: string;
+  hours: string;
+  status: string;
+}
 
 const MyEventsTable = () => {
+  const statusTranslation = (status: string) => {
+    const statusMap: Record<string, string> = {
+      accepted: "ACEPTADO",
+      rejected: "RECHAZADO",
+      reserve: "SUSPLENTE",
+      pending: "PENDIENTE"
+    };
+    return statusMap[status.toLowerCase()] || status;
+  };
+  
+  const user = useUserStore((state) => state.user);
+  const [events, setEvents] = useState<EventInternsType[]>();
+  const [rows, setRows] = useState<RowData[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [alert, setAlert] = useState<{
+    severity: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const navigate = useNavigate();
   const handleBackClick = () => {
     navigate("/scholarshipHours");
   };
 
-const [isDeleted, setIsDeleted] = useState(false);
-  //TODO: change any to an interface
+  const fetchMyEvents = async () => {
+    const res = await getInternEvents(1);
+    if (res.success) {
+      setEvents(res.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyEvents();
+  }, []);
+
+  useEffect(() => {
+    events &&
+      setRows(
+        events.map((event) => ({
+          id: event.id,
+          name: event.title,
+          startDate: `${dayjs(event.start_date).format("DD/MM")} -${dayjs(
+            event.end_date
+          ).format("DD/MM")}`,
+          inscriptionPeriod: dayjs(event.registration_deadline).format("DD/MM"),
+          cancelPeriod: `${
+            dayjs(event.start_cancellation_date)?.format("DD/MM") ?? "N/A"
+          } - ${dayjs(event.end_cancellation_date)?.format("DD/MM") ?? "N/A"}`,
+          hours: `${event.duration_hours} horas`,
+          status: statusTranslation(event.type),
+        }))
+      );
+  }, [events]);
 
   const buttonStyle = {
     borderRadius: "5px",
@@ -40,36 +112,31 @@ const [isDeleted, setIsDeleted] = useState(false);
       field: "startDate",
       headerName: "Fecha",
       flex: 1,
-      valueGetter: (params: any) =>
-        dayjs(params.startDate).format("DD/MM/YYYY"),
     },
     {
       field: "inscriptionPeriod",
-      headerName: "Periodo de Inscripciones",
+      headerName: "Límite de inscripción",
       flex: 1,
-      valueGetter: () => "11AGO-30AGO",
     },
     {
       field: "cancelPeriod",
       headerName: "Periodo de Bajas",
       flex: 1,
-      valueGetter: () => "11AGO-30AGO",
     },
     {
       field: "hours",
       headerName: "Horas Becarias",
       flex: 0.5,
-      valueGetter: () => "4 horas",
     },
     {
       field: "actions",
       headerName: "Acciones",
       flex: 1,
-      renderCell: () => (
+      renderCell: (params) => (
         <Button
           variant="contained"
           color="info"
-          onClick={() => setIsDeleted((prev) => !prev)}
+          onClick={() => handleDeleteClick(params.row.id)}
           style={{
             ...buttonStyle,
             backgroundColor: "#191970",
@@ -100,76 +167,184 @@ const [isDeleted, setIsDeleted] = useState(false);
                 ? "#5F9EA0"
                 : params.row.status === "ACEPTADO"
                 ? "#32CD32"
-                : params.row.status === "SUPLENTE"
+                : params.row.status === "SUSPLENTE"
                 ? "#000000"
                 : "#FF0000",
             color: "#FFFFFF",
             cursor: "default",
           }}
           disabled
-        >
+          >
           {params.row.status}
         </Button>
       ),
     },
   ];
 
-  const rows = events.map((event) => ({
-    id: event.id_event,
-    name: event.name,
-    startDate: event.startDate,
-    endDate: event.startDate,
-    status: event.status,
-  }));
+  const handleDeleteClick = (eventId: number) => {
+    setSelectedEventId(eventId);
+    setDialogOpen(true);
+  };
 
-  const updatedRows = rows.slice(1, rows.length);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (selectedEventId === null) return;
+
+    const res = await deleteInternFromEventService(selectedEventId, user!.id);
+    if (res.success) {
+      setAlert({
+        severity: "success",
+        message: `Evento eliminado con éxito.`,
+      });
+      fetchMyEvents();
+    } else {
+      setAlert({
+        severity: "error",
+        message: `No se pudo eliminar el evento. Por favor, intenta de nuevo más tarde.`,
+      });
+    }
+    setSnackbarOpen(true);
+    setDialogOpen(false);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
   return (
-    <div style={{ position: 'relative', height: '100vh', paddingTop: '19px' }}> 
-      <IconButton 
-        onClick={handleBackClick} 
-        aria-label="back"
-        style={{ 
-          position: 'absolute',
-          top: '17px', 
-          left: '-9px', 
-          zIndex: 1
+    <>
+      <div
+        style={{ position: "relative", height: "100vh", paddingTop: "19px" }}
+      >
+        <IconButton
+          onClick={handleBackClick}
+          aria-label="back"
+          style={{
+            position: "absolute",
+            top: "17px",
+            left: "-9px",
+            zIndex: 1,
+          }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+        <ContainerPage
+          title="Eventos actuales"
+          subtitle="Administra y visualiza tus eventos"
+          actions={
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/eventHistory")}
+              >
+                HISTORIAL
+              </Button>
+            </>
+          }
+        >
+          <div style={{ height: 500, width: "100%" }}>
+            <DataGrid
+              rows={rows || []}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              classes={{
+                root: "bg-white dark:bg-gray-800",
+                columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+                cell: "bg-white dark:bg-gray-800",
+                row: "bg-white dark:bg-gray-800",
+                columnHeaderTitle: "!font-bold text-center",
+              }}
+              pageSizeOptions={[5, 10]}
+            />
+          </div>
+        </ContainerPage>
+      </div>
+
+      <Dialog
+        open={dialogOpen}
+        onClose={(reason) => {
+          if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+            handleDialogClose();
+          }
         }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        maxWidth="sm"
       >
-        <ArrowBackIcon />
-      </IconButton>
-      <ContainerPage
-        title="Eventos actuales"
-        subtitle="Administra y visualiza tus eventos"
-        actions={
-          <>
-        <Button variant="contained" color="primary"  onClick={() => navigate("/eventHistory")} >
-          HISTORIAL
-        </Button>
-          </>
-        }
-      >
-        <div style={{ height: 500, width: "100%" }}>
-          <DataGrid 
-            rows={!isDeleted ? rows : updatedRows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
+        <DialogTitle>
+          <Typography variant="h5" align="center" sx={{ fontWeight: "bold" }}>
+            Confirmar eliminación
+          </Typography>
+          <IconButton
+            aria-label="close"
+            onClick={handleDialogClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
             }}
-            classes={{
-              root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
-              cell: "bg-white dark:bg-gray-800",
-              row: "bg-white dark:bg-gray-800",
-              columnHeaderTitle: "!font-bold text-center",
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" align="center">
+            ¿Estás seguro de eliminar este evento?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "flex-end", padding: "24px" }}>
+          <Button
+            onClick={handleDialogClose}
+            variant="contained"
+            sx={{
+              backgroundColor: "primary",
+              color: "white",
+              marginRight: 2,
+              fontWeight: "bold",
+              minWidth: "120px",
             }}
-            pageSizeOptions={[5, 10]}
-          />
-        </div>
-      </ContainerPage>
-    </div>
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            sx={{
+              backgroundColor: "red",
+              color: "white",
+              fontWeight: "bold",
+              minWidth: "120px",
+            }}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {alert && (
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={alert.severity}
+            sx={{ width: "100%" }}
+          >
+            {alert.message}
+          </Alert>
+        </Snackbar>
+      )}
+    </>
   );
 };
 

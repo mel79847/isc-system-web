@@ -1,34 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Tabs, Tab, Box } from "@mui/material";
 import EventCard from "../../components/cards/EventCard";
-import { events } from "../../data/events";
 import dayjs from "dayjs";
+import { getEventsService } from "../../services/eventsService";
+import { Event } from "../../models/eventInterface";
 
 const EventsPage: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
+  const [events, setEvents] = useState<Event[]>();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
+  const fetchEvents = async () => {
+    const res = await getEventsService();
+    if (res.success) {
+      setEvents(res.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
   const filterEvents = () => {
     const today = dayjs();
     const startOfMonth = today.startOf("month");
     const endOfMonth = today.endOf("month");
-    if (tabValue === 0) {
-      return events.filter(
-        (event) =>
-          (event.startDate.isAfter(startOfMonth, "day") ||
-            event.startDate.isSame(startOfMonth, "day")) &&
-          (event.startDate.isBefore(endOfMonth, "day") ||
-            event.startDate.isSame(endOfMonth, "day"))
-      );
-    } else if (tabValue === 1) {
-      return events.filter((event) => event.startDate.isAfter(today, "day"));
-    } else if (tabValue === 2) {
-      return events.filter((event) => event.startDate.isBefore(today, "day"));
-    }
-    return events;
+    return events?.filter((event) => {
+      const eventStartDate = dayjs(event.start_date);
+
+      if (tabValue === 0) {
+        return (
+          (eventStartDate.isAfter(startOfMonth, "day") ||
+            eventStartDate.isSame(startOfMonth, "day")) &&
+          (eventStartDate.isBefore(endOfMonth, "day") ||
+            eventStartDate.isSame(endOfMonth, "day"))
+        );
+      } else if (tabValue === 1) {
+        return eventStartDate.isAfter(today, "day");
+      } else if (tabValue === 2) {
+        return eventStartDate.isBefore(today, "day");
+      }
+
+      return true;
+    });
   };
 
   return (
@@ -48,11 +65,12 @@ const EventsPage: React.FC = () => {
       </Box>
 
       <Grid container spacing={2}>
-        {filterEvents().map((event, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <EventCard event={event} />
-          </Grid>
-        ))}
+        {events &&
+          filterEvents()?.map((event, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <EventCard event={event} />
+            </Grid>
+          ))}
       </Grid>
     </>
   );

@@ -61,22 +61,29 @@ const UpdateEventForm: React.FC = () => {
         setErrorDialog(false);
     };
     useEffect(() => {
-        const event = events.find(e => e.id_event === parseInt(id_event!, 10));
-        setEventData(event);
-    }, [id_event]);
+      const event = events.find(e => e.id_event === parseInt(id_event!, 10));
+      if (event) {
+          setEventData({
+              ...event,
+              startDate: dayjs(event.startDate),
+              endDate: dayjs(event.startDate),
+          });
+      }
+  }, [id_event]);
+  
 
     const formik = useFormik<EventDetails>({
         initialValues: {
         title: eventData?.name || "",
-        date: eventData?.startDate || dayjs(),
-        endDate: eventData?.endDate || dayjs(),
+        date: eventData?.startDate ? dayjs(eventData.startDate) : dayjs(),
+        endDate: eventData?.endDate ? dayjs(eventData.endDate) : dayjs(),
         duration: eventData?.duration || 0,
         scholarshipHours: eventData?.validatedHours || "",
         location:  eventData?.place || "",
         description: eventData?.description || "",
         maxParticipants: eventData?.maxInterns || 0,
         minParticipants: eventData?.minInterns || 0,
-        responsiblePerson: eventData?.responsiblePerson || "",
+        responsiblePerson: eventData?.responsiblePerson || 0,
         status: "PENDIENTE",
         },
         validationSchema,
@@ -101,11 +108,14 @@ const UpdateEventForm: React.FC = () => {
 
 
   return (
+    <Grid container spacing={0} alignItems="center">
+      <Grid container spacing={4} sx={{ padding: 2, position: 'relative' }}>
+        <IconButton onClick={handleBackNavigate} aria-label="back" sx={{ position: "absolute", left: 21, top: 60 }}>
+          <ArrowBackIcon />
+        </IconButton>
+    </Grid>
     <FormContainer>
       {loading && <LoadingOverlay message="Actualizar Evento..." />}
-      <IconButton onClick={handleBackNavigate} aria-label="back">
-              <ArrowBackIcon />
-      </IconButton>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
@@ -181,13 +191,10 @@ const UpdateEventForm: React.FC = () => {
                       margin = "normal"
                       variant="outlined"
                       fullWidth
-                      value={formik.values.date}
+                      value={formik.values.date.format("YYYY-MM-DD")}
                       onChange={formik.handleChange}
                       error={formik.touched.date && Boolean(formik.errors.date)}
                       helperText={formik.touched.date && formik.errors.date}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -199,13 +206,10 @@ const UpdateEventForm: React.FC = () => {
                       variant="outlined"
                       fullWidth
                       margin = "normal"
-                      value={formik.values.endDate}
+                      value={formik.values.endDate.format("YYYY-MM-DD")}
                       onChange={formik.handleChange}
-                      error={formik.touched.endDate && Boolean(formik.errors.date)}
-                      helperText={formik.touched.date && formik.errors.date}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
+                      error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                      helperText={formik.touched.endDate && formik.errors.endDate}
                     />
                   </Grid>
 
@@ -344,7 +348,7 @@ const UpdateEventForm: React.FC = () => {
         subtitle={message}
       />
     </FormContainer>
-    
+    </Grid>
   );
 };
 

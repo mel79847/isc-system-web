@@ -8,13 +8,17 @@ const EventSubheader: React.FC<EventCardProps> = ({ event }) => {
   return (
     <>
       <Typography fontSize={15} color="text.primary" marginLeft={3}>
-        <strong>Periodo de inscripción: </strong>{dayjs(event.inscriptionPeriod).format('DD/MM/YYYY')}
+        <strong>Fecha límite de inscripción: </strong>
+        {dayjs(event.registration_deadline).format("DD/MM/YYYY")}
       </Typography>
       <Typography fontSize={15} color="text.primary" marginLeft={3}>
-      <strong>Periodo de baja: </strong>{dayjs(event.cancelPeriod).format('DD/MM/YYYY')}
+        <strong>Periodo de baja: </strong>
+        {dayjs(event.start_cancellation_date).format("DD/MM/YYYY")} -{" "}
+        {dayjs(event.end_cancellation_date).format("DD/MM/YYYY")}
       </Typography>
       <Typography fontSize={15} color="text.primary" marginLeft={3}>
-      <strong>Horas becarias: </strong>{event.validatedHours}
+        <strong>Horas becarias: </strong>
+        {event.assigned_hours} horas
       </Typography>
     </>
   );

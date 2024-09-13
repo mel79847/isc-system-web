@@ -1,3 +1,5 @@
 export interface Role {
-    roleName: string
+    id: number;
+    name: string;
+    disabled: boolean;
 }
