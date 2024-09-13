@@ -69,7 +69,7 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
 
   const fetchRoles = async () => {
     const rolesResponse = await getRoles()
-    setRoles(rolesResponse)
+    setRoles(rolesResponse.data)
   }
 
   useEffect(() => {
@@ -273,9 +273,9 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
                     >
                     {roles.map((rol:Role) => (
                       <MenuItem
-                        key={rol.roleName}
-                        value={rol.roleName}
-                      >{rol.roleName}</MenuItem> 
+                        key={rol.name}
+                        value={rol.name}
+                      >{rol.name}</MenuItem> 
                     ))}
                   </Select>
                 </FormControl>

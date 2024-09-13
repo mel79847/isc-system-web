@@ -1,4 +1,4 @@
-import { createBrowserRouter, LoaderFunctionArgs, Params, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, LoaderFunction, LoaderFunctionArgs, Params, RouterProvider } from "react-router-dom";
 
 import publicRoutes from "./routes/PublicRoutes";
 import protectedRoutes from "./routes/ProtectedRoutes";

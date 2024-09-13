@@ -22,10 +22,10 @@ const LoginPage = () => {
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Correo electrónico inválido")
-        .required("Requerido"),
+        .required("El correo es requerido"),
       password: Yup.string()
         .min(6, "Debe tener al menos 6 caracteres")
-        .required("Requerido"),
+        .required("El password es requerido"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
       setError("");
@@ -33,7 +33,7 @@ const LoginPage = () => {
       try {
         const isAuthenticated = await authenticateUser(
           values.email,
-          values.password,
+          values.password
         );
         if (isAuthenticated) {
           localStorage.setItem("token", isAuthenticated.token);
@@ -61,6 +61,7 @@ const LoginPage = () => {
       <div className="md:w-1/3 max-w-sm">
         <form onSubmit={formik.handleSubmit}>
           <input
+            data-testid="email-login"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             placeholder="Correo Electronico"
@@ -70,9 +71,13 @@ const LoginPage = () => {
             value={formik.values.email}
           />
           {formik.touched.email && formik.errors.email ? (
-            <ErrorMessage message={formik.errors.email} />
+            <ErrorMessage
+              dataTestId="error-message-email"
+              message={formik.errors.email}
+            />
           ) : null}
           <input
+            data-testid="password-login"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
             type="password"
             placeholder="Password"
@@ -82,11 +87,15 @@ const LoginPage = () => {
             value={formik.values.password}
           />
           {formik.touched.password && formik.errors.password ? (
-            <ErrorMessage message={formik.errors.password} />
+            <ErrorMessage 
+              dataTestId="error-message-password"
+              message={formik.errors.password} 
+            />
           ) : null}
           {error && <div className="text-red-500">{error}</div>}
           <div className="text-center md:text-center">
             <button
+              data-testid="login-button"
               className="mt-4 bg-primary hover:bg-blue-700 px-10 py-3 text-white uppercase rounded text-sm md:text-base tracking-wider"
               type="submit"
               disabled={formik.isSubmitting || isLoading}
