@@ -70,12 +70,12 @@ const Profile = () => {
         </Grid>
         <Grid item xs={12} md={9}>
           <Grid container spacing={2}>
-            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("professor") && (
+            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("Docente") && (
             <Grid item xs={12}>
               <TutoringCard />
             </Grid>
             )}
-            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("student") && (
+            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("Estudiante") && (
               <Grid item xs={12}>
                 <StudentCard />
               </Grid>
