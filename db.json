@@ -373,6 +373,69 @@
       ],
       "degree": "PhD",
       "id": 12354
+    },
+    {
+      "name": "Zein",
+      "code": "68391",
+      "lastname": "Tonconi",
+      "mothername": "Mendoza",
+      "email": "zein.tonconi@gmail.com",
+      "phone": "70186881",
+      "roles": [
+        "Estudiante",
+        "Becario"
+      ],
+      "degree": "",
+      "id": 12355
+    },
+    {
+      "name": "Ivan",
+      "code": "87291",
+      "lastname": "Baptista",
+      "mothername": "Baptista",
+      "email": "ivan@baptista.com",
+      "phone": "67398383",
+      "roles": [
+        "Docente de Planta"
+      ],
+      "degree": "Ing.",
+      "id": 12356
+    }
+  ],
+  "professorRoles": [
+    {
+      "name": "Docente",
+      "id": 2
+    },
+    {
+      "name": "Docente de Planta",
+      "id": 3
+    },
+    {
+      "name": "Docente por materia",
+      "id": 4
+    },
+    {
+      "name": "Jefe de Carrera",
+      "id": 5
+    }
+  ],
+  "studentRoles": [
+    {
+      "name": "Estudiante",
+      "id": 2
+    },
+    {
+      "name": "Becario",
+      "id": 3
+    },
+    {
+      "name": "En proceso de Graduación",
+      "id": 4
+    },
+    {
+      "name": "Para certificaciones",
+      "id": 5
     }
   ]
 }

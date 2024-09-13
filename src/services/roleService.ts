@@ -1,4 +1,5 @@
 import apiClient from "./apiInstance"
+import jsonClient from "./jsonServerInstance";
 
 const route = "roles/";
 
@@ -8,6 +9,24 @@ export const getRoles = async ()=>{
     return response.data
   } catch (error) {
     throw new Error('Failed to get roles: ' + (error as Error).message);
+  }
+}
+
+export const getProfessorRoles = async () => {
+  try {
+    const response = await jsonClient.get('professorRoles/')
+    return response.data
+  } catch (error) {
+    throw new Error('Failed to get professor roles' + (error as Error).message)
+  }
+}
+
+export const getStudentRoles = async () => {
+  try {
+    const response = await jsonClient.get('studentRoles/')
+    return response.data
+  } catch (error) {
+    throw new Error('Failed to get student roles' + (error as Error).message)
   }
 }
 
