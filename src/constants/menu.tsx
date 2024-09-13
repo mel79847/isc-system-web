@@ -13,18 +13,18 @@ import { roles } from "./roles";
 const { ADMIN, PROFESSOR, STUDENT } = roles;
 export const menu = [
   {
-    key: "dashboard",
-    path: "/dashboard",
-    text: "Dashboard",
-    icon: <HomeIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
+    key: "users",
+    path: "/users",
+    text: "Usuarios",
+    icon: <SwitchAccountIcon color="primary"/>,
+    roles: [ADMIN],
   },
   {
-    key: "process",
-    path: "/process",
-    text: "Procesos",
-    icon: <ChecklistOutlinedIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
+    key: "students",
+    path: "/students",
+    text: "Estudiantes",
+    icon: <SchoolOutlinedIcon color="primary" />,
+    roles: [PROFESSOR],
   },
   {
     key: "professors",
@@ -34,11 +34,11 @@ export const menu = [
     roles: [PROFESSOR,STUDENT],
   },
   {
-    key: "students",
-    path: "/students",
-    text: "Estudiantes",
-    icon: <SchoolOutlinedIcon color="primary" />,
-    roles: [PROFESSOR],
+    key: "process",
+    path: "/process",
+    text: "Procesos",
+    icon: <ChecklistOutlinedIcon color="primary" />,
+    roles: [ADMIN, PROFESSOR,STUDENT],
   },
   {
     key: "events",
@@ -75,10 +75,10 @@ export const menu = [
     roles: [ADMIN],
   },
   {
-    key: "users",
-    path: "/users",
-    text: "Usuarios",
-    icon: <SwitchAccountIcon color="primary"/>,
-    roles: [ADMIN],
+    key: "dashboard",
+    path: "/dashboard",
+    text: "Dashboard",
+    icon: <HomeIcon color="primary" />,
+    roles: [ADMIN, PROFESSOR,STUDENT],
   }
 ];
