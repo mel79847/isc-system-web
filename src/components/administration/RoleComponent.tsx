@@ -49,16 +49,16 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
 
     return (
         <>
-            <Card sx={{ maxWidth: isSmall ? 700 : '100%', backgroundColor: selectedRole === role.roleName ? 'LightGray' : 'inherit', marginBottom:2}}>
-                <CardActionArea onClick={() => onRoleClick(role.roleName)}>
+            <Card sx={{ maxWidth: isSmall ? 700 : '100%', backgroundColor: selectedRole === role.name ? 'LightGray' : 'inherit', marginBottom:2}}>
+                <CardActionArea onClick={() => onRoleClick(role.name)}>
                     <CardContent>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography
                             sx={{
-                                fontWeight: selectedRole === role.roleName ? 'bold' : 'normal',
+                                fontWeight: selectedRole === role.name ? 'bold' : 'normal',
                             }}
                         >
-                            {role.roleName}
+                            {role.name}
                         </Typography>
                             <Box>
                                 {isSmall && (
@@ -99,7 +99,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
                 <MenuItem onClick={hadleDeletClick}>Eliminar</MenuItem>
             </Menu>
             {showDelete && (
-                <ConfirmDelete roleName={role.roleName} isVisible={showDelete} setIsVisible={setShowDelete} onDelete={() => onDelete(role.roleName)}/>
+                <ConfirmDelete roleName={role.name} isVisible={showDelete} setIsVisible={setShowDelete} onDelete={() => onDelete(role.roleName)}/>
             )}
         </>
     )

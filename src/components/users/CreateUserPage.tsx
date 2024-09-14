@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
 import { FormContainer } from "../../pages/CreateGraduation/components/FormContainer";
-import { getRoles } from "../../services/roleService";
+import { getProfessorRoles, getStudentRoles } from "../../services/roleService";
 import SuccessDialog from "../common/SucessDialog";
 import ErrorDialog from "../common/ErrorDialog";
 import { putUser, createUserWIthRoles } from "../../services/usersService";
@@ -16,7 +16,8 @@ import { UserFormProps } from "../../models/userFormPropsInterface";
 const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps) => {
   const [isSuccesOpen, setIsSuccessOpen] = useState<boolean>(false)
   const [isErrorOpen, setIsErrorOpen] = useState<boolean>(false)
-  const [roles, setRoles] = useState<Role[]>([])
+  const [studentRoles, setStudentRoles] = useState<Role[]>([])
+  const [professorRoles, setProfessorRoles] = useState<Role[]>([])
   const [isTeacher, setIsTeacher] = useState<boolean>(false)
 
   const validationSchema = Yup.object({
@@ -66,9 +67,17 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
     }
   )
 
+  const handleChangeIsTeacher = (event: SelectChangeEvent<boolean>) => {
+    setIsTeacher(event.target.value == "true");
+    form.setFieldValue('roles', [])
+  }
+
   const fetchRoles = async () => {
-    const rolesResponse = await getRoles()
-    setRoles(rolesResponse)
+    const studentRoles = await getStudentRoles()
+    setStudentRoles(studentRoles)
+
+    const professorRoles = await getProfessorRoles()
+    setProfessorRoles(professorRoles)
   }
 
   useEffect(() => {
@@ -297,13 +306,21 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       form.setFieldValue('roles', event.target.value)
                     }}
                     onBlur={form.handleBlur}
-                    input={<OutlinedInput label="Roles" />}
-                  >
-                    {roles.map((rol: Role) => (
+                    input={<OutlinedInput label="Roles"/>}
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value: string) => (
+                          <Chip key={value} label={value} />
+                        ))}
+                      </Box>
+                    )}
+                    >
+                    {(isTeacher? professorRoles: studentRoles)
+                      .map((rol:Role) => (
                       <MenuItem
-                        key={rol.roleName}
-                        value={rol.roleName}
-                      >{rol.roleName}</MenuItem>
+                        key={rol.name}
+                        value={rol.name}
+                      >{rol.name}</MenuItem> 
                     ))}
                   </Select>
                   {form.touched.roles && form.errors.roles && (
@@ -354,8 +371,8 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
             setIsSuccessOpen(false)
             handleClose()
           }}
-          title={(user) ? "¡Estudiante Actualizado!" : "¡Estudiante Creado!"}
-          subtitle={`El estudiante ha sido ${(user) ? "actualizado" : "creado"} con éxito.`}
+          title={(user)?"¡Usuario Actualizado!":"¡Usuario Creado!"}
+          subtitle={`El usuario ha sido ${(user)?"actualizado": "creado"} con éxito.`}
         />
         <ErrorDialog
           open={isErrorOpen}
