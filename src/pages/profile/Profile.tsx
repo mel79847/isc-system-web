@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Grid, Paper, Box, Tab, Tabs } from "@mui/material";
 import UserProfileCard from "./component/UserProfileCard";
 import { useParams } from "react-router-dom";
-import { getUserById } from "../../services/studentService";
-import TutoringCard from "./component/ProcessCard";
+import { getUserById } from "../../services/usersService";
 import TaskList from "./component/TaskList";
+import SpinModal from "../../components/common/SpinModal";
+import TutoringCard from "./component/TutoringCard";
+import StudentCard from "./component/StudentCard";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,7 +37,7 @@ function a11yProps(index: number) {
   };
 }
 
-const Profile: React.FC = () => {
+const Profile = () => {
   const { id } = useParams();
   // @ts-ignore
   const [userProfile, setUserProfile] = useState<User | null>(null);
@@ -50,7 +52,7 @@ const Profile: React.FC = () => {
     }
   }, [id]);
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -59,50 +61,42 @@ const Profile: React.FC = () => {
   return (
     <Box sx={{ flexGrow: 1, p: 2 }}>
       <Grid container spacing={2} justifyContent="center">
-        <Grid item xs={3}>
-          <UserProfileCard />
+        <Grid item xs={12} sm={9} md={3}>
+        {userProfile ? (
+            <UserProfileCard user={userProfile} />
+          ) : (
+            <SpinModal/>
+          )}
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={12} md={9}>
           <Grid container spacing={2}>
+            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("Docente") && (
             <Grid item xs={12}>
-              <Grid container spacing={2}>
-                <Grid item xs={3}>
-                  <TutoringCard
-                    count={5}
-                    percentage={35.67}
-                    label="Tutorias Finalizadas"
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TutoringCard
-                    count={5}
-                    percentage={35.67}
-                    label="Tutorias En Progreso"
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TutoringCard
-                    count={5}
-                    percentage={35.67}
-                    label="Revisiones Finalizadas"
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <TutoringCard
-                    count={5}
-                    percentage={35.67}
-                    label="Revisiones Progreso"
-                  />
-                </Grid>
-              </Grid>
+              <TutoringCard />
             </Grid>
+            )}
+            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("Estudiante") && (
+              <Grid item xs={12}>
+                <StudentCard />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Paper elevation={3} sx={{ p: 2 }}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <Tabs value={value} onChange={handleChange}>
-                    <Tab label="Tutorias" {...a11yProps(0)} />
-                    <Tab label="Revisiones" {...a11yProps(1)} />
-                  </Tabs>
+                <Box sx={{ borderBottom: 1, borderColor: "divider", overflowX: 'auto', px: { xs: 1, sm: 2 }}}>
+                  {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("professor") && (
+                    <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
+                      <Tab label="Tutorias" {...a11yProps(0)} />
+                      <Tab label="Revisiones" {...a11yProps(1)} />
+                    </Tabs>
+                  )}
+
+                  {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("student") && (
+                    <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
+                      <Tab label="Horas becarias" {...a11yProps(0)} />
+                      <Tab label="Certificaciones" {...a11yProps(1)} />
+                      <Tab label="Procesos de graduación" {...a11yProps(0)} />
+                    </Tabs>
+                  )}
                 </Box>
                 <CustomTabPanel value={value} index={0}>
                   <TaskList />

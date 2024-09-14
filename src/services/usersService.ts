@@ -1,3 +1,4 @@
+import { User } from "../models/userInterface";
 import jsonClient from "./jsonServerInstance"
 
 
@@ -23,7 +24,7 @@ export const deleteUser = async (id: number) => {
     }
 }
 
-export const postUser = async (user) => {
+export const postUser = async (user: User) => {
     try{
         const response = await jsonClient.post(`/users`, user);
         return response.data;
@@ -33,7 +34,7 @@ export const postUser = async (user) => {
 }
 
 
-export const putUser = async (id, user) => {
+export const putUser = async (id:number, user: User) => {
     try{
         const response = await jsonClient.put(`/users/${id}`, user);
         return response.data;
@@ -42,7 +43,7 @@ export const putUser = async (id, user) => {
     }
 }
 
-export const getUserById = async (id) => {
+export const getUserById = async (id: number) => {
     try {
         const response = await jsonClient.get(`/users/${id}`)
         return response.data
@@ -51,7 +52,7 @@ export const getUserById = async (id) => {
     }
 }
 
-export const createUserWIthRoles = async(student) => {
+export const createUserWIthRoles = async(student: User) => {
     const response = await jsonClient.post('/users', student)
     return response.data
   }

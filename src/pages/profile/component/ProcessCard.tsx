@@ -3,7 +3,13 @@ import InfoIcon from '@mui/icons-material/Info';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 // @ts-ignore
-const TutoringCard = ({ count, percentage, label }) => {
+interface ProcessCardProps {
+  count: number;
+  percentage?: number; // Hacer percentage opcional
+  label: string;
+}
+
+const ProcessCard: React.FC<ProcessCardProps> = ({ count, percentage, label }) => {
   return (
     <Card
       sx={{
@@ -32,15 +38,17 @@ const TutoringCard = ({ count, percentage, label }) => {
         <Typography variant="body2" color="textSecondary">
           {label}
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-          <ArrowUpwardIcon fontSize="small" sx={{ color: "green", mr: 0.5 }} />
-          <Typography variant="body2" sx={{ color: "green" }}>
-            {percentage}%
-          </Typography>
-        </Box>
+        {percentage !== undefined && (
+          <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+            <ArrowUpwardIcon fontSize="small" sx={{ color: "green", mr: 0.5 }} />
+            <Typography variant="body2" sx={{ color: "green" }}>
+              {percentage}%
+            </Typography>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );
 };
 
-export default TutoringCard;
+export default ProcessCard;
