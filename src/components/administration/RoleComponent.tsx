@@ -23,7 +23,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
 
     const [expanded, setExpanded] = useState(false)
     const [showDelete, setShowDelete] = useState<boolean>(false)
-    const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
+    const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
     const [anchorE1, setAnchorE1] = useState<null | HTMLElement> (null); 
 
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -49,7 +49,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
 
     return (
         <>
-            <Card sx={{ maxWidth: isSmall ? 700 : '100%', backgroundColor: selectedRole === role.name ? 'LightGray' : 'inherit', marginBottom:2}}>
+           <Card sx={{ maxWidth: isSmall ? 700 : '100%', backgroundColor: selectedRole === role.name ? 'LightGray' : 'inherit', marginBottom:2}}>
                 <CardActionArea onClick={() => onRoleClick(role.name)}>
                     <CardContent>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
