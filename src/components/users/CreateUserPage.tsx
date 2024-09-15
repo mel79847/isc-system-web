@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Chip, Dialog, DialogTitle, Divider, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Chip, Dialog, DialogTitle, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Radio, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import WorkIcon from '@mui/icons-material/Work';
+import SchoolIcon from '@mui/icons-material/School';
 import { FormContainer } from "../../pages/CreateGraduation/components/FormContainer";
 import { getProfessorRoles, getStudentRoles } from "../../services/roleService";
 import SuccessDialog from "../common/SucessDialog";
@@ -10,7 +13,7 @@ import { putUser, createUserWIthRoles } from "../../services/usersService";
 import { Role } from "../../models/roleInterface";
 import { UserFormProps } from "../../models/userFormPropsInterface";
 
-const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) => {
+const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps) => {
   const [isSuccesOpen, setIsSuccessOpen] = useState<boolean>(false)
   const [isErrorOpen, setIsErrorOpen] = useState<boolean>(false)
   const [studentRoles, setStudentRoles] = useState<Role[]>([])
@@ -28,7 +31,7 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
       .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
       .optional(),
     code: Yup.number().optional(),
-    roles: Yup.array().min(1).required("El usuario debe tener un rol"),
+    roles: Yup.array().min(1).max(2, "No puede tener más de 2 roles").required("El usuario debe tener un rol"),
     degree: Yup.string().when({
       is: () => isTeacher,
       then: () => Yup.string().required("El título académico es obligatorio"),
@@ -51,11 +54,11 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
       validationSchema,
       onSubmit: async (values, { resetForm }) => {
         try {
-          if(user)
+          if (user)
             await putUser(user.id, values)
           else
             await createUserWIthRoles(values)
-          setIsSuccessOpen(true)  
+          setIsSuccessOpen(true)
           resetForm();
         } catch (error) {
           setIsErrorOpen(true)
@@ -78,19 +81,31 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
   }
 
   useEffect(() => {
-      fetchRoles()
+    fetchRoles()
   }, [])
 
   return (
     <Dialog open={openCreate}
-            onClose={handleClose}
-            maxWidth="lg"
-            >
+      onClose={handleClose}
+      maxWidth="sm"
+    >
       <DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <CloseIcon />
+        </IconButton>
         <Typography variant="h4">
           {
-            user? "Editar usuario":
-            "Crear nuevo usuario"
+            user ? "Editar usuario" :
+              "Crear nuevo usuario"
           }
         </Typography>
         <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
@@ -99,34 +114,55 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
       </DialogTitle>
 
       <FormContainer>
-        <form 
-        onSubmit={form.handleSubmit}
+        <form
+          onSubmit={form.handleSubmit}
         >
-          {!user && <Grid container  sx={{padding: 2}} spacing={2}>
-            <Grid item xs={12} md={4}>            
+          {!user && (
+            <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h6">Tipo de Usuario</Typography>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <Select
-                fullWidth
-                value={isTeacher}
-                label={"Estudiante o Docente"}
-                onChange={handleChangeIsTeacher}
-              >
-                <MenuItem value={"true"}>Docente</MenuItem>
-                <MenuItem value={"false"}>Estudiante</MenuItem>
-              </Select>
-              
-            </Grid>
-          </Grid>
-          }
-          
+              <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
+                <Grid item xs={5} md={6}>
+                  <Card variant="outlined">
+                    <CardActionArea onClick={() => setIsTeacher(false)}> {/* Trigger change on card click */}
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <CardMedia>
+                          <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
+                        </CardMedia>
+                        <Typography>Estudiante</Typography>
+                      </CardContent>
+                      <Radio
+                        checked={!isTeacher}
+                        disabled={true}
+                      />
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+                <Grid item xs={5} md={6}>
+                  <Card variant="outlined">
+                    <CardActionArea onClick={() => setIsTeacher(true)}> {/* Trigger change on card click */}
+                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <CardMedia >
+                          <WorkIcon sx={{ fontSize: 100 }} color="primary" />
+                        </CardMedia>
+                        <Typography>Docente</Typography>
+                      </CardContent>
+                      <Radio
+                        checked={isTeacher}
+                        disabled={true}
+                      />
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+
           <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           <Grid item xs={12}>
-            <Grid container spacing={2} sx={{ padding: 2 }}>
-              <Grid item>
-                <Typography variant="h6">Información del Usuario</Typography>
-              </Grid>
+            <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
+              Información del Usuario
+            </Typography>
+            <Grid container spacing={2} sx={{ padding: 2, justifyContent: 'center' }}>
               <Grid item>
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
@@ -161,7 +197,7 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
                 </Grid>
                 <Grid container spacing={2}>
                   <Grid item md={6} xs={12}>
-                  <TextField
+                    <TextField
                       id="mothername"
                       name="mothername"
                       label="Apellido Materno"
@@ -192,35 +228,37 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
                     />
                   </Grid>
                 </Grid>
-                {isTeacher && <TextField
-                  id="degree"
-                  name="degree"
-                  label="Título Académico"
-                  variant="outlined"
-                  fullWidth
-                  select
-                  value={form.values.degree}
-                  onChange={form.handleChange}
-                  onBlur={form.handleBlur}
-                  error={form.touched.degree && Boolean(form.errors.degree)}
-                  helperText={form.touched.degree && form.errors.degree}
-                  margin="normal"
-                >
-                  <MenuItem value="">Seleccione un título</MenuItem>
-                  <MenuItem value="Ing.">Ing.</MenuItem>
-                  <MenuItem value="Msc">Msc.</MenuItem>
-                  <MenuItem value="PhD">PhD.</MenuItem>
-                </TextField>}
+                {isTeacher && (
+                  <TextField
+                    id="degree"
+                    name="degree"
+                    label="Título Académico"
+                    variant="outlined"
+                    fullWidth
+                    select
+                    value={form.values.degree}
+                    onChange={form.handleChange}
+                    onBlur={form.handleBlur}
+                    error={form.touched.degree && Boolean(form.errors.degree)}
+                    helperText={form.touched.degree && form.errors.degree}
+                    margin="normal"
+                  >
+                    <MenuItem value="">Seleccione un título</MenuItem>
+                    <MenuItem value="Ing.">Ing.</MenuItem>
+                    <MenuItem value="Msc">Msc.</MenuItem>
+                    <MenuItem value="PhD">PhD.</MenuItem>
+                  </TextField>
+                )}
               </Grid>
             </Grid>
-            <Divider flexItem sx={{ my: 2 }} />
           </Grid>
 
+          <Divider flexItem sx={{ my: 2 }} />
           <Grid item md={12}>
-            <Grid container spacing={2} sx={{ padding: 2 }}>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6">Información Adicional</Typography>
-              </Grid>
+            <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
+              Información Adicional
+            </Typography>
+            <Grid container spacing={2} sx={{ padding: 2, justifyContent: 'center' }}>
               <Grid item xs={12} md={8}>
                 <TextField
                   id="email"
@@ -252,19 +290,20 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
             </Grid>
           </Grid>
           <Divider flexItem sx={{ mt: 2, mb: 2 }} />
-          <Grid container spacing={2} sx={{padding: 2}}>
-              <Grid item xs={12} md={4}>            
-                <Typography variant="h6">Rol</Typography>
-              </Grid>
+          <Grid container spacing={2} sx={{ padding: 2 }}>
+            <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2, width: '100%' }}>
+              Rol
+            </Typography>
+            <Grid container spacing={2} sx={{ padding: 2, justifyContent: 'center' }}>
               <Grid item xs={12} md={8}>
-                <FormControl fullWidth>
+                <FormControl fullWidth error={form.touched.roles && Boolean(form.errors.roles)}>
                   <InputLabel>Roles</InputLabel>
                   <Select multiple
                     name="roles"
                     label="Roles"
                     value={form.values.roles}
-                    onChange={(event)=>{
-                        form.setFieldValue('roles', event.target.value)
+                    onChange={(event) => {
+                      form.setFieldValue('roles', event.target.value)
                     }}
                     onBlur={form.handleBlur}
                     input={<OutlinedInput label="Roles"/>}
@@ -284,12 +323,42 @@ const CreateUserPage = ({handleClose, openCreate, user = null} : UserFormProps) 
                       >{rol.name}</MenuItem> 
                     ))}
                   </Select>
+                  {form.touched.roles && form.errors.roles && (
+                    <FormHelperText error={true}>{form.errors.roles}</FormHelperText>
+                  )}
                 </FormControl>
               </Grid>
+              <Grid item xs={12} md={8}>
+                <Box sx={{
+                  marginTop: 2,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  gap: 0.5,
+                  maxWidth: 300,
+                }}>
+                  {form.values.roles.map((role: string) => (
+                    <Chip
+                      key={role}
+                      label={role}
+                      onDelete={() => {
+                        const newRoles = form.values.roles.filter((r) => r !== role);
+                        form.setFieldValue('roles', newRoles);
+                      }}
+                      deleteIcon={<CloseIcon />}
+                    />
+                  ))}
+                </Box>
+              </Grid>
+            </Grid>
           </Grid>
 
-          <Grid item xs={12} sx={{paddingTop: 5}}>
+          <Grid item xs={12} sx={{ paddingTop: 5 }}>
             <Grid container spacing={2} justifyContent="flex-end">
+              <Button variant="outlined" color="primary" onClick={handleClose} sx={{ marginRight: "20px" }}>
+                CERRAR
+              </Button>
               <Button variant="contained" color="primary" type="submit">
                 GUARDAR
               </Button>

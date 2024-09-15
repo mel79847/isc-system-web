@@ -15,7 +15,7 @@ const AdministratorPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [title, setTitle] = useState("");
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
   const [currentRole, setcurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
 
   useEffect(() => {
@@ -63,23 +63,24 @@ const AdministratorPage = () => {
   }
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} sx={{ justifyContent: isSmall ? 'center' : 'flex-start' }}>
       <Grid item xs={12}>
         <Typography variant="h5" align="left" sx={{ marginBottom: 2 }}>
         <ManageAccountsIcon color="primary" fontSize="large" sx={{ marginRight: 2 }}/>
           Permisos de {title}
         </Typography>
       </Grid>
-      <Grid item xs={!isSmallScreen ? 3 : 12}>
+      <Grid item xs={!isSmall ? 3 : 12}>
         <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={title} setIsModalVisible = {setIsModalVisible}/>
       </Grid>
       <Grid item xs={8}>
-        {!isSmallScreen && <PermissionTable currentRol={currentRole}/>}
+        {!isSmall && <PermissionTable currentRol={currentRole}/>}
       </Grid>
         <AddTextModal
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
           onCreate={handleCreate}
+          existingRoles={roles}
         />
     </Grid>
   );
