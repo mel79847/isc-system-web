@@ -16,7 +16,7 @@ const AdministratorPage = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [title, setTitle] = useState("");
   const isSmallScreen = useMediaQuery('(max-width:600px)');
-  const [currentPermissions, setCurrentPermissions] = useState<string[]>([])
+  const [currentRole, setcurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -35,7 +35,7 @@ const AdministratorPage = () => {
         })
         setRoles(rolesFetched);
         setTitle(rolesFetched[0].name);
-        setCurrentPermissions(rolesFetched[0].permissions);
+        setcurrentRole(rolesFetched[0]);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -55,9 +55,9 @@ const AdministratorPage = () => {
 
   const handleRoleSelect = (roleName : string) => {
     setTitle(roleName);
-    roles.forEach((role: Role) => {
-      if (role.name === roleName){
-        setCurrentPermissions(role.permissions);
+    roles.forEach((role:Role) => {
+      if(role.name === roleName){
+        setcurrentRole(role)
       }
     })
   }
@@ -71,10 +71,10 @@ const AdministratorPage = () => {
         </Typography>
       </Grid>
       <Grid item xs={!isSmallScreen ? 3 : 12}>
-        <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={""} setIsModalVisible = {setIsModalVisible}/>
+        <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={title} setIsModalVisible = {setIsModalVisible}/>
       </Grid>
       <Grid item xs={8}>
-        {!isSmallScreen && <PermissionTable currentPermissions={currentPermissions}/>}
+        {!isSmallScreen && <PermissionTable currentRol={currentRole}/>}
       </Grid>
         <AddTextModal
           isVisible={isModalVisible}

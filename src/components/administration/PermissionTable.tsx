@@ -7,9 +7,7 @@ import SavePermissionsModal from "../common/SavePermissionsModal";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { PermissionsCategory } from "../../models/permissionsCategoryInterface";
 import { PermissionTableProps } from "../../models/permissionTablePropsInterface";
-
-
-const PermissionTable: React.FC<PermissionTableProps> = ({ currentPermissions}) => {
+const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
   const [sections, setSections] = useState<Section[]>([]);
   const [listOfChanges, setListOfChanges] = useState<Permission[]>([]);
   const [buttonVisible, setButtonVisible] = useState(false);
@@ -56,7 +54,8 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentPermissions}) 
 
   const cancelChanges = () => {
     setListOfChanges([]);
-  }
+  };
+
   return (
     <>
       <Box sx={{ overflow: "auto", height: "400px" }}>
@@ -107,7 +106,7 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentPermissions}) 
                         <TableCell>{permission.name}</TableCell>
                         <TableCell>
                           <Switch
-                            checked={(currentPermissions.includes(permission.name) || listOfChanges.includes(permission))&&!(currentPermissions.includes(permission.name) && listOfChanges.includes(permission))}
+                            checked={(currentRol.permissions.includes(permission.name) || listOfChanges.includes(permission))&&!(currentRol.permissions.includes(permission.name) && listOfChanges.includes(permission))}
                             onChange={handleSwitchChange(sectionIndex, permissionIndex)}
                           />
                         </TableCell>
@@ -126,13 +125,10 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentPermissions}) 
       {buttonVisible && (
         <Box display="flex" justifyContent="flex-end" sx={{ marginTop: "20px" }}>
           <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginRight: "20px", borderRadius: "16px" }}
-            onClick={() => {
-              setShowModal(true);
-            }}
-          >
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: "20px", borderRadius: "16px" }}
+          onClick={()=>{setShowModal(true)}}>
             Guardar
           </Button>
           <Button
@@ -147,7 +143,7 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentPermissions}) 
       )}
 
       {showModal && (
-        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={() => {}} />
+        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={()=>{}} role={currentRol.name} />
       )}
     </>
   );

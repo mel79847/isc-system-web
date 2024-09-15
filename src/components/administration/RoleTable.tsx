@@ -8,14 +8,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Role } from "../../models/roleInterface";
 
 
-const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, setIsModalVisible}) => { // TODO: Corregir la función para recibir un parámetro
+const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole, setIsModalVisible}) => {
 
-  const [selectedRole, setSelectedRole] = useState("Jefe de Carrera");
   const [search, setSearch] = useState("")
   const [filteredRoles, setFilteredRoles] = useState(roles);
 
   const handleRoleClick = (roleName:  string) => {
-    setSelectedRole(roleName);
     onRoleSelect(roleName);
   };
 

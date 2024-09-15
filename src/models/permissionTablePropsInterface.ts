@@ -1,3 +1,5 @@
+import { Role } from "./roleInterface";
+
 export interface PermissionTableProps {
-    currentPermissions: string[]
+    currentRol: Role
 }

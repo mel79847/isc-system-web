@@ -3,7 +3,7 @@ import { Modal as MuiModal, Box, Button, Typography, IconButton } from "@mui/mat
 import CancelIcon from '@mui/icons-material/Cancel';
 import { savePermissionsChagesModalProps } from "../../models/savePermissionsChangesModalPropsInterface";
 
-const SavePermissionsModal: FC<savePermissionsChagesModalProps> = ({ isVisible, setIsVisible, onSave }) => {
+const SavePermissionsModal: FC<savePermissionsChagesModalProps> = ({ isVisible, setIsVisible, onSave, role }) => {
 
   const handleSave = async () => {
     onSave();
@@ -27,10 +27,13 @@ const SavePermissionsModal: FC<savePermissionsChagesModalProps> = ({ isVisible, 
                   <CancelIcon color="primary" />
       </IconButton>
         <Typography id="delete-modal-title" variant='h5' align = 'center'>
-          Guardar Configuración
+          Guardar configuración
         </Typography>
-        <Typography id="delete-modal-description" variant='body1' sx={{ marginTop: '20px' }}>
-          ¿Estás seguro de que deseas La condifuración de permisos?
+        <Typography id="delete-modal-description" variant='body1' sx={{ marginTop: '20px' }} align = 'center'>
+          ¿Estás seguro de guardar los cambios realizados en el rol {" "}
+          <Typography component="span" sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>
+           {role}
+          </Typography>?
         </Typography>
         <Box display="flex" justifyContent="center" mt={2} sx={{ marginTop: '20px' }}>
           <Button variant="outlined" color="secondary" onClick={toggleModal}>
