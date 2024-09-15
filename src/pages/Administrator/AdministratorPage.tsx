@@ -7,11 +7,13 @@ import RoleTable from "../../components/administration/RoleTable";
 import PermissionTable from "../../components/administration/PermissionTable";
 import AddTextModal from "../../components/common/AddTextModal";
 import { getRoles, addRole } from "../../services/roleService";
+import { Role } from "../../models/roleInterface";
+import { RolePermissions } from "../../models/rolePermissionInterface";
 
 
 const AdministratorPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [title, setTitle] = useState("Jefe de Carrera");
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
@@ -19,7 +21,18 @@ const AdministratorPage = () => {
     const fetchRoles = async () => {
       try {
         const rolesData = await getRoles();
-        setRoles(rolesData.data);
+        const rolesPermissions: RolePermissions = rolesData.data;
+        const roles: Role[] = []
+        Object.keys(rolesPermissions).forEach((roleName:string) => {
+          const rolePermissions = rolesPermissions[roleName];
+          roles.push({
+            id: rolePermissions.id,
+            name: roleName,
+            disabled: rolePermissions.disabled,
+            permissions: rolePermissions.permissions
+          })
+        })
+        setRoles(roles);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }

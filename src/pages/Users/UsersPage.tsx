@@ -14,6 +14,7 @@ import { getRoles } from "../../services/roleService";
 import { Role } from "../../models/roleInterface";
 import { User } from "../../models/userInterface";
 import CreateUserPage from "../../components/users/CreateUserPage";
+import { RolePermissions } from "../../models/rolePermissionInterface";
 
 const UsersPage = () => {
   const navigate = useNavigate()
@@ -22,7 +23,7 @@ const UsersPage = () => {
   const [isOpenDelete, setOpenDelete] = useState(false)
   const [isOpenCreate, setOpenCreate] = useState(false)
   const [selectedUser, setSelectedUser] = useState<number | null>(null)
-  const [roles, setRoles] = useState([])
+  const [roles, setRoles] = useState<Role[]>([])
   const [filterRoles, setFilterRoles] = useState("")
   const [search, setSearch] = useState("");
   const [user, setUser] = useState<User | null>(null)
@@ -188,8 +189,19 @@ const applyFilters = () => {
   }
 
   const fetchRoles = async () => {
-    const rolesResponse = await getRoles()
-    setRoles(rolesResponse.data)
+    const rolesResponse = await getRoles();
+    const rolesPermissions: RolePermissions = rolesResponse.data;
+    const roles: Role[] = []
+    Object.keys(rolesPermissions).forEach((roleName:string) => {
+      const rolePermissions = rolesPermissions[roleName];
+      roles.push({
+        id: rolePermissions.id,
+        name: roleName,
+        disabled: rolePermissions.disabled,
+        permissions: rolePermissions.permissions
+      })
+    })
+    setRoles(roles);
   }
 
   useEffect(() => {
