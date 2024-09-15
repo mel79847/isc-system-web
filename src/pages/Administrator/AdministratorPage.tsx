@@ -34,7 +34,8 @@ const AdministratorPage = () => {
           })
         })
         setRoles(rolesFetched);
-        handleRoleSelect(rolesFetched[0].name)
+        setTitle(rolesFetched[0].name);
+        setCurrentPermissions(rolesFetched[0].permissions);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
