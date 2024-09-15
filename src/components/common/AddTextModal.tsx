@@ -5,13 +5,21 @@ import { AddTextModalProps } from "../../models/addTextModalPropsInterface";
 
 import './ModalStyle.css';
 
-const AddTextModal: FC<AddTextModalProps> = ({ isVisible, setIsVisible, onCreate }) => {
+const AddTextModal: FC<AddTextModalProps> = ({ isVisible, setIsVisible, onCreate, existingRoles }) => {
 const [name, setName] = useState('');
 const [error, setError] = useState<string | null>(null);
 
   const handleCreate = async () => {
+    var rolWithTheSameName = false;
+    existingRoles.forEach(role=>{
+      if(name && role.name.toLowerCase() === name.toLowerCase()){
+        rolWithTheSameName = true;
+      }
+    })
     if(!name.trim()){
       setError("El nombre del rol no puede estar vacío");
+    } else if (rolWithTheSameName) {
+      setError("Rol existente")
     }else{
       onCreate(name);
       setIsVisible(false);

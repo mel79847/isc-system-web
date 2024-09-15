@@ -80,6 +80,7 @@ const AdministratorPage = () => {
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
           onCreate={handleCreate}
+          existingRoles={roles}
         />
     </Grid>
   );
