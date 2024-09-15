@@ -85,7 +85,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
                 {isSmall && (
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <PermissionTable />
+                            <PermissionTable currentPermissions={role.permissions}/>
                         </CardContent>
                     </Collapse>
                 )}
@@ -99,7 +99,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
                 <MenuItem onClick={hadleDeletClick}>Eliminar</MenuItem>
             </Menu>
             {showDelete && (
-                <ConfirmDelete roleName={role.name} isVisible={showDelete} setIsVisible={setShowDelete} onDelete={() => onDelete(role.roleName)}/>
+                <ConfirmDelete roleName={role.name} isVisible={showDelete} setIsVisible={setShowDelete} onDelete={() => onDelete(role.name)}/>
             )}
         </>
     )
