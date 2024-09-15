@@ -57,3 +57,21 @@ export const deleteRole = async (id:number) => {
     throw new Error('Failed to delete role: ' + (error as Error).message);
   }
 };
+
+export const addPermisionToRol = async (role_id: number, permission_id: number) => {
+  try {
+    const response = await apiClient.post(`${route}permissions/`, {role_id, permission_id});
+    return response.data;
+  }catch (error) {
+    throw new Error('Failed to add a permission: ' + (error as Error).message);
+  }
+};
+
+export const removePermisionToRol = async (role_id: number, permission_id: number) => {
+  try {
+    const response = await apiClient.delete(`${route}permissions/`,{data:{role_id,permission_id}});
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to remove a permission: ' + (error as Error).message);
+  }
+};
