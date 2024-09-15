@@ -85,7 +85,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
                 {isSmall && (
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <PermissionTable role = {role} />
+                            <PermissionTable currentRol={role}/>
                         </CardContent>
                     </Collapse>
                 )}

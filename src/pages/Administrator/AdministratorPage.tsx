@@ -8,24 +8,34 @@ import PermissionTable from "../../components/administration/PermissionTable";
 import AddTextModal from "../../components/common/AddTextModal";
 import { getRoles, addRole } from "../../services/roleService";
 import { Role } from "../../models/roleInterface";
+import { RolePermissions } from "../../models/rolePermissionInterface";
 
 
 const AdministratorPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [title, setTitle] = useState("");
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const [currentRole, setcurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
         const rolesData = await getRoles();
-        setRoles(rolesData.data);
-        if (rolesData.data.length > 0) {
-          setTitle(rolesData.data[0].name);
-          setSelectedRole(rolesData.data[0]);
-        }
+        const rolesPermissions: RolePermissions = rolesData.data;
+        const rolesFetched: Role[] = []
+        Object.keys(rolesPermissions).forEach((roleName:string) => {
+          const rolePermissions = rolesPermissions[roleName];
+          rolesFetched.push({
+            id: rolePermissions.id,
+            name: roleName,
+            disabled: rolePermissions.disabled,
+            permissions: rolePermissions.permissions
+          })
+        })
+        setRoles(rolesFetched);
+        setTitle(rolesFetched[0].name);
+        setcurrentRole(rolesFetched[0]);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -45,12 +55,11 @@ const AdministratorPage = () => {
 
   const handleRoleSelect = (roleName : string) => {
     setTitle(roleName);
-    if (roles && roles.length > 0) {
-      const role = roles.find((r) => r.name === roleName);
-      setSelectedRole(role || null);
-    } else {
-      console.error("Roles array is empty or not defined");
-    }
+    roles.forEach((role:Role) => {
+      if(role.name === roleName){
+        setcurrentRole(role)
+      }
+    })
   }
 
   return (
@@ -62,10 +71,10 @@ const AdministratorPage = () => {
         </Typography>
       </Grid>
       <Grid item xs={!isSmallScreen ? 3 : 12}>
-        <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={selectedRole?.name || ""} setIsModalVisible = {setIsModalVisible}/>
+        <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={title} setIsModalVisible = {setIsModalVisible}/>
       </Grid>
       <Grid item xs={8}>
-      {!isSmallScreen && selectedRole && <PermissionTable role={selectedRole} />}
+        {!isSmallScreen && <PermissionTable currentRol={currentRole}/>}
       </Grid>
         <AddTextModal
           isVisible={isModalVisible}

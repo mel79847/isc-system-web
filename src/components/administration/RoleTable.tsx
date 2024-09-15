@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RoleComponent from "./RoleComponent";
 import { RoleTableProps } from "../../models/roleTablePropsInterface";
 import { ChangeEvent, useEffect, useState } from "react";
+import { Role } from "../../models/roleInterface";
 
 
 const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole, setIsModalVisible}) => {
@@ -29,7 +30,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
     if (searchValue.trim() === "") {
       setFilteredRoles(roles);
     } else {
-      const filtered = roles.filter((role) =>
+      const filtered = roles.filter((role: Role) =>
         role.name.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredRoles(filtered);
