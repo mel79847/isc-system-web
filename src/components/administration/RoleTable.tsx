@@ -7,14 +7,12 @@ import { RoleTableProps } from "../../models/roleTablePropsInterface";
 import { ChangeEvent, useEffect, useState } from "react";
 
 
-const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, setIsModalVisible}) => { // TODO: Corregir la función para recibir un parámetro
+const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole, setIsModalVisible}) => {
 
-  const [selectedRole, setSelectedRole] = useState("Jefe de Carrera");
   const [search, setSearch] = useState("")
   const [filteredRoles, setFilteredRoles] = useState(roles);
 
   const handleRoleClick = (roleName:  string) => {
-    setSelectedRole(roleName);
     onRoleSelect(roleName);
   };
 
@@ -32,7 +30,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, setIsModalVi
       setFilteredRoles(roles);
     } else {
       const filtered = roles.filter((role) =>
-        role.roleName.toLowerCase().includes(searchValue.toLowerCase())
+        role.name.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredRoles(filtered);
     }

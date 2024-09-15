@@ -1,27 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Switch, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, Collapse} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Button, Switch, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, Collapse } from "@mui/material";
 import getPermissions from "../../services/permissionsService";
 import { Section } from "../../models/sectionInterface";
 import { Permission } from "../../models/permissionInterface";
 import SavePermissionsModal from "../common/SavePermissionsModal";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Role } from "../../models/roleInterface";
 
+interface PermissionTableProps { 
+  role: Role;
+}
 
-const PermissionTable = () => {
+const PermissionTable: React.FC<PermissionTableProps> = ({ role }) => {
   const [sections, setSections] = useState<Section[]>([]);
   const [listOfChanges, setListOfChanges] = useState<Permission[]>([]);
   const [buttonVisible, setButtonVisible] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [openSections, setOpenSections] = useState<boolean[]>([]);
+  const [changesSaved, setChangesSaved] = useState(false);
 
-  const fetchPermissions = async () => {
-    const response = await getPermissions();
-    setSections(response);
-    setOpenSections(new Array(response.length).fill(true)); // Inicializa todas las secciones como abiertas
-  }
   useEffect(() => {
+    const fetchPermissions = async () => {
+      const response = await getPermissions();
+      setSections(response);
+      setOpenSections(new Array(response.length).fill(true));
+    }
     fetchPermissions();
   }, []);
+
+  useEffect(() => {
+    setButtonVisible(false);
+    // TODO: actualizar la tabla de permisos a la respectiva cuando cambie el rol
+  }, [role]);
 
   const handleSwitchChange = (sectionIndex: number, permissionIndex: number) => (event: any) => {
     const newSections = [...sections];
@@ -41,7 +51,7 @@ const PermissionTable = () => {
   };
 
   useEffect(() => {
-    if (listOfChanges.length > 0) {
+    if (listOfChanges.length > 0 || !changesSaved) {
       setButtonVisible(true);
     } else {
       setButtonVisible(false);
@@ -49,17 +59,27 @@ const PermissionTable = () => {
   }, [listOfChanges])
 
   const cancelChanges = () => {
-    const newSections = sections;
-    newSections.forEach((section) => {
-      section.permissions.forEach((permission) => {
-        if (listOfChanges.includes(permission)) {
-          permission.state = !permission.state;
-        }
-      })
-    })
+    const newSections = sections.map(section => ({
+      ...section,
+      permissions: section.permissions.map(permission => ({
+        ...permission,
+        state: listOfChanges.includes(permission) ? !permission.state : permission.state,
+      })),
+    }));
     setSections(newSections);
     setListOfChanges([]);
+    setChangesSaved(false);
+  };
+
+  const saveChanges = () => {
+    setShowModal(true);
+    setChangesSaved(true); 
   }
+
+  const handleSaveComplete = () => {
+    setChangesSaved(true);
+    setButtonVisible(false);
+  };
   return (
     <>
       <Box sx={{ overflow: "auto", height: "400px" }}>
@@ -105,7 +125,7 @@ const PermissionTable = () => {
               <Collapse in={openSections[sectionIndex]} timeout="auto" unmountOnExit>
                 <Table className="border-table" sx={{ marginTop: "10px" }}>
                   <TableBody>
-                    {section.permissions.map((permission: any, permissionIndex: number) => (
+                    {section.permissions.map((permission: any, permissionIndex:number) => (
                       <TableRow key={permissionIndex}>
                         <TableCell>{permission.action}</TableCell>
                         <TableCell>
@@ -132,9 +152,7 @@ const PermissionTable = () => {
             variant="contained"
             color="primary"
             sx={{ marginRight: "20px", borderRadius: "16px" }}
-            onClick={() => {
-              setShowModal(true);
-            }}
+            onClick={saveChanges}
           >
             Guardar
           </Button>
@@ -150,7 +168,7 @@ const PermissionTable = () => {
       )}
 
       {showModal && (
-        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={() => {}} />
+        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={handleSaveComplete} role={role.name} />
       )}
     </>
   );
