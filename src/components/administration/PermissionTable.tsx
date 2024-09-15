@@ -107,7 +107,7 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentPermissions}) 
                         <TableCell>{permission.name}</TableCell>
                         <TableCell>
                           <Switch
-                            checked={currentPermissions.includes(permission.name) || listOfChanges.includes(permission)}
+                            checked={(currentPermissions.includes(permission.name) || listOfChanges.includes(permission))&&!(currentPermissions.includes(permission.name) && listOfChanges.includes(permission))}
                             onChange={handleSwitchChange(sectionIndex, permissionIndex)}
                           />
                         </TableCell>
