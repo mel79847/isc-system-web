@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Chip, Dialog, DialogTitle, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Radio, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Chip, Dialog, DialogTitle, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Radio, Select, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
@@ -18,7 +18,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
   const [isErrorOpen, setIsErrorOpen] = useState<boolean>(false)
   const [studentRoles, setStudentRoles] = useState<Role[]>([])
   const [professorRoles, setProfessorRoles] = useState<Role[]>([])
-  const [isTeacher, setIsTeacher] = useState<boolean>(false)
+  const [isTeacher, setIsTeacher] = useState<boolean>(user?.degree? true: false)
 
   const validationSchema = Yup.object({
     name: Yup.string().required("El nombre completo es obligatorio"),
@@ -67,17 +67,12 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
     }
   )
 
-  const handleChangeIsTeacher = (event: SelectChangeEvent<boolean>) => {
-    setIsTeacher(event.target.value == "true");
-    form.setFieldValue('roles', [])
-  }
-
   const fetchRoles = async () => {
     const studentRoles = await getStudentRoles()
-    setStudentRoles(studentRoles)
+    setStudentRoles(studentRoles.data)
 
     const professorRoles = await getProfessorRoles()
-    setProfessorRoles(professorRoles)
+    setProfessorRoles(professorRoles.data)
   }
 
   useEffect(() => {
@@ -123,7 +118,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
               <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
                 <Grid item xs={5} md={6}>
                   <Card variant="outlined">
-                    <CardActionArea onClick={() => setIsTeacher(false)}> {/* Trigger change on card click */}
+                    <CardActionArea onClick={() => setIsTeacher(false)}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <CardMedia>
                           <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
@@ -139,7 +134,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                 </Grid>
                 <Grid item xs={5} md={6}>
                   <Card variant="outlined">
-                    <CardActionArea onClick={() => setIsTeacher(true)}> {/* Trigger change on card click */}
+                    <CardActionArea onClick={() => setIsTeacher(true)}> 
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <CardMedia >
                           <WorkIcon sx={{ fontSize: 100 }} color="primary" />
