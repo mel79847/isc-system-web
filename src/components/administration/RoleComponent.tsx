@@ -47,6 +47,7 @@ const RoleComponent : React.FC<RoleComponentProps> = ({ role, selectedRole, onRo
 
     const handleEditClick = () => {
         setIsEditing(true);
+        setEditedRoleName(role.name)
         handleClose();
     }
 
