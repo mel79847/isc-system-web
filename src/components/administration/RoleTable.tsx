@@ -6,6 +6,8 @@ import RoleComponent from "./RoleComponent";
 import { RoleTableProps } from "../../models/roleTablePropsInterface";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Role } from "../../models/roleInterface";
+import { editRole } from "../../services/roleService";
+
 
 
 const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole, setIsModalVisible}) => {
@@ -17,8 +19,20 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
     onRoleSelect(roleName);
   };
 
-  const handleRoleDelete = (roleName: string) =>{
-    //TODO: Lógica para borrar el componente
+  const handleRoleDelete = (id: number) =>{
+    //TODO eliminar roles
+  }
+
+  const handleRoleEdit = async (id: number, role: { name: string; }) => {
+    try {
+      await editRole(id, role);
+      setFilteredRoles(prevRoles => 
+        prevRoles.map(r => r.id === id ? { ...r, name: role.name } : r)
+      );
+    } catch (error) {
+      console.error("Failed to update the role:", error);
+    }
+
   }
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +73,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
       <TableBody sx={{maxHeight: 300, overflowY: 'auto' }}>
         {filteredRoles && filteredRoles.map((role, index) => (
           <TableRow key={index}>
-              <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete}/>
+              <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete} onEdited={handleRoleEdit}/>
           </TableRow>
         ))}
       </TableBody>

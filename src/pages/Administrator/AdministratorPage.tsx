@@ -16,7 +16,7 @@ const AdministratorPage = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [title, setTitle] = useState("");
   const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
-  const [currentRole, setcurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
+  const [currentRole, setCurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -35,7 +35,7 @@ const AdministratorPage = () => {
         })
         setRoles(rolesFetched);
         setTitle(rolesFetched[0].name);
-        setcurrentRole(rolesFetched[0]);
+        setCurrentRole(rolesFetched[0]);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -57,7 +57,7 @@ const AdministratorPage = () => {
     setTitle(roleName);
     roles.forEach((role:Role) => {
       if(role.name === roleName){
-        setcurrentRole(role)
+        setCurrentRole(role)
       }
     })
   }
