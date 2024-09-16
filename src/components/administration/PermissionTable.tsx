@@ -14,7 +14,6 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   const [buttonVisible, setButtonVisible] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [openSections, setOpenSections] = useState<boolean[]>([]);
-  const [changesSaved, setChangesSaved] = useState(false);
 
   const fetchPermissions = async () => {
     const response = await getPermissions();
@@ -48,28 +47,29 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   };
 
   useEffect(() => {
-    if (listOfChanges.length > 0 || !changesSaved) {
+    if (listOfChanges.length > 0) {
       setButtonVisible(true);
+    } else {
+      setButtonVisible(false);
     }
-  }, [listOfChanges])
+  }, [listOfChanges]);
 
   useEffect(() => {
     setButtonVisible(false);
+    setListOfChanges([]);
   }, [currentRol]);
 
   const cancelChanges = () => {
     setButtonVisible(false);
-    setChangesSaved(false);
-    setListOfChanges([])
+    setListOfChanges([]);
   };
 
   const saveChanges = () => {
     setShowModal(true);
-    setChangesSaved(true); 
   }
 
   const handleSaveComplete = () => {
-    setChangesSaved(true);
+
     setButtonVisible(false);
   };
 
