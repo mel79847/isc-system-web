@@ -76,7 +76,7 @@ export const menu = [
     path: "/scholarshipHours",
     text: "Horas",
     icon: <AccessTimeIcon color="primary" />,
-    roles: [ADMIN],
+    roles: [STUDENT],
   },
   {
     key: "programDirector",
@@ -102,7 +102,7 @@ export const menu = [
   {
     key: "administration",
     path: "/administration",
-    text: "Administrador",
+    text: "Roles y permisos",
     icon: <ManageAccountsIcon color="primary" />,
     roles: [ADMIN],
   },
