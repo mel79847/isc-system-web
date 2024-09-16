@@ -274,7 +274,7 @@ const UsersPage = () => {
                   value={filterRoles}
                 >
                 <MenuItem value="reset">
-                  Reset Search
+                  Borrar búsqueda
                 </MenuItem>
                   {roles.map((rol: Role) => (
                     <MenuItem value={rol.name}>{rol.name} ({countStudentsWithRole(rol.name)})</MenuItem>
