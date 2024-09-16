@@ -69,7 +69,6 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   }
 
   const handleSaveComplete = () => {
-
     setButtonVisible(false);
   };
 
