@@ -18,21 +18,26 @@ const AdministratorPage = () => {
   const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
   const [currentRole, setcurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
 
+  const extractRoles = (rolesData: RolePermissions) => {
+    const rolesPermissions: RolePermissions = rolesData;
+    const rolesFetched: Role[] = []
+    Object.keys(rolesPermissions).forEach((roleName:string) => {
+      const rolePermissions = rolesPermissions[roleName];
+      rolesFetched.push({
+        id: rolePermissions.id,
+        name: roleName,
+        disabled: rolePermissions.disabled,
+        permissions: rolePermissions.permissions
+      })
+    })
+    return rolesFetched
+  }
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
         const rolesData = await getRoles();
-        const rolesPermissions: RolePermissions = rolesData.data;
-        const rolesFetched: Role[] = []
-        Object.keys(rolesPermissions).forEach((roleName:string) => {
-          const rolePermissions = rolesPermissions[roleName];
-          rolesFetched.push({
-            id: rolePermissions.id,
-            name: roleName,
-            disabled: rolePermissions.disabled,
-            permissions: rolePermissions.permissions
-          })
-        })
+        const rolesFetched = extractRoles(rolesData.data)
         setRoles(rolesFetched);
         setTitle(rolesFetched[0].name);
         setcurrentRole(rolesFetched[0]);
@@ -43,11 +48,12 @@ const AdministratorPage = () => {
     fetchRoles();
   }, []);
 
-  const handleCreate = async (roleName: string) => {
+  const handleCreate = async (roleName: string, category: string) => {
     try {
-      await addRole({ name:roleName });
+      await addRole({ name:roleName, category });
       const updateRoles = await getRoles();
-      setRoles(updateRoles);
+      const rolesFetched = extractRoles(updateRoles.data)
+      setRoles(rolesFetched);
     } catch (error) {
       console.error("Error creating role:", error);
     }

@@ -302,7 +302,8 @@
       "email": "mildret@quya.com",
       "phone": "70182881",
       "roles": [
-        "Becario"
+        "Becario",
+        "student"
       ],
       "degree": "",
       "id": 12347
@@ -400,6 +401,19 @@
       ],
       "degree": "Ing.",
       "id": 12356
+    },
+    {
+      "name": "Zein",
+      "code": "82910",
+      "lastname": "Tonconi",
+      "mothername": "Mendoza",
+      "email": "zein@zein.com",
+      "phone": "70186881",
+      "roles": [
+        "Becario"
+      ],
+      "degree": "",
+      "id": 12357
     }
   ],
   "professorRoles": [
