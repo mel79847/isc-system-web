@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { Seminar } from "../models/studentProcess";
+import { Permission } from "../models/permissionInterface";
 
 interface IProcessStore {
   process: Seminar | null;
@@ -12,6 +13,11 @@ interface IUser {
   email?: string;
   roles?: string[];
   token: string;
+  roles_permissions?: {
+    [role: string]: {
+      permissions: Permission[];
+    };
+  };
 }
 interface IUserStore {
   user: IUser | null;

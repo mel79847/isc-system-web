@@ -16,12 +16,37 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Permission } from "../../models/permissionInterface";
+import { getPermissionById } from "../../services/permissionsService";
+import { useHasPermission } from "../../helper/permissions";
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
   const [professors, setProfessors] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
+  const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
+  const [deleteProfessorPermission, setDeleteProfessorPermission] = useState<Permission>();
+  const [editProfessorPermission, setEditProfessorPermission] = useState<Permission>();
+  const hasPermission = useHasPermission();
+
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const addProfessorResponse = await getPermissionById(7);
+      setAddProfessorPermission(addProfessorResponse.data);
+      const viewProfessorReportResponse = await getPermissionById(8);
+      setViewProfessorReportPermission(viewProfessorReportResponse.data);
+      const deleteProfessorResponse = await getPermissionById(10);
+      setDeleteProfessorPermission(deleteProfessorResponse.data);
+      const editProfessorResponse = await getPermissionById(11);
+      setEditProfessorPermission(editProfessorResponse.data);
+    };
+  
+    fetchPermissions();
+    fetchProfessors();
+  }, []);
+  
   const columns: GridColDef[] = [
     {
       field: "code",
@@ -83,13 +108,16 @@ const ProfessorPage = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
-          <IconButton
+          {hasPermission(viewProfessorReportPermission?.name || "") &&
+          (<IconButton
             color="primary"
             aria-label="ver"
             onClick={() => handleView(params.row.id)}
           >
             <VisibilityIcon />
-          </IconButton>
+          </IconButton>)
+          }
+          {hasPermission(editProfessorPermission?.name || "") && (
           <IconButton
             color="primary"
             aria-label="editar"
@@ -97,13 +125,15 @@ const ProfessorPage = () => {
           >
             <EditIcon />
           </IconButton>
+           )}
+          {hasPermission(deleteProfessorPermission?.name || "") && (
           <IconButton
             color="secondary"
             aria-label="eliminar"
             onClick={() => handleClickOpen(params.row.id)}
           >
             <DeleteIcon />
-          </IconButton>
+          </IconButton>)}
         </div>
       ),
     },
@@ -164,6 +194,7 @@ const ProfessorPage = () => {
           color="secondary"
           onClick={handleCreateTeacher}
           startIcon={<AddIcon />}
+          style={{ display: hasPermission(addProfessorPermission?.name || "") ? "inline-flex" : "none" }}
         >
           Agregar docente
         </Button>

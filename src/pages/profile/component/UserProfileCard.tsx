@@ -1,12 +1,30 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { User } from "../../../models/userInterface";
+import { useHasPermission } from "../../../helper/permissions";
+import { useEffect, useState } from "react";
+import { Permission } from "../../../models/permissionInterface";
+import { getPermissionById } from "../../../services/permissionsService";
 
 interface UserProfileCardProps {
   user: User;
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
+  const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission>();
+  const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission>();
+  const hasPermission = useHasPermission();
+  
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const scheduleAppointmentStudentResponse = await getPermissionById(17);
+      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data);
+      const scheduleAppointmentProfessorResponse = await getPermissionById(9);
+      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data);
+    };
+    fetchPermissions();
+  }, []);
+
   return (
     <Paper
       elevation={5}
@@ -54,9 +72,13 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
       <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2, textAlign: "center" }}>
         {user.roles.join(", ")}
       </Typography>
-      <Button variant="contained" color="primary" sx={{ mb: 3 }}>
-        Agendar una reunión
-      </Button>
+      {
+        (hasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || hasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
+        (
+          <Button variant="contained" color="primary" sx={{ mb: 3 }}>
+            Agendar una reunión
+          </Button>)
+      }
       <Paper
         elevation={0}
         sx={{
