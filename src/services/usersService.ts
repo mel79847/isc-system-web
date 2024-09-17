@@ -53,7 +53,7 @@ export const getUserById = async (id: number) => {
     }
 }
 
-export const createUserWIthRoles = async(student: UserRequest) => {
-    const response = await apiClient.post(baseURL, student)
+export const createUserWIthRoles = async(user: UserRequest) => {
+    const response = await apiClient.post(baseURL, user)
     return response.data
   }

@@ -79,7 +79,7 @@ const AdministratorPage = () => {
       <Grid item xs={!isSmall ? 3 : 12}>
         <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={title} setIsModalVisible = {setIsModalVisible}/>
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={9}>
         {!isSmall && <PermissionTable currentRol={currentRole}/>}
       </Grid>
         <AddTextModal

@@ -73,13 +73,16 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
           is_scholarship: scholarshipRole? values.roles.some(rol => rol == scholarshipRole?.id): false,
         }
         try {
-          if (user)
-            await putUser(user.id, formUser)
-          else
+          if (!user){
+            console.log(formUser)
             await createUserWIthRoles(formUser)
+          }
+          else
+            await putUser(user.id, formUser)
           setIsSuccessOpen(true)
           resetForm();
         } catch (error) {
+          console.log(error)
           setIsErrorOpen(true)
         }
       },
@@ -87,8 +90,11 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
   )
 
   const getRoleName = (id: number) => {
-   const rol = (studentRoles.concat(professorRoles)).find(rol => rol.id === id)
-   return rol?.name
+    const rol = (studentRoles.concat(professorRoles)).find(rol => rol.id === id)
+    if(!rol)
+      return "admin"
+    else
+      return rol?.name
   }
 
   const fetchRoles = async () => {
