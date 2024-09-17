@@ -104,7 +104,7 @@ const UsersPage = () => {
 
     if (filterRoles) {
       filteredData = filteredData.filter((user: User) => {
-        return user.roles.includes(filterRoles);
+        return user.roles.includes(Number(filterRoles));
       });
     }
 
@@ -228,7 +228,7 @@ const UsersPage = () => {
   }, [])
 
   const countStudentsWithRole = (role: string) => {
-    return users.filter(user => user.roles.includes(role)).length
+    return users.filter(user => user.roles.includes(Number(role))).length
   }
 
   return (
