@@ -75,7 +75,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
 
   return (
     <>
-      <Table className="border-table">
+      <Table className="border-table" sx={{ flex: 1 }}>
         <TableHead className="orange-header large-header">
           <TableRow>
             <TableCell className="flex justify-center items-center w-full">
@@ -89,7 +89,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
           </TableRow>
           <OutlinedInput type="text" id="roles-search" placeholder="Buscar rol" onChange={handleSearch} fullWidth sx={{ mt: 2, mb: 2 }} endAdornment={<InputAdornment position="end"><SearchIcon/></InputAdornment>} />
         </TableHead>
-        <TableBody sx={{ maxHeight: 300, overflowY: 'auto' }}>
+        <TableBody style={{ height: '100%', overflowY: 'auto' }}>
           {filteredRoles && filteredRoles.map((role, index) => (
             <TableRow key={index}>
               <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete} onEdited={handleRoleEdit}/>

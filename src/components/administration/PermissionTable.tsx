@@ -74,7 +74,7 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
 
   return (
     <>
-      <Box sx={{ overflow: "auto", height: "400px" }}>
+      <Box sx={{ height: 'calc(100vh - 120px)', overflowY: 'auto'}}>
         <Table className="border-table" sx={{ marginBottom: "10px" }}>
           <TableHead>
             <TableRow>
