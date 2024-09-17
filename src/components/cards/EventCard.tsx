@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -17,21 +17,29 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import CloseIcon from "@mui/icons-material/Close";
+import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import "../../style.css";
 import { EventCardProps } from "../../models/eventCardProps";
 import EventSubheader from "./EventSubheader";
-import { registerInternEventService } from "../../services/eventsService";
+import {
+  getEventsInformations,
+  registerInternEventService,
+} from "../../services/eventsService";
 import { useUserStore } from "../../store/store";
+import { InternsInformation } from "../../models/internsInterface";
+import {
+  getInternByUserIdService,
+  getInternData,
+} from "../../services/internService";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
+  const { ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
@@ -45,13 +53,19 @@ const EventCard = ({ event }: EventCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [internInfomation, setInternInfomation] =
+    useState<InternsInformation>();
+  const [internEventInfomation, setInternEventInfomation] =
+    useState<InternsInformation>();
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [responsible, setResponsible] = useState<String>("Ninguno");
+  const [isRegister, setisRegister] = useState(false);
   const [alert, setAlert] = useState<{
     severity: "success" | "error";
     message: string;
   } | null>(null);
-  const user = useUserStore((state) => state.user);
 
+  const user = useUserStore((state) => state.user);
   const {
     id: id_event,
     title: title,
@@ -60,11 +74,71 @@ const EventCard = ({ event }: EventCardProps) => {
     end_date: end_date,
     duration_hours: duration_hours,
     location: location,
+    is_finished: is_finished,
     max_interns: max_interns,
     min_interns: min_interns,
     responsible_intern_id: responsible_intern_id,
-    //TODO: get responsible intern info
+    registration_deadline: registration_deadline,
   } = event;
+
+  const fetchIntern = async () => {
+    try {
+      const res = await getInternByUserIdService(user!.id);
+      setInternInfomation(res.data);
+    } catch (error) {
+      console.error("Error fetching Intern:", error);
+    }
+  };
+
+  const fetchInternEvent = async () => {
+    try {
+      if (responsible_intern_id) {
+        const res = await getInternData(responsible_intern_id);
+        setInternEventInfomation(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching Intern:", error);
+    }
+  };
+  const fetchInternEventInformation = async () => {
+    try {
+      if (id_event && internInfomation) {
+        const res = await getEventsInformations(
+          id_event,
+          internInfomation.id_intern
+        );
+        if (res.data) {
+          setisRegister(true);
+        } else {
+          setisRegister(
+            dayjs().isAfter(dayjs(registration_deadline)) || is_finished
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching Intern:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchIntern();
+  }, []);
+
+  useEffect(() => {
+    if (internEventInfomation) {
+      setResponsible(
+        internEventInfomation.name + " " + internEventInfomation.lastname
+      );
+    }
+  }, [internEventInfomation]);
+
+  useEffect(() => {
+    fetchInternEvent();
+  }, [event]);
+
+  useEffect(() => {
+    fetchInternEventInformation();
+  }, [internInfomation]);
 
   dayjs.locale("es");
 
@@ -81,8 +155,12 @@ const EventCard = ({ event }: EventCardProps) => {
   };
 
   const handleConfirm = async () => {
-    const res = await registerInternEventService(id_event, user!.id);
+    const res = await registerInternEventService(
+      Number(id_event),
+      Number(internInfomation?.id)
+    );
     if (res.success) {
+      setisRegister(true);
       setAlert({
         severity: "success",
         message: `¡Te has registrado con éxito en el evento ${title}!`,
@@ -148,10 +226,16 @@ const EventCard = ({ event }: EventCardProps) => {
         )}
       </CardContent>
       <CardActions disableSpacing>
-        <Tooltip title="Registrarse">
-          <IconButton aria-label="registrarse" onClick={handleDialogOpen}>
-            <AddIcon />
-          </IconButton>
+        <Tooltip title={isRegister ? "Registro cerrado" : "Registrarse"}>
+          <span>
+            <IconButton
+              aria-label="registrarse"
+              onClick={handleDialogOpen}
+              disabled={isRegister}
+            >
+              <AddIcon />
+            </IconButton>
+          </span>
         </Tooltip>
         <ExpandMore
           expand={expanded}
@@ -175,32 +259,32 @@ const EventCard = ({ event }: EventCardProps) => {
             marginTop={2}
           >
             <strong>Fecha inicial: </strong>{" "}
-            {dayjs(start_date).format("DD/MM/YYYY HH:mm")}
+            {dayjs(start_date).format("DD/MM/YYYY")}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
             <strong>Fecha final: </strong>{" "}
-            {dayjs(end_date).format("DD/MM/YYYY HH:mm")}
+            {dayjs(end_date).format("DD/MM/YYYY")}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
-            <strong>Encargado: </strong> {responsible_intern_id}
+            <strong>Supervisor: </strong> {responsible}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
             <strong>Duración: </strong> {duration_hours} horas
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
-            <strong>Lugar: </strong> {location}
+            <strong>Ubicacion: </strong> {location}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
-            <strong>Máximo de Becarios: </strong> {max_interns}
+            <strong>Máx. Becarios: </strong> {max_interns}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
-            <strong>Máximo de Suplentes: </strong> {min_interns}
+            <strong>Min. Becarios: </strong> {min_interns}
           </Typography>
         </CardContent>
       </Collapse>
       <Dialog
         open={dialogOpen}
-        onClose={(event, reason) => {
+        onClose={(reason) => {
           if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
             handleDialogClose();
           }
@@ -223,7 +307,7 @@ const EventCard = ({ event }: EventCardProps) => {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            <CloseIcon />
+            <CancelIcon color="primary" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
@@ -231,7 +315,9 @@ const EventCard = ({ event }: EventCardProps) => {
             ¿Estás seguro de inscribirte al evento "{title}"?
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: "flex-end", padding: "24px" }}>
+        <DialogActions
+          sx={{ justifyContent: "center", padding: "29px", marginTop: "-10px" }}
+        >
           <Button
             onClick={handleDialogClose}
             variant="contained"

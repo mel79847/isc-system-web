@@ -181,7 +181,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
       </div>
       {subStage === 0 && (
         <>
-          <EmailSender seminar={process} />
+          <EmailSender/>
           <Box display="flex" justifyContent="space-between" pt={1} pb={0}>
             <Button
               type="button"

@@ -13,7 +13,7 @@ const CalendarCard = ({ events }) => {
     <Card raised sx={{ margin: 2, padding: 2 }}>
       <CardContent>
         <Typography
-          data-testid="calendar-title"
+          data-test-id="calendar-title"
           variant="h6"
           component="div"
           gutterBottom

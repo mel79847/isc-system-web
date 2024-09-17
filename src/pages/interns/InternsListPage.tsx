@@ -1,60 +1,54 @@
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import CancelIcon from "@mui/icons-material/Cancel";
 import DialogContent from "@mui/material/DialogContent";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
+import Checkbox from "@mui/material/Checkbox";
+import dayjs from "dayjs";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import dayjs from "dayjs";
+import { useParams } from "react-router-dom";
 import { Event, EventDetails } from "../../models/eventInterface";
 import EventDetailsPage from "../../components/common/EventDetailsPage";
-import { getFullEventInformationService } from "../../services/eventsService";
+import {
+  getFullEventInformationService,
+  updateInternType,
+} from "../../services/eventsService";
+import { internRegisterStates } from "../../constants/internRegisterStates";
 
 interface FullEvent extends Event {
-  interns: [];
+  interns: any[];
 }
-const InternsListPage = () => {
-  const [editHoursOpen, setEditHoursOpen] = useState(false);
-  const [newHours, setNewHours] = useState("");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [event, setEvent] = useState<FullEvent>();
-  const [eventDetails, setEventDetails] = useState<any>(null);
-  const [students, setStudents] = useState<any>([
-    {
-      id: 1,
-      name: "Alexia Diana Marín Mamani",
-      code: "608555",
-      time: "22:23",
-      status: "Rechazado",
-      hours: 10,
-    },
-    {
-      id: 2,
-      name: "Rodrigo Gustavo Reyes Monzón",
-      code: "679523",
-      time: "08:49",
-      status: "Aceptado",
-      hours: 20,
-    },
-  ]);
-  const { id_event } = useParams<{ id_event: string }>();
-  const navigate = useNavigate();
 
-  const handleStatusChange = (id: number, newStatus: string) => {
-    setStudents((prevStudents: any) =>
-      prevStudents.map((student: any) =>
-        student.id === id ? { ...student, status: newStatus } : student
-      )
-    );
+const InternsListPage = () => {
+  const [addStudentOpen, setAddStudentOpen] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
+  const [event, setEvent] = useState<FullEvent>();
+  const [eventDetails, setEventDetails] = useState<EventDetails | null>(null);
+  const [students, setStudents] = useState<any[]>([]);
+  const { id_event } = useParams<{ id_event: string }>();
+  const { ACCEPTED, REJECTED, PENDING, RESERVE } = internRegisterStates;
+
+  const handleStatusChange = async (id_intern: number, newStatus: string) => {
+    if (!id_event) {
+      console.error("Could not find id_event");
+      return;
+    }
+    try {
+      await updateInternType(parseInt(id_event), id_intern, {
+        type: newStatus,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    fetchFullEvent();
   };
 
   const fetchFullEvent = async () => {
@@ -65,72 +59,68 @@ const InternsListPage = () => {
   };
 
   const setupEventDetails = () => {
-    const details = event && {
-      title: event?.title,
-      date: dayjs(event?.start_date),
-      endDate: dayjs(event?.end_date),
-      duration: event?.duration_hours,
-      scholarshipHours: event?.assigned_hours,
-      location: event?.location,
-      maxParticipants: event?.max_interns,
-      minParticipants: event?.min_interns,
-      responsiblePerson: event?.responsible_intern_id,
-      description: event?.description,
-    };
-    setEventDetails(details);
-    console.log(event, "xd");
+    if (event) {
+      const details: EventDetails = {
+        title: event.title,
+        date: dayjs(event.start_date),
+        endDate: dayjs(event.end_date),
+        duration: event.duration_hours,
+        scholarshipHours: event.assigned_hours.toString(),
+        location: event.location,
+        maxParticipants: event.max_interns,
+        minParticipants: event.min_interns,
+        responsiblePerson: event.responsible_intern_id?.toString() || "",
+        description: event.description || "",
+        status: "PENDIENTE",
+      };
+      setEventDetails(details);
+    }
   };
 
   const setupStudents = () => {
-    const students =
+    const studentList =
       event &&
-      event.interns.map((intern: any) => ({
-        id: `${intern.id_interns}${intern.code}`,
+      event.interns.map((intern) => ({
+        id: intern.id_intern,
         name: `${intern.name} ${intern.lastname} ${intern.mothername}`,
         code: intern.code,
-        time: dayjs(intern.registration_date).format("DD/MM: hh:MM"),
+        time: dayjs(intern.registration_date).format("DD/MM/YYYY HH:mm"),
         status: intern.type,
-        hours: event.assigned_hours,
-        //TODO: change to hours from event_interns
+        hours: intern.worked_hours.toString(),
       }));
-    setStudents(students);
+    setStudents(studentList || []);
   };
 
   useEffect(() => {
     fetchFullEvent();
-  }, []);
+  }, [id_event]);
 
   useEffect(() => {
     setupEventDetails();
     setupStudents();
   }, [event]);
 
-  const handleHoursSave = () => {
-    setStudents((prevStudents) =>
-      prevStudents.map((student) =>
-        student.id === selectedId
-          ? { ...student, hours: Number(newHours) }
-          : student
-      )
+  const handleAddStudentOpen = () => {
+    setAddStudentOpen(true);
+  };
+
+  const handleAddStudentClose = () => {
+    setAddStudentOpen(false);
+  };
+
+  const handleSelectStudent = (id: number) => {
+    setSelectedStudents((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((studentId) => studentId !== id)
+        : [...prevSelected, id]
     );
-    handleEditHoursClose();
   };
 
-  const handleEditHoursOpen = (id: number, currentHours: string) => {
-    setSelectedId(id);
-    setNewHours(currentHours);
-    setEditHoursOpen(true);
+  const handleAddStudents = () => {
+    handleAddStudentClose();
   };
 
-  const handleEditHoursClose = (event?: object, reason?: string) => {
-    if (reason && reason === "backdropClick") return;
-    setEditHoursOpen(false);
-    setSelectedId(null);
-  };
-
-  const handleAddStudent = () => {
-    navigate("/students");
-  };
+  const availableStudents = students;
 
   const columns: GridColDef[] = [
     {
@@ -157,11 +147,10 @@ const InternsListPage = () => {
     },
     {
       field: "status",
-      headerName: "Estado",
+      headerName: "Estado de inscripción",
       headerAlign: "center",
       align: "center",
       flex: 1,
-
       renderCell: (params) => (
         <Select
           fullWidth
@@ -174,41 +163,18 @@ const InternsListPage = () => {
             padding: "2px 8px",
             "& .MuiSelect-select": {
               padding: 0,
+              fontSize: "0.875rem",
             },
             "& .MuiInputBase-root": {
               margin: 0,
             },
           }}
         >
-          <MenuItem value="accepted">Aceptado</MenuItem>
-          <MenuItem value="rejected">Rechazado</MenuItem>
-          <MenuItem value="reserve">Suplente</MenuItem>
-          <MenuItem value="pending">Pendiente</MenuItem>
+          <MenuItem value={ACCEPTED}>Aceptado</MenuItem>
+          <MenuItem value={REJECTED}>Rechazado</MenuItem>
+          <MenuItem value={RESERVE}>Suplente</MenuItem>
+          <MenuItem value={PENDING}>Pendiente</MenuItem>
         </Select>
-      ),
-    },
-    {
-      field: "hours",
-      headerName: "Horas Becarias",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      renderCell: (params) => `${params.value} horas`,
-    },
-    {
-      field: "edit",
-      headerName: "Editar",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-
-      renderCell: (params) => (
-        <Button
-          variant="contained"
-          onClick={() => handleEditHoursOpen(params.row.id, params.row.hours)}
-        >
-          Editar
-        </Button>
       ),
     },
   ];
@@ -221,123 +187,130 @@ const InternsListPage = () => {
         style={{
           position: "absolute",
           top: "17px",
-          left: "-9px",
+          left: "5px",
         }}
       >
         <ArrowBackIcon />
       </IconButton>
       <Button
         variant="contained"
-        color="secondary"
-        onClick={handleAddStudent}
+        color="primary"
+        onClick={handleAddStudentOpen}
         startIcon={<AddIcon />}
         style={{
           position: "absolute",
-          top: "29px",
-          right: "39px",
+          top: "17px",
+          right: "30px",
           zIndex: 1,
+          backgroundColor: "#005b8f",
+          color: "#fff",
+          marginBottom: "25px",
+          marginRight: "20px",
+          marginLeft: "40px",
         }}
       >
         Agregar Estudiante
       </Button>
       {eventDetails && (
         <EventDetailsPage
-          event={eventDetails}
+          event={event!}
           children={
-            <div style={{ height: 400, width: "100%" }}>
-              <DataGrid
-                rows={students}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
-                  },
-                }}
-                classes={{
-                  root: "bg-white dark:bg-gray-800",
-                  columnHeader: "bg-gray-200 dark:bg-gray-800 ",
-                  cell: "bg-white dark:bg-gray-800",
-                  row: "bg-white dark:bg-gray-800",
-                  columnHeaderTitle: "!font-bold text-center",
-                }}
-                pageSizeOptions={[5, 10]}
-              />
-              <Dialog
-                open={editHoursOpen}
-                onClose={handleEditHoursClose}
-                aria-labelledby="edit-hours-dialog-title"
-                sx={{
-                  "& .MuiDialog-paper": { width: "500px", maxWidth: "80%" },
-                }}
-              >
-                <DialogTitle id="edit-hours-dialog-title" sx={{ mt: 2 }}>
-                  <Typography
-                    variant="h5"
-                    align="center"
-                    sx={{ fontWeight: "bold" }}
-                  >
-                    Editar Horas Becarias
-                  </Typography>
-                  <Typography variant="body1" sx={{ textAlign: "left", mt: 1 }}>
-                    {
-                      students.find((student) => student.id === selectedId)
-                        ?.name
-                    }
-                  </Typography>
-                </DialogTitle>
-                <DialogContent>
-                  <IconButton
-                    aria-label="close"
-                    onClick={handleEditHoursClose}
-                    sx={{
-                      position: "absolute",
-                      right: 8,
-                      top: 8,
-                      color: (theme) => theme.palette.grey[800],
-                      padding: "7px",
-                    }}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                  <TextField
-                    fullWidth
-                    value={newHours}
-                    onChange={(e) => setNewHours(e.target.value)}
-                    label="Horas Becarias"
-                    type="number"
-                    margin="dense"
-                  />
-                </DialogContent>
-                <DialogActions
-                  sx={{ justifyContent: "flex-end", padding: "24px" }}
+            <div style={{ width: "100%", overflowX: "auto" }}>
+              <div style={{ minWidth: "800px" }}>
+                <DataGrid
+                  rows={students}
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { page: 0, pageSize: 5 },
+                    },
+                  }}
+                  pageSizeOptions={[5, 10]}
+                  classes={{
+                    root: "bg-white dark:bg-gray-800",
+                    columnHeader: "bg-gray-200 dark:bg-gray-800",
+                    cell: "bg-white dark:bg-gray-800",
+                    row: "bg-white dark:bg-gray-800",
+                    columnHeaderTitle: "!font-bold text-center",
+                  }}
+                />
+                <Dialog
+                  open={addStudentOpen}
+                  onClose={handleAddStudentClose}
+                  aria-labelledby="add-student-dialog-title"
+                  maxWidth="sm"
+                  fullWidth
                 >
-                  <Button
-                    onClick={handleEditHoursClose}
-                    sx={{
-                      color: "white",
-                      backgroundColor: "primary",
-                      "&:hover": { backgroundColor: "darkblue" },
-                      fontWeight: "bold",
-                      marginRight: 2,
-                    }}
-                    variant="contained"
+                  <DialogTitle id="add-student-dialog-title">
+                    Agregar Nuevo Becario
+                    <IconButton
+                      aria-label="close"
+                      onClick={handleAddStudentClose}
+                      style={{
+                        color: "#231F74",
+                        position: "absolute",
+                        right: 13,
+                        top: 11,
+                      }}
+                    >
+                      <CancelIcon />
+                    </IconButton>
+                    <Typography
+                      variant="subtitle2"
+                      color="textSecondary"
+                      style={{ marginTop: "8px" }}
+                    >
+                      Selecciona los becarios para agregar
+                    </Typography>
+                  </DialogTitle>
+                  <DialogContent>
+                    {availableStudents.length > 0 ? (
+                      availableStudents.map((student) => (
+                        <MenuItem
+                          key={student.id}
+                          onClick={() => handleSelectStudent(student.id)}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography>{student.name}</Typography>
+                          <Checkbox
+                            checked={selectedStudents.includes(student.id)}
+                            color="primary"
+                          />
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <Typography>
+                        No hay becarios disponibles para agregar.
+                      </Typography>
+                    )}
+                  </DialogContent>
+                  <DialogActions
+                    style={{ marginRight: "15px", marginTop: "-1%" }}
                   >
-                    Cancelar
-                  </Button>
-                  <Button
-                    onClick={handleHoursSave}
-                    sx={{
-                      color: "white",
-                      backgroundColor: "red",
-                      "&:hover": { backgroundColor: "darkred" },
-                      fontWeight: "bold",
-                    }}
-                    variant="contained"
-                  >
-                    Guardar
-                  </Button>
-                </DialogActions>
-              </Dialog>
+                    <Button
+                      onClick={handleAddStudentClose}
+                      style={{
+                        backgroundColor: "#231F74",
+                        color: "#fff",
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      onClick={handleAddStudents}
+                      style={{
+                        backgroundColor: "#d32f2f",
+                        color: "#fff",
+                      }}
+                    >
+                      Agregar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </div>
             </div>
           }
         />

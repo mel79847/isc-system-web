@@ -39,6 +39,7 @@ function HoursCard({
                 {count} Horas
             </Typography>
             <Typography
+                data-test-id="message-total-hours-required"
                 sx={{
                 fontSize: 14,
                 color: textColor,

@@ -213,7 +213,9 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       value={form.values.lastname}
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
-                      error={form.touched.lastname && Boolean(form.errors.lastname)}
+                      error={
+                        form.touched.lastname && Boolean(form.errors.lastname)
+                      }
                       helperText={form.touched.lastname && form.errors.lastname}
                       margin="normal"
                     />
@@ -221,6 +223,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                 </Grid>
                 <Grid container spacing={2}>
                   <Grid item md={6} xs={12}>
+                    <TextField
                     <TextField
                       id="mothername"
                       name="mothername"
@@ -230,8 +233,13 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       value={form.values.mothername}
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
-                      error={form.touched.mothername && Boolean(form.errors.mothername)}
-                      helperText={form.touched.mothername && form.errors.mothername}
+                      error={
+                        form.touched.mothername &&
+                        Boolean(form.errors.mothername)
+                      }
+                      helperText={
+                        form.touched.mothername && form.errors.mothername
+                      }
                       margin="normal"
                     />
                   </Grid>
@@ -252,6 +260,27 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                     />
                   </Grid>
                 </Grid>
+                {isTeacher && (
+                  <TextField
+                    id="degree"
+                    name="degree"
+                    label="Título Académico"
+                    variant="outlined"
+                    fullWidth
+                    select
+                    value={form.values.degree}
+                    onChange={form.handleChange}
+                    onBlur={form.handleBlur}
+                    error={form.touched.degree && Boolean(form.errors.degree)}
+                    helperText={form.touched.degree && form.errors.degree}
+                    margin="normal"
+                  >
+                    <MenuItem value="">Seleccione un título</MenuItem>
+                    <MenuItem value="Ing.">Ing.</MenuItem>
+                    <MenuItem value="Msc">Msc.</MenuItem>
+                    <MenuItem value="PhD">PhD.</MenuItem>
+                  </TextField>
+                )}
                 {isTeacher && (
                   <TextField
                     id="degree"
@@ -379,6 +408,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
           </Grid>
 
           <Grid item xs={12} sx={{ paddingTop: 5 }}>
+          <Grid item xs={12} sx={{ paddingTop: 5 }}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Button variant="outlined" color="primary" onClick={handleClose} sx={{ marginRight: "20px" }}>
                 CERRAR
@@ -392,8 +422,8 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
         <SuccessDialog
           open={isSuccesOpen}
           onClose={() => {
-            setIsSuccessOpen(false)
-            handleClose()
+            setIsSuccessOpen(false);
+            handleClose();
           }}
           title={(user)?"¡Usuario Actualizado!":"¡Usuario Creado!"}
           subtitle={`El usuario ha sido ${(user)?"actualizado": "creado"} con éxito.`}
@@ -402,11 +432,13 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
           open={isErrorOpen}
           onClose={() => setIsErrorOpen(false)}
           title={"¡Vaya!"}
-          subtitle={"Hubo un problema al crear el nuevo usuario. Intentelo de nuevo mas tarde"}
+          subtitle={
+            "Hubo un problema al crear el nuevo usuario. Intentelo de nuevo mas tarde"
+          }
         />
       </FormContainer>
     </Dialog>
   );
-}
+};
 
-export default CreateUserPage
+export default CreateUserPage;
