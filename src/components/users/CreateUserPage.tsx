@@ -224,7 +224,6 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                 <Grid container spacing={2}>
                   <Grid item md={6} xs={12}>
                     <TextField
-                    <TextField
                       id="mothername"
                       name="mothername"
                       label="Apellido Materno"
@@ -406,8 +405,6 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
               </Grid>
             </Grid>
           </Grid>
-
-          <Grid item xs={12} sx={{ paddingTop: 5 }}>
           <Grid item xs={12} sx={{ paddingTop: 5 }}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Button variant="outlined" color="primary" onClick={handleClose} sx={{ marginRight: "20px" }}>
