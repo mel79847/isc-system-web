@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import Table from "./components/Table";
 import { FaSearch } from "react-icons/fa";
 import { Student } from "../../models/studentInterface";
+import { getPermissionById } from "../../services/permissionsService";
+import { Permission } from "../../models/permissionInterface";
+import { useHasPermission } from "../../helper/permissions";
 
 const tableHeaders = [
   { key: "studentName", label: "Estudiante" },
@@ -24,7 +27,17 @@ const GraduationProcessPage = () => {
   };
   const { data: students } = studentsResponse;
   const navigate = useNavigate();
+  const [createProcess, setCreateProcess] = useState<Permission>();
+  const hasPermission = useHasPermission();
 
+  useEffect(() => {
+    const fetchCreateProcess = async () => {
+      const response = await getPermissionById(3);
+      setCreateProcess(response.data);
+    };
+    fetchCreateProcess();
+  }, []);
+  
   useEffect(() => {
     const results = students.filter((item: Student) =>
       item.student_name.toLowerCase().includes(search.toLowerCase()),
@@ -63,10 +76,10 @@ const GraduationProcessPage = () => {
             onChange={handleSearchChange}
           />
         </div>
-        <button className="btn z-50 relative" onClick={goToCreateProcessPage}>
+        {hasPermission(createProcess?.name || "") && (<button className="btn z-50 relative" onClick={goToCreateProcessPage}>
           {" "}
           Crear Proceso de Graduación
-        </button>
+        </button>)}
       </div>
       <Table
         data={filteredData}

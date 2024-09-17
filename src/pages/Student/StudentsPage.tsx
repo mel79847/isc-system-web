@@ -16,12 +16,35 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { getPermissionById } from "../../services/permissionsService";
+import { useHasPermission } from "../../helper/permissions";
+import { Permission } from "../../models/permissionInterface";
 
 const StudentPage = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [addStudentPermission, setAddStudentPermission] = useState<Permission>();
+  const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
+  const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
+  const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission>();
+  const hasPermission = useHasPermission();
+  
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const response = await getPermissionById(13); 
+      setAddStudentPermission(response.data);
+      const deleteStudentResponse = await getPermissionById(14);  
+      setDeleteStudentPermission(deleteStudentResponse.data);
+      const editStudentResponse = await getPermissionById(15); 
+      setEditStudentPermission(editStudentResponse.data);
+      const viewStudentReportResponse = await getPermissionById(16);
+      setViewStudentReportPermission(viewStudentReportResponse.data);
+    };
+    fetchPermissions();
+    fetchStudents();
+  }, []);
 
   const columns: GridColDef[] = [
     {
@@ -61,6 +84,7 @@ const StudentPage = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
+          {hasPermission(viewStudentReportPermission?.name || "") && (
           <IconButton
             color="primary"
             aria-label="ver"
@@ -68,6 +92,8 @@ const StudentPage = () => {
           >
             <VisibilityIcon />
           </IconButton>
+          )}
+          {hasPermission(editStudentPermission?.name || "") && (
           <IconButton
             color="primary"
             aria-label="editar"
@@ -75,6 +101,8 @@ const StudentPage = () => {
           >
             <EditIcon />
           </IconButton>
+          )}
+          {deleteStudentPermission && (
           <IconButton
             color="secondary"
             aria-label="eliminar"
@@ -82,6 +110,8 @@ const StudentPage = () => {
           >
             <DeleteIcon />
           </IconButton>
+          )}
+          
         </div>
       ),
     },
@@ -139,14 +169,17 @@ const StudentPage = () => {
       title={"Estudiantes"}
       subtitle={"Lista de estudiantes"}
       actions={
+        hasPermission(addStudentPermission?.name || "") && (
         <Button
           variant="contained"
           color="secondary"
           onClick={handleCreateTeacher}
           startIcon={<AddIcon />}
+          disabled={!addStudentPermission}
         >
           Agregar Estudiante
         </Button>
+        )
       }
       children={
         <div style={{ height: 400, width: "100%" }}>
