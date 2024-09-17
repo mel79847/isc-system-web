@@ -7,10 +7,13 @@ import * as Yup from "yup";
 import { ErrorMessage } from "../../components/common/ErrorMessage";
 import SpinModal from "../../components/common/SpinModal";
 import { useUserStore } from "../../store/store";
+import { roles } from "../../constants/roles";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useUserStore();
+  const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } =
+    roles;
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -36,9 +39,29 @@ const LoginPage = () => {
           values.password
         );
         if (isAuthenticated) {
+          const dashboardInterns = [INTERN, SUPERVISOR];
+          const dashboardProcess = [
+            ADMIN,
+            STUDENT,
+            PROFESSOR,
+            PROGRAM_DIRECTOR,
+          ];
           localStorage.setItem("token", isAuthenticated.token);
           setUser(isAuthenticated);
-          navigate("/dashboard");
+          if (
+            isAuthenticated.roles.some((role) =>
+              dashboardProcess.includes(role)
+            )
+          ) {
+            navigate("/dashboard");
+          }
+          if (
+            isAuthenticated.roles.some((role) =>
+              dashboardInterns.includes(role)
+            )
+          ) {
+            navigate("/scholarshipHours");
+          }
         } else {
           setError("Credenciales incorrectas");
         }
@@ -61,7 +84,7 @@ const LoginPage = () => {
       <div className="md:w-1/3 max-w-sm">
         <form onSubmit={formik.handleSubmit}>
           <input
-            data-testid="email-login"
+            data-test-id="email-login"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded"
             type="text"
             placeholder="Correo Electronico"
@@ -72,12 +95,12 @@ const LoginPage = () => {
           />
           {formik.touched.email && formik.errors.email ? (
             <ErrorMessage
-              dataTestId="error-message-email"
+              dataTestId="error-message-email" 
               message={formik.errors.email}
             />
           ) : null}
           <input
-            data-testid="password-login"
+            data-test-id="password-login"
             className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4"
             type="password"
             placeholder="Password"
@@ -87,15 +110,18 @@ const LoginPage = () => {
             value={formik.values.password}
           />
           {formik.touched.password && formik.errors.password ? (
-            <ErrorMessage 
-              dataTestId="error-message-password"
+            <ErrorMessage
+              dataTestId="error-message-password" 
               message={formik.errors.password} 
             />
           ) : null}
-          {error && <div className="text-red-500">{error}</div>}
+          {error && <div
+                      data-test-id="error-message-credentials"
+                      className="text-red-500">{error}
+                    </div>}
           <div className="text-center md:text-center">
             <button
-              data-testid="login-button"
+              data-test-id="login-button"
               className="mt-4 bg-primary hover:bg-blue-700 px-10 py-3 text-white uppercase rounded text-sm md:text-base tracking-wider"
               type="submit"
               disabled={formik.isSubmitting || isLoading}

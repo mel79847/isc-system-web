@@ -23,6 +23,7 @@ const AreaChartCard: React.FC<AreaChartProps> = ({ data, title }) => {
     <Card raised sx={{ margin: 2 }}>
       <CardContent>
         <Typography
+          data-test-id="approved-students-by-period-message"
           variant="h6"
           component="div"
           gutterBottom

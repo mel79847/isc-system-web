@@ -3,7 +3,7 @@ import { Modal as MuiModal, Box, Button, Typography, IconButton } from "@mui/mat
 import CancelIcon from '@mui/icons-material/Cancel';
 import { savePermissionsChagesModalProps } from "../../models/savePermissionsChangesModalPropsInterface";
 
-const SavePermissionsModal: FC<savePermissionsChagesModalProps> = ({ isVisible, setIsVisible, onSave, role }) => {
+const SavePermissionsModal: FC<savePermissionsChagesModalProps> = ({ isVisible, setIsVisible, onSave, onCancel, role }) => {
 
   const handleSave = async () => {
     onSave();
@@ -12,6 +12,7 @@ const SavePermissionsModal: FC<savePermissionsChagesModalProps> = ({ isVisible, 
 
   const toggleModal = () => {
     setIsVisible(!isVisible);
+    onCancel();
   };
 
   return (

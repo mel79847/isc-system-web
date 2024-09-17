@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
@@ -9,11 +10,13 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
-import { useState } from "react";
 import { createStudent } from "../../services/studentService";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
+import { createIntern } from "../../services/internService";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -25,7 +28,13 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
     .optional(),
-  code: Yup.number().optional(),
+  code: Yup.string().optional(),
+  isIntern: Yup.boolean(),
+  total_hours: Yup.number().when("isIntern", (isIntern, schema) => {
+    return isIntern
+      ? schema.required("Las horas becarias son obligatorias")
+      : schema.nullable();
+  }),
 });
 
 const CreateStudentPage = () => {
@@ -47,16 +56,28 @@ const CreateStudentPage = () => {
     initialValues: {
       name: "",
       lastname: "",
+      mothername: "",
       email: "",
       phone: "",
-      code: "",
-      mothername: "",
+      code: 0,
+      isIntern: false,
+      total_hours: 0,
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
-        // @ts-ignore
-        await createStudent(values);
+        const { isIntern, total_hours, ...rest } = values;
+        if (isIntern) {
+          await createIntern({
+            ...rest,
+            total_hours,
+            completed_hours: 0,
+            pending_hours: 0,
+          });
+        } else {
+          // @ts-ignore
+          await createStudent(rest);
+        }
         setMessage("Estudiante creado con éxito");
         setSeverity("success");
         setSuccessDialog(true);
@@ -72,7 +93,7 @@ const CreateStudentPage = () => {
 
   const handleClose = (
     _event: React.SyntheticEvent | Event,
-    reason?: string,
+    reason?: string
   ) => {
     if (reason === "clickaway") {
       return;
@@ -222,7 +243,51 @@ const CreateStudentPage = () => {
                 />
               </Grid>
             </Grid>
+            <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2} sx={{ padding: 2 }}>
+              <Grid item xs={3}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formik.values.isIntern}
+                      onChange={(e) =>
+                        formik.setFieldValue("isIntern", e.target.checked)
+                      }
+                      name="isIntern"
+                    />
+                  }
+                  label="Becarios"
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+          {formik.values.isIntern && (
+            <Grid item xs={12}>
+              <Grid container spacing={2} sx={{ padding: 2 }}>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    id="total_hours"
+                    name="total_hours"
+                    label="Horas Becario"
+                    type="number"
+                    value={formik.values.total_hours}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.total_hours &&
+                      Boolean(formik.errors.total_hours)
+                    }
+                    helperText={
+                      formik.touched.total_hours && formik.errors.total_hours
+                    }
+                    margin="normal"
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Grid item>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Chip, Dialog, DialogTitle, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Radio, Select, SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Chip, Dialog, DialogTitle, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, MenuItem, OutlinedInput, Radio, Select, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
@@ -12,14 +12,15 @@ import ErrorDialog from "../common/ErrorDialog";
 import { putUser, createUserWIthRoles } from "../../services/usersService";
 import { Role } from "../../models/roleInterface";
 import { UserFormProps } from "../../models/userFormPropsInterface";
+import { User } from "../../models/userInterface";
 
 const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps) => {
   const [isSuccesOpen, setIsSuccessOpen] = useState<boolean>(false)
   const [isErrorOpen, setIsErrorOpen] = useState<boolean>(false)
   const [studentRoles, setStudentRoles] = useState<Role[]>([])
   const [professorRoles, setProfessorRoles] = useState<Role[]>([])
-  const [isTeacher, setIsTeacher] = useState<boolean>(false)
-
+  const [isTeacher, setIsTeacher] = useState<boolean>(user?.degree? true: false)
+  
   const validationSchema = Yup.object({
     name: Yup.string().required("El nombre completo es obligatorio"),
     lastname: Yup.string().required("El apellido es obligatorio"),
@@ -39,6 +40,16 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
     })
   })
 
+  const convertRoles = (user: User | null) => {
+    if(!user)
+      return []
+    const roles = []
+    const {rolesAndPermissions} = user
+    for(const key in rolesAndPermissions)
+      roles.push(parseInt(key))
+    return roles
+  }
+
   const form = useFormik(
     {
       initialValues: {
@@ -48,28 +59,41 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
         mothername: user?.mothername || "",
         email: user?.email || "",
         phone: user?.phone || "",
-        roles: user?.roles || [],
+        roles: convertRoles(user) || [],
         degree: user?.degree || ""
       },
       validationSchema,
       onSubmit: async (values, { resetForm }) => {
+        const scholarshipRole = studentRoles.find(rol => rol.name.toLowerCase() === "becario")
+        const formUser = {
+          ...values,
+          role_id: isTeacher? 2: 3,
+          isStudent: !isTeacher,
+          is_scholarship: scholarshipRole? values.roles.some(rol => rol == scholarshipRole?.id): false,
+        }
         try {
-          if (user)
-            await putUser(user.id, values)
+          if (!user){
+            console.log(formUser)
+            await createUserWIthRoles(formUser)
+          }
           else
-            await createUserWIthRoles(values)
+            await putUser(user.id, formUser)
           setIsSuccessOpen(true)
           resetForm();
         } catch (error) {
+          console.log(error)
           setIsErrorOpen(true)
         }
       },
     }
   )
 
-  const handleChangeIsTeacher = (event: SelectChangeEvent<boolean>) => {
-    setIsTeacher(event.target.value == "true");
-    form.setFieldValue('roles', [])
+  const getRoleName = (id: number) => {
+    const rol = (studentRoles.concat(professorRoles)).find(rol => rol.id === id)
+    if(!rol)
+      return "admin"
+    else
+      return rol?.name
   }
 
   const fetchRoles = async () => {
@@ -123,7 +147,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
               <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
                 <Grid item xs={5} md={6}>
                   <Card variant="outlined">
-                    <CardActionArea onClick={() => setIsTeacher(false)}> {/* Trigger change on card click */}
+                    <CardActionArea onClick={() => setIsTeacher(false)}>
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <CardMedia>
                           <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
@@ -139,7 +163,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                 </Grid>
                 <Grid item xs={5} md={6}>
                   <Card variant="outlined">
-                    <CardActionArea onClick={() => setIsTeacher(true)}> {/* Trigger change on card click */}
+                    <CardActionArea onClick={() => setIsTeacher(true)}> 
                       <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <CardMedia >
                           <WorkIcon sx={{ fontSize: 100 }} color="primary" />
@@ -189,7 +213,9 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       value={form.values.lastname}
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
-                      error={form.touched.lastname && Boolean(form.errors.lastname)}
+                      error={
+                        form.touched.lastname && Boolean(form.errors.lastname)
+                      }
                       helperText={form.touched.lastname && form.errors.lastname}
                       margin="normal"
                     />
@@ -206,8 +232,13 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       value={form.values.mothername}
                       onChange={form.handleChange}
                       onBlur={form.handleBlur}
-                      error={form.touched.mothername && Boolean(form.errors.mothername)}
-                      helperText={form.touched.mothername && form.errors.mothername}
+                      error={
+                        form.touched.mothername &&
+                        Boolean(form.errors.mothername)
+                      }
+                      helperText={
+                        form.touched.mothername && form.errors.mothername
+                      }
                       margin="normal"
                     />
                   </Grid>
@@ -228,6 +259,27 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                     />
                   </Grid>
                 </Grid>
+                {isTeacher && (
+                  <TextField
+                    id="degree"
+                    name="degree"
+                    label="Título Académico"
+                    variant="outlined"
+                    fullWidth
+                    select
+                    value={form.values.degree}
+                    onChange={form.handleChange}
+                    onBlur={form.handleBlur}
+                    error={form.touched.degree && Boolean(form.errors.degree)}
+                    helperText={form.touched.degree && form.errors.degree}
+                    margin="normal"
+                  >
+                    <MenuItem value="">Seleccione un título</MenuItem>
+                    <MenuItem value="Ing.">Ing.</MenuItem>
+                    <MenuItem value="Msc">Msc.</MenuItem>
+                    <MenuItem value="PhD">PhD.</MenuItem>
+                  </TextField>
+                )}
                 {isTeacher && (
                   <TextField
                     id="degree"
@@ -309,8 +361,8 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                     input={<OutlinedInput label="Roles"/>}
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value: string) => (
-                          <Chip key={value} label={value} />
+                        {selected.map((roleId: number) => (
+                          <Chip key={roleId} label={getRoleName(roleId)} />
                         ))}
                       </Box>
                     )}
@@ -319,7 +371,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       .map((rol:Role) => (
                       <MenuItem
                         key={rol.name}
-                        value={rol.name}
+                        value={rol.id}
                       >{rol.name}</MenuItem> 
                     ))}
                   </Select>
@@ -338,12 +390,12 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                   gap: 0.5,
                   maxWidth: 300,
                 }}>
-                  {form.values.roles.map((role: string) => (
+                  {form.values.roles.map((roleId: number) => (
                     <Chip
-                      key={role}
-                      label={role}
+                      key={roleId}
+                      label={getRoleName(roleId)}
                       onDelete={() => {
-                        const newRoles = form.values.roles.filter((r) => r !== role);
+                        const newRoles = form.values.roles.filter((r) => r !== roleId);
                         form.setFieldValue('roles', newRoles);
                       }}
                       deleteIcon={<CloseIcon />}
@@ -353,7 +405,6 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
               </Grid>
             </Grid>
           </Grid>
-
           <Grid item xs={12} sx={{ paddingTop: 5 }}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Button variant="outlined" color="primary" onClick={handleClose} sx={{ marginRight: "20px" }}>
@@ -368,8 +419,8 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
         <SuccessDialog
           open={isSuccesOpen}
           onClose={() => {
-            setIsSuccessOpen(false)
-            handleClose()
+            setIsSuccessOpen(false);
+            handleClose();
           }}
           title={(user)?"¡Usuario Actualizado!":"¡Usuario Creado!"}
           subtitle={`El usuario ha sido ${(user)?"actualizado": "creado"} con éxito.`}
@@ -378,11 +429,13 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
           open={isErrorOpen}
           onClose={() => setIsErrorOpen(false)}
           title={"¡Vaya!"}
-          subtitle={"Hubo un problema al crear el nuevo usuario. Intentelo de nuevo mas tarde"}
+          subtitle={
+            "Hubo un problema al crear el nuevo usuario. Intentelo de nuevo mas tarde"
+          }
         />
       </FormContainer>
     </Dialog>
   );
-}
+};
 
-export default CreateUserPage
+export default CreateUserPage;

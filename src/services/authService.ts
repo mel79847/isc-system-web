@@ -1,11 +1,11 @@
 import axios from "axios";
 import apiClient from "./apiInstance";
-import { LoginResponse } from "./models/LoginResponse";
+import { UserResponse } from "./models/LoginResponse";
 
 const authenticateUser = async (
   email: string,
   password: string,
-): Promise<LoginResponse> => {
+): Promise<UserResponse> => {
   try {
     const response = await apiClient.post(`auth/login`, { email, password });
     if (response.status === 200) {

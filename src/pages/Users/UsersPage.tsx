@@ -94,8 +94,15 @@ const UsersPage = () => {
   };
 
   const handleSelectRoleChange = (event: { target: { value: string } }) => {
-    setFilterRoles(event.target.value);
+    const selectedRole = event.target.value;
+    if (selectedRole === 'reset') {
+      setFilterRoles("");
+      setSearch("");
+    } else {
+      setFilterRoles(selectedRole);
+    }
   };
+  
 
   useEffect(() => {
     applyFilters();
@@ -213,9 +220,14 @@ const UsersPage = () => {
   ]
 
   const fetchUsers = async () => {
-    const usersResponse = await getUsers()
+    
+    const dataResponse = await getUsers()
+    const usersResponse = dataResponse.data;
     for (const user of usersResponse) {
       user.fullName = `${user.name} ${user.lastname} ${user.mothername}`
+      user.roles = []
+      for(const key in user.rolesAndPermissions)
+        user.roles.push(user.rolesAndPermissions[key].role_name)
     }
     setUsers(usersResponse)
     setFilteredUsers(usersResponse)
@@ -278,7 +290,7 @@ const UsersPage = () => {
                     type="text"
                     id="table-search"
                     className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Buscar por codigo y nombre de estudiante"
+                    placeholder="Buscar por código y nombre de estudiante"
                     value={search}
                     onChange={handleSearchChange}
                   />
@@ -293,7 +305,11 @@ const UsersPage = () => {
                   label="Rol"
                   style={{ height: 40 }}
                   onChange={handleSelectRoleChange}
+                  value={filterRoles}
                 >
+                <MenuItem value="reset">
+                  Borrar búsqueda
+                </MenuItem>
                   {roles.map((rol: Role) => (
                     <MenuItem value={rol.name}>{rol.name} ({countStudentsWithRole(rol.name)})</MenuItem>
                   ))}

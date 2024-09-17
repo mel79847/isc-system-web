@@ -107,6 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
           return (
             <ListItem key={item.key} disablePadding sx={{ display: "block" }}>
               <ListItemButton
+                data-test-id="sidebar-list-button"
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
@@ -124,6 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText
+                  data-test-id="sidebar-list-title"
                   color="primary"
                   primary={item.text}
                   sx={{ opacity: open ? 1 : 0 }}

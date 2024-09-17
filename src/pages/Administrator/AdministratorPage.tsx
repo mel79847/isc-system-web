@@ -16,26 +16,31 @@ const AdministratorPage = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [title, setTitle] = useState("");
   const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
-  const [currentRole, setcurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
+  const [currentRole, setCurrentRole] = useState<Role>({name:"", id:0, disabled: false, permissions: []});
+
+  const extractRoles = (rolesData: RolePermissions) => {
+    const rolesPermissions: RolePermissions = rolesData;
+    const rolesFetched: Role[] = []
+    Object.keys(rolesPermissions).forEach((roleName:string) => {
+      const rolePermissions = rolesPermissions[roleName];
+      rolesFetched.push({
+        id: rolePermissions.id,
+        name: roleName,
+        disabled: rolePermissions.disabled,
+        permissions: rolePermissions.permissions
+      })
+    })
+    return rolesFetched
+  }
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
         const rolesData = await getRoles();
-        const rolesPermissions: RolePermissions = rolesData.data;
-        const rolesFetched: Role[] = []
-        Object.keys(rolesPermissions).forEach((roleName:string) => {
-          const rolePermissions = rolesPermissions[roleName];
-          rolesFetched.push({
-            id: rolePermissions.id,
-            name: roleName,
-            disabled: rolePermissions.disabled,
-            permissions: rolePermissions.permissions
-          })
-        })
+        const rolesFetched = extractRoles(rolesData.data)
         setRoles(rolesFetched);
         setTitle(rolesFetched[0].name);
-        setcurrentRole(rolesFetched[0]);
+        setCurrentRole(rolesFetched[0]);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
@@ -43,11 +48,12 @@ const AdministratorPage = () => {
     fetchRoles();
   }, []);
 
-  const handleCreate = async (roleName: string) => {
+  const handleCreate = async (roleName: string, category: string) => {
     try {
-      await addRole({ name:roleName });
+      await addRole({ name:roleName, category });
       const updateRoles = await getRoles();
-      setRoles(updateRoles);
+      const rolesFetched = extractRoles(updateRoles.data)
+      setRoles(rolesFetched);
     } catch (error) {
       console.error("Error creating role:", error);
     }
@@ -57,7 +63,7 @@ const AdministratorPage = () => {
     setTitle(roleName);
     roles.forEach((role:Role) => {
       if(role.name === roleName){
-        setcurrentRole(role)
+        setCurrentRole(role)
       }
     })
   }
@@ -73,7 +79,7 @@ const AdministratorPage = () => {
       <Grid item xs={!isSmall ? 3 : 12}>
         <RoleTable roles={roles} onRoleSelect={handleRoleSelect} selectedRole={title} setIsModalVisible = {setIsModalVisible}/>
       </Grid>
-      <Grid item xs={8}>
+      <Grid item xs={9}>
         {!isSmall && <PermissionTable currentRol={currentRole}/>}
       </Grid>
         <AddTextModal

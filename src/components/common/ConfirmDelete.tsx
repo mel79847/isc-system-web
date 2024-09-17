@@ -32,7 +32,7 @@ const DeleteRoleModal: FC<DeleteRoleModalProps> = ({ roleName, isVisible, setIsV
         <Typography id="delete-modal-title" variant='h5' align = 'center'>
           Eliminar rol
         </Typography>
-        <Typography id="delete-modal-description" variant='body1' sx={{ marginTop: '20px' }}>
+        <Typography id="delete-modal-description" variant='body1' sx={{ marginTop: '20px' }} align = "center">
           ¿Estás seguro de que deseas eliminar el rol <strong>{roleName}</strong>?
         </Typography>
         <Typography id="delete-modal-description" variant='body2' sx={{ marginTop: '20px' }} align = 'center' color='gray'>

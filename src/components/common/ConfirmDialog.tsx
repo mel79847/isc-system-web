@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { ReactNode } from "react";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -15,6 +16,10 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
   title: string;
   description: string;
+  children?: ReactNode;
+  primaryButtonText?: string;
+  secondaryButtonText?: string;
+  onSecondaryButtonClick?: () => void; 
 }
 
 const ConfirmDialog = ({
@@ -23,8 +28,11 @@ const ConfirmDialog = ({
   onConfirm,
   title,
   description,
+  children,
+  primaryButtonText,
+  secondaryButtonText,
+  onSecondaryButtonClick, 
 }: ConfirmDialogProps) => {
-  //TODO: refactor all confirm dialogs
   return (
     <Dialog
       open={open}
@@ -46,7 +54,7 @@ const ConfirmDialog = ({
           onClick={onClose}
           sx={{
             position: "absolute",
-            right: 8,
+            right: 1,
             top: 8,
             color: (theme) => theme.palette.grey[500],
           }}
@@ -59,9 +67,10 @@ const ConfirmDialog = ({
           {description}
         </Typography>
       </DialogContent>
+      {children}
       <DialogActions sx={{ justifyContent: "flex-end", padding: "24px" }}>
         <Button
-          onClick={onClose}
+          onClick={onSecondaryButtonClick || onClose} 
           variant="contained"
           sx={{
             backgroundColor: "primary",
@@ -71,7 +80,7 @@ const ConfirmDialog = ({
             minWidth: "120px",
           }}
         >
-          Cancelar
+          {secondaryButtonText || "Cancelar"}
         </Button>
         <Button
           onClick={onConfirm}
@@ -83,7 +92,7 @@ const ConfirmDialog = ({
             minWidth: "120px",
           }}
         >
-          Confirmar
+          {primaryButtonText || "Confirmar"}
         </Button>
       </DialogActions>
     </Dialog>

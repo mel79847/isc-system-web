@@ -1,14 +1,45 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Container, Grid, Typography } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import { EventDetails } from "../../models/eventInterface";
+import { FullEvent } from "../../models/eventInterface";
+import { internRegisterStates } from "../../constants/internRegisterStates";
+import dayjs from "dayjs";
+import { InternsInformation } from "../../models/internsInterface";
+import { getInternData } from "../../services/internService";
 
 interface TablePageProps {
-  event: EventDetails;
+  event: FullEvent;
   children: ReactNode;
 }
 
 const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
+  const [internEventInfomation, setInternEventInfomation] =
+    useState<InternsInformation>();
+  const [responsible, setResponsible] = useState<String>("Ninguno");
+
+  const fetchInternEvent = async () => {
+    try {
+      if (event.responsible_intern_id) {
+        const res = await getInternData(event.responsible_intern_id);
+        setInternEventInfomation(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching Intern:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (internEventInfomation) {
+      setResponsible(
+        internEventInfomation.name + " " + internEventInfomation.lastname
+      );
+    }
+  }, [internEventInfomation]);
+  useEffect(() => {
+    fetchInternEvent();
+  }, [event]);
+  
+  const { PENDING } = internRegisterStates;
   return event ? (
     <Container fixed>
       <Grid container spacing={3}>
@@ -22,34 +53,49 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
             <PersonIcon color="primary" />
             {event.title}
           </Typography>
-          <Grid container spacing={2} sx={{ marginTop: 2 }}>
-            <Grid item xs={8}>
+          <Grid container spacing={-30} sx={{ marginTop: 2 }}>
+            <Grid item xs={6}>
               <Typography variant="body1" color="textSecondary">
-                <strong>Fecha:</strong>{" "}
-                {event.date.format("DD/MM/YYYY") || "yo"}
+                <strong>Fecha Inicial:</strong>{" "}
+                {dayjs(event.start_date).format("DD/MM/YYYY")}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                <strong>Duración:</strong> {event.duration}
+                <strong>Fecha Final:</strong>{" "}
+                {dayjs(event.end_date).format("DD/MM/YYYY")}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                <strong>Horas becarias:</strong> {event.scholarshipHours}
+                <strong>Encargado:</strong> {responsible}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                <strong>Lugar:</strong> {event.location}
+                <strong>Ubicación:</strong> {event.location}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                <strong>Máximo de becarios:</strong> {event.maxParticipants}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                <strong>Máximo de suplentes:</strong> {event.minParticipants}
+                <strong>Máx.Becarios:</strong> {event.max_interns}
               </Typography>
             </Grid>
-            <Grid item xs={4}>
-              <Typography variant="h6" component="h2" color="primary">
-                Descripción:
+            <Grid item xs={6}>
+              <Typography variant="body1" color="textSecondary">
+                <strong>Periodo de Inscripción/Baja:</strong>{" "}
+                {dayjs(event.start_cancellation_date).format("DD/MM/YYYY")} -{" "}
+                {dayjs(event.end_cancellation_date).format("DD/MM/YYYY")}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                {event.description}
+                <strong>Horas Becarias:</strong> {event.assigned_hours} horas
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                <strong>Duración:</strong> {event.duration_hours} horas
+              </Typography>
+              <Typography variant="body1" color="textSecondary">
+                <strong>
+                  Solicitudes de Becarios:{" "}
+                  {event.interns.reduce((acc: number, intern) => {
+                    if (intern.type == PENDING) {
+                      return acc + 1;
+                    } else {
+                      return acc;
+                    }
+                  }, 0)}
+                </strong>
               </Typography>
             </Grid>
           </Grid>

@@ -1,27 +1,15 @@
 import { create } from "zustand";
 import { Seminar } from "../models/studentProcess";
-import { Permission } from "../models/permissionInterface";
+import { UserResponse } from "../services/models/LoginResponse";
 
 interface IProcessStore {
   process: Seminar | null;
   setProcess: (newProcess: Seminar) => void;
 }
 
-interface IUser {
-  id: number;
-  name?: string;
-  email?: string;
-  roles?: string[];
-  token: string;
-  roles_permissions?: {
-    [role: string]: {
-      permissions: Permission[];
-    };
-  };
-}
 interface IUserStore {
-  user: IUser | null;
-  setUser: (user: IUser | null) => void;
+  user: UserResponse | null;
+  setUser: (user: UserResponse | null) => void;
   clearUser: () => void;
 }
 

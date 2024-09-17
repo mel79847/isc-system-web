@@ -7,7 +7,8 @@ import SavePermissionsModal from "../common/SavePermissionsModal";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { PermissionsCategory } from "../../models/permissionsCategoryInterface";
 import { PermissionTableProps } from "../../models/permissionTablePropsInterface";
-const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
+
+const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   const [sections, setSections] = useState<Section[]>([]);
   const [listOfChanges, setListOfChanges] = useState<Permission[]>([]);
   const [buttonVisible, setButtonVisible] = useState(false);
@@ -23,8 +24,9 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
       sections.push({name:secitionName, permissions: section.flat()});
     });
     setSections(sections);
-    setOpenSections(new Array(response.length).fill(true)); // Inicializa todas las secciones como abiertas
+    setOpenSections(new Array(response.length).fill(true));
   }
+
   useEffect(() => {
     fetchPermissions();
   }, []);
@@ -50,15 +52,29 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
     } else {
       setButtonVisible(false);
     }
-  }, [listOfChanges])
+  }, [listOfChanges]);
+
+  useEffect(() => {
+    setButtonVisible(false);
+    setListOfChanges([]);
+  }, [currentRol]);
 
   const cancelChanges = () => {
+    setButtonVisible(false);
     setListOfChanges([]);
+  };
+
+  const saveChanges = () => {
+    setShowModal(true);
+  }
+
+  const handleSaveComplete = () => {
+    setButtonVisible(false);
   };
 
   return (
     <>
-      <Box sx={{ overflow: "auto", height: "400px" }}>
+      <Box sx={{ height: 'calc(100vh - 120px)', overflowY: 'auto'}}>
         <Table className="border-table" sx={{ marginBottom: "10px" }}>
           <TableHead>
             <TableRow>
@@ -97,7 +113,6 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
                   {section.name}
                 </Typography>
               </Box>
-  
               <Collapse in={openSections[sectionIndex]} timeout="auto" unmountOnExit>
                 <Table className="border-table" sx={{ marginTop: "10px" }}>
                   <TableBody>
@@ -128,7 +143,7 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
           variant="contained"
           color="primary"
           sx={{ marginRight: "20px", borderRadius: "16px" }}
-          onClick={()=>{setShowModal(true)}}>
+          onClick={saveChanges}>
             Guardar
           </Button>
           <Button
@@ -143,7 +158,7 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol}) => {
       )}
 
       {showModal && (
-        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={()=>{}} role={currentRol.name} />
+        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={handleSaveComplete} onCancel={cancelChanges} role={currentRol.name} />
       )}
     </>
   );
