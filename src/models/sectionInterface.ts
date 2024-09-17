@@ -1,6 +1,6 @@
 import { Permission } from "./permissionInterface";
 
 export interface Section {
-    subtitle: string;
+    name: string;
     permissions: Permission[];
   }

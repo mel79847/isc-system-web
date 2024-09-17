@@ -13,7 +13,7 @@ export const deleteStudent = async (id: number) => {
 
 // TODO: Create the student interface
 export const createStudent = async (student: StudentForm) => {
-  const response = await apiClient.post("/student", student);
+  const response = await apiClient.post("/student", student); 
   return response.data;
 };
 

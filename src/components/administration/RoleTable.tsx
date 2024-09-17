@@ -5,22 +5,48 @@ import SearchIcon from '@mui/icons-material/Search';
 import RoleComponent from "./RoleComponent";
 import { RoleTableProps } from "../../models/roleTablePropsInterface";
 import { ChangeEvent, useEffect, useState } from "react";
+import { Role } from "../../models/roleInterface";
+import { deleteRole, editRole } from "../../services/roleService";
+import AlertSnackbar from "../common/AlertSnackbar";
 
+const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole, setIsModalVisible}) => {
 
-const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, setIsModalVisible}) => { // TODO: Corregir la función para recibir un parámetro
-
-  const [selectedRole, setSelectedRole] = useState("Jefe de Carrera");
   const [search, setSearch] = useState("")
   const [filteredRoles, setFilteredRoles] = useState(roles);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleRoleClick = (roleName:  string) => {
-    setSelectedRole(roleName);
     onRoleSelect(roleName);
   };
 
-  const handleRoleDelete = (roleName: string) =>{
-    //TODO: Lógica para borrar el componente
-    console.log("Borrando rol: ", roleName);
+  const handleRoleDelete = async (id: number) => {
+    try {
+      await deleteRole(id);
+      setFilteredRoles(prevRoles => prevRoles.filter(r => r.id !== id));
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol fue eliminado de manera exitosa");
+    } catch (error) {
+      console.error("Failed to delete the role:", error);
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol falló al ser eliminado");
+    }
+  };
+
+  const handleRoleEdit = async (id: number, role: { name: string; }) => {
+    try {
+      await editRole(id, role);
+      setFilteredRoles(prevRoles => 
+        prevRoles.map(r => r.id === id ? { ...r, name: role.name } : r)
+      );
+      onRoleSelect(role.name);
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol fue editado de manera exitosa");
+    } catch (error) {
+      console.error("Failed to update the role:", error);
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol falló al ser editado");
+    }
   }
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,12 +54,16 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, setIsModalVi
     filterRoles(search);
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   const filterRoles = (searchValue: string) => {
     if (searchValue.trim() === "") {
       setFilteredRoles(roles);
     } else {
-      const filtered = roles.filter((role) =>
-        role.roleName.toLowerCase().includes(searchValue.toLowerCase())
+      const filtered = roles.filter((role: Role) =>
+        role.name.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredRoles(filtered);
     }
@@ -44,28 +74,32 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, setIsModalVi
   }, [search, roles]);
 
   return (
-    <Table className="border-table">
-      <TableHead className="orange-header large-header">
-        <TableRow>
-          <TableCell className="flex justify-center items-center w-full">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="h6">Roles</Typography>
-              <IconButton aria-label="add" onClick={() => setIsModalVisible(true)}>
-                <PersonAddAlt1Icon fontSize="medium" style={{ color:"white" }} />
-              </IconButton>
-            </div>
-          </TableCell>
-        </TableRow>
-        <OutlinedInput type="text" id="roles-search" placeholder="Buscar rol" onChange={handleSearch} fullWidth sx={{mt: 2, mb: 2}} endAdornment={<InputAdornment position = "end"><SearchIcon/></InputAdornment>}/>
-      </TableHead>
-      <TableBody sx={{ display: 'block', maxHeight: 300, overflowY: 'auto' }}>
-        {filteredRoles && filteredRoles.map((role, index) => (
-          <TableRow key={index}>
-              <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete}/>
+    <>
+      <Table className="border-table" sx={{ flex: 1 }}>
+        <TableHead className="orange-header large-header">
+          <TableRow>
+            <TableCell className="flex justify-center items-center w-full">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="h6">Roles</Typography>
+                <IconButton aria-label="add" onClick={() => setIsModalVisible(true)}>
+                  <PersonAddAlt1Icon fontSize="medium" style={{ color:"white" }} />
+                </IconButton>
+              </div>
+            </TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+          <OutlinedInput type="text" id="roles-search" placeholder="Buscar rol" onChange={handleSearch} fullWidth sx={{ mt: 2, mb: 2 }} endAdornment={<InputAdornment position="end"><SearchIcon/></InputAdornment>} />
+        </TableHead>
+        <TableBody style={{ height: '100%', overflowY: 'auto' }}>
+          {filteredRoles && filteredRoles.map((role, index) => (
+            <TableRow key={index}>
+              <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete} onEdited={handleRoleEdit}/>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <AlertSnackbar open={openSnackbar} message={snackbarMessage} onClose={handleCloseSnackbar}
+      />
+    </>
   )
 }
 
