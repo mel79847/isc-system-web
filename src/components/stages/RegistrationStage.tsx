@@ -58,7 +58,6 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
         const response = await getModes();
         setModes(response.data);
       } catch (error) {
-        console.log(error);
         setError(error);
       }
     };
