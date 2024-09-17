@@ -12,6 +12,7 @@ import ErrorDialog from "../common/ErrorDialog";
 import { putUser, createUserWIthRoles } from "../../services/usersService";
 import { Role } from "../../models/roleInterface";
 import { UserFormProps } from "../../models/userFormPropsInterface";
+import { User } from "../../models/userInterface";
 
 const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps) => {
   const [isSuccesOpen, setIsSuccessOpen] = useState<boolean>(false)
@@ -19,7 +20,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
   const [studentRoles, setStudentRoles] = useState<Role[]>([])
   const [professorRoles, setProfessorRoles] = useState<Role[]>([])
   const [isTeacher, setIsTeacher] = useState<boolean>(user?.degree? true: false)
-
+  
   const validationSchema = Yup.object({
     name: Yup.string().required("El nombre completo es obligatorio"),
     lastname: Yup.string().required("El apellido es obligatorio"),
@@ -39,6 +40,17 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
     })
   })
 
+  const convertRoles = (user: User | null) => {
+    if(!user)
+      return []
+    const roles = []
+    const {rolesAndPermissions} = user
+    for(const key in rolesAndPermissions)
+      roles.push(parseInt(key))
+    console.log("ROLES", roles)
+    return roles
+  }
+
   const form = useFormik(
     {
       initialValues: {
@@ -48,16 +60,23 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
         mothername: user?.mothername || "",
         email: user?.email || "",
         phone: user?.phone || "",
-        roles: user?.roles || [],
+        roles: convertRoles(user) || [],
         degree: user?.degree || ""
       },
       validationSchema,
       onSubmit: async (values, { resetForm }) => {
+        const scholarshipRole = studentRoles.find(rol => rol.name.toLowerCase() === "becario")
+        const formUser = {
+          ...values,
+          role_id: isTeacher? 2: 3,
+          isStudent: !isTeacher,
+          is_scholarship: scholarshipRole? values.roles.some(rol => rol == scholarshipRole?.id): false,
+        }
         try {
           if (user)
-            await putUser(user.id, values)
+            await putUser(user.id, formUser)
           else
-            await createUserWIthRoles(values)
+            await createUserWIthRoles(formUser)
           setIsSuccessOpen(true)
           resetForm();
         } catch (error) {
@@ -67,12 +86,17 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
     }
   )
 
+  const getRoleName = (id: number) => {
+   const rol = (studentRoles.concat(professorRoles)).find(rol => rol.id === id)
+   return rol?.name
+  }
+
   const fetchRoles = async () => {
     const studentRoles = await getStudentRoles()
-    setStudentRoles(studentRoles.data)
+    setStudentRoles(studentRoles)
 
     const professorRoles = await getProfessorRoles()
-    setProfessorRoles(professorRoles.data)
+    setProfessorRoles(professorRoles)
   }
 
   useEffect(() => {
@@ -304,8 +328,8 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                     input={<OutlinedInput label="Roles"/>}
                     renderValue={(selected) => (
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value: string) => (
-                          <Chip key={value} label={value} />
+                        {selected.map((roleId: number) => (
+                          <Chip key={roleId} label={getRoleName(roleId)} />
                         ))}
                       </Box>
                     )}
@@ -314,7 +338,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                       .map((rol:Role) => (
                       <MenuItem
                         key={rol.name}
-                        value={rol.name}
+                        value={rol.id}
                       >{rol.name}</MenuItem> 
                     ))}
                   </Select>
@@ -333,12 +357,12 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                   gap: 0.5,
                   maxWidth: 300,
                 }}>
-                  {form.values.roles.map((role: string) => (
+                  {form.values.roles.map((roleId: number) => (
                     <Chip
-                      key={role}
-                      label={role}
+                      key={roleId}
+                      label={getRoleName(roleId)}
                       onDelete={() => {
-                        const newRoles = form.values.roles.filter((r) => r !== role);
+                        const newRoles = form.values.roles.filter((r) => r !== roleId);
                         form.setFieldValue('roles', newRoles);
                       }}
                       deleteIcon={<CloseIcon />}
