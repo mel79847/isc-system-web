@@ -195,15 +195,13 @@ const UsersPage = () => {
   const fetchUsers = async () => {
     
     const dataResponse = await getUsers()
-    const usersResponse = dataResponse.data
-    console.log(usersResponse)
+    const usersResponse = dataResponse.data;
     for (const user of usersResponse) {
       user.fullName = `${user.name} ${user.lastname} ${user.mothername}`
       user.roles = []
       for(const key in user.rolesAndPermissions)
         user.roles.push(user.rolesAndPermissions[key].role_name)
     }
-    console.log(usersResponse)
     setUsers(usersResponse)
     setFilteredUsers(usersResponse)
   }

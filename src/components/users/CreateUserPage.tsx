@@ -47,7 +47,6 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
     const {rolesAndPermissions} = user
     for(const key in rolesAndPermissions)
       roles.push(parseInt(key))
-    console.log("ROLES", roles)
     return roles
   }
 

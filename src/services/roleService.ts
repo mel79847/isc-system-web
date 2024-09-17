@@ -32,7 +32,6 @@ export const getStudentRoles = async () => {
 export const addRole = async (role: {name: string, category: string}) => {
   try {
     const response = await apiClient.post(route, role);
-    console.log(response)
     return response.data;
   }catch (error) {
     throw new Error('Failed to add role: ' + (error as Error).message);
