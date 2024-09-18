@@ -10,6 +10,8 @@ import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import EventIcon from "@mui/icons-material/Event";
 import ViewListIcon from "@mui/icons-material/ViewList";
+import HistoryIcon from "@mui/icons-material/History";
+import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 
 import { roles } from "./roles";
 const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } =
@@ -28,7 +30,7 @@ export const menu = [
     path: "/students",
     text: "Estudiantes",
     icon: <SchoolOutlinedIcon color="primary" />,
-    roles: [PROFESSOR],
+    roles: [PROFESSOR, PROGRAM_DIRECTOR],
   },
   {
     key: "professors",
@@ -42,7 +44,7 @@ export const menu = [
     path: "/process",
     text: "Procesos",
     icon: <ChecklistOutlinedIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR,STUDENT],
   },
   {
     key: "events",
@@ -56,7 +58,7 @@ export const menu = [
     path: "/scholarshipHours",
     text: "Horas",
     icon: <AccessTimeIcon color="primary" />,
-    roles: [STUDENT],
+    roles: [STUDENT,INTERN, SUPERVISOR],
   },
   {
     key: "programDirector",
@@ -70,7 +72,7 @@ export const menu = [
     path: "/supervisor",
     text: "Supervisor",
     icon: <SupervisedUserCircleIcon color="primary" />,
-    roles: [ADMIN, SUPERVISOR],
+    roles: [SUPERVISOR],
   },
   {
     key: "CompleteScholarship",
@@ -92,13 +94,34 @@ export const menu = [
     path: "/eventsByInterns", 
     text: "Inscritos",
     icon: <ViewListIcon color="primary" />, 
-    roles: [ADMIN, PROFESSOR],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR],
   },
   {
     key: "dashboard",
     path: "/dashboard",
     text: "Dashboard",
     icon: <HomeIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR,STUDENT],
+  },
+  {
+    key: "eventHistory",
+    path: "/eventHistory",
+    text: "Historial",
+    icon: <HistoryIcon color="primary" />,
+    roles: [ADMIN, STUDENT, INTERN, SUPERVISOR],
+  },
+  {
+    key: "preInscriptions",
+    path: "/preInscriptions",
+    text: "Pre-Inscripciones",
+    icon: <InsertInvitationIcon color="primary" />,
+    roles: [STUDENT, INTERN, SUPERVISOR],
+  },
+  {
+    key: "create-student",
+    path: "/create-student",
+    text: "Crear Becario",
+    icon: <InsertInvitationIcon color="primary" />,
+    roles: [ADMIN, PROGRAM_DIRECTOR],
   }
 ];
