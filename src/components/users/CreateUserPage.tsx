@@ -64,7 +64,7 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
       },
       validationSchema,
       onSubmit: async (values, { resetForm }) => {
-        const scholarshipRole = studentRoles.find(rol => rol.name.toLowerCase() === "becario")
+        const scholarshipRole = studentRoles.find(rol => rol.name.toLowerCase() === "intern")
         const formUser = {
           ...values,
           role_id: isTeacher? 2: 3,
