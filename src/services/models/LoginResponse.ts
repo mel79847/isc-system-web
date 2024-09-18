@@ -16,9 +16,10 @@ export interface UserResponse {
   phone: string;
   role_id: number;
   roles: string[];
-  roles_permissions?: {
-    [role: string]: {
-      permissions: Permission[];
+  roles_permissions: {
+    [roleNumber: string]: {
+      role_name: string,
+      permissions: Permission[]
     };
   };
   created_at: string; // Puede ser `Date` si necesitas manipular las fechas

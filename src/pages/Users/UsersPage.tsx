@@ -17,7 +17,7 @@ import CreateUserPage from "../../components/users/CreateUserPage";
 import { RolePermissions } from "../../models/rolePermissionInterface";
 import { Permission } from "../../models/permissionInterface";
 import { getPermissionById } from "../../services/permissionsService";
-import { useHasPermission } from "../../helper/permissions";
+import { HasPermission } from "../../helper/permissions";
 
 const UsersPage = () => {
   const navigate = useNavigate()
@@ -30,22 +30,21 @@ const UsersPage = () => {
   const [filterRoles, setFilterRoles] = useState("")
   const [search, setSearch] = useState("");
   const [user, setUser] = useState<User | null>(null)
-  const hasPermission = useHasPermission();
   const [viewUserReport, setViewUserReport] = useState<Permission>()
-  const [deleteUserPermission, setDeleteUserPermission] = useState<Permission | null>(null);
-  const [editUserPermission, setEditUserPermission] = useState<Permission | null>(null);
-  const [addUserPermission, setAddUserPermission] = useState<Permission | null>(null);
+  const [deleteUserPermission, setDeleteUserPermission] = useState<Permission>();
+  const [editUserPermission, setEditUserPermission] = useState<Permission>();
+  const [addUserPermission, setAddUserPermission] = useState<Permission>();
   useEffect(() => {
     const fetchPermissions = async () => {
       const viewReportResponse = await getPermissionById(19);
-      setViewUserReport(viewReportResponse.data);
+      setViewUserReport(viewReportResponse.data[0]);
       const deleteUserResponse = await getPermissionById(20);
-      setDeleteUserPermission(deleteUserResponse.data);
+      setDeleteUserPermission(deleteUserResponse.data[0]);
       const editUserResponse = await getPermissionById(21);
-      setEditUserPermission(editUserResponse.data);
+      setEditUserPermission(editUserResponse.data[0]);
       const addUserResponse = await getPermissionById(22);
-      setAddUserPermission(addUserResponse.data);
-      console.log("permissos:",[viewUserReport,deleteUserPermission,editUserPermission,addUserPermission]);
+      setAddUserPermission(addUserResponse.data[0]);
+      console.log("permissos:",addUserPermission);
     };
     
     fetchPermissions();
@@ -189,14 +188,15 @@ const UsersPage = () => {
       width: 200,
       renderCell: (params) => (
         <div>
-          {hasPermission(viewUserReport?.name || "") && (<IconButton
+          {HasPermission(viewUserReport?.name || "") && (
+            <IconButton
             color="primary"
             aria-label="ver"
             onClick={() => handleView(params.row.id)}
           >
             <VisibilityIcon />
           </IconButton>)}
-          {hasPermission(editUserPermission?.name || "") && (
+          {HasPermission(editUserPermission?.name || "") && (
             <IconButton
               color="primary"
               aria-label="editar"
@@ -205,7 +205,7 @@ const UsersPage = () => {
               <EditIcon />
             </IconButton>
           )}
-          {hasPermission(deleteUserPermission?.name || "") && (
+          {HasPermission(deleteUserPermission?.name || "") && (
             <IconButton
               color="secondary"
               aria-label="eliminar"
@@ -262,8 +262,8 @@ const UsersPage = () => {
     <ContainerPage
       title={`Usuarios (${users.length})`}
       subtitle={"Lista de usuarios"}
-      actions={
-        hasPermission(addUserPermission?.name || "Agregar usuario") && (
+      actions={HasPermission(addUserPermission?.name || "Agregar usuario")&&
+        (
           <Button
             variant="contained"
             color="secondary"

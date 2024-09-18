@@ -1,7 +1,7 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { User } from "../../../models/userInterface";
-import { useHasPermission } from "../../../helper/permissions";
+import { HasPermission } from "../../../helper/permissions";
 import { useEffect, useState } from "react";
 import { Permission } from "../../../models/permissionInterface";
 import { getPermissionById } from "../../../services/permissionsService";
@@ -13,14 +13,13 @@ interface UserProfileCardProps {
 const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
   const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission>();
   const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission>();
-  const hasPermission = useHasPermission();
   
   useEffect(() => {
     const fetchPermissions = async () => {
       const scheduleAppointmentStudentResponse = await getPermissionById(17);
-      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data);
+      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data[0]);
       const scheduleAppointmentProfessorResponse = await getPermissionById(9);
-      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data);
+      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data[0]);
     };
     fetchPermissions();
   }, []);
@@ -73,7 +72,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         {user.roles.join(", ")}
       </Typography>
       {
-        (hasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || hasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
+        (HasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || HasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
         (
           <Button variant="contained" color="primary" sx={{ mb: 3 }}>
             Agendar una reunión
