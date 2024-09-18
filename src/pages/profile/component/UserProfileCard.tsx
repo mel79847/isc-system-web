@@ -1,19 +1,20 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { User } from "../../../models/userInterface";
 import { HasPermission } from "../../../helper/permissions";
 import { useEffect, useState } from "react";
 import { Permission } from "../../../models/permissionInterface";
 import { getPermissionById } from "../../../services/permissionsService";
+import { useUserStore } from "../../../store/store";
+import { UserResponse } from "../../../services/models/LoginResponse";
 
 interface UserProfileCardProps {
-  user: User;
+  user: UserResponse;
 }
 
-const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
+const UserProfileCard: React.FC<UserProfileCardProps> = () => {
   const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission>();
   const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission>();
-  
+  const user = useUserStore((state) => state.user);
   useEffect(() => {
     const fetchPermissions = async () => {
       const scheduleAppointmentStudentResponse = await getPermissionById(17);
@@ -66,10 +67,10 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         </Button>
       </Box>
       <Typography variant="h5" component="h1" sx={{ textAlign: "center" }}>
-        {user.name} {user.lastname} {user.mothername}
+        {user?.name} {user?.lastname} {user?.mothername}
       </Typography>
       <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2, textAlign: "center" }}>
-        {user.roles.join(", ")}
+      {user?.roles}
       </Typography>
       {
         (HasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || HasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
@@ -93,7 +94,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         <Typography variant="body2" color="textSecondary">
           Email
         </Typography>
-        <Typography variant="body1">{user.email}</Typography>
+        <Typography variant="body1">{user?.email}</Typography>
       </Paper>
       <Paper
         elevation={0}
@@ -110,7 +111,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         <Typography variant="body2" color="textSecondary">
           Código
         </Typography>
-        <Typography variant="body1">{user.code}</Typography>
+        <Typography variant="body1">{user?.code}</Typography>
       </Paper>
       <Paper
         elevation={0}
@@ -126,7 +127,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         <Typography variant="body2" color="textSecondary">
           Número de teléfono
         </Typography>
-        <Typography variant="body1">{user.phone}</Typography>
+        <Typography variant="body1">{user?.phone}</Typography>
       </Paper>
     </Paper>
   );

@@ -75,7 +75,7 @@ const protectedRoutes = [
         path: "/process",
         loader: loader,
         element: (
-          <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+          <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR, STUDENT]}>
             <GraduationProcessPage />
           </RoleGuard>
         ),
@@ -83,7 +83,7 @@ const protectedRoutes = [
       {
         path: "/professors",
         element: (
-          <RoleGuard allowedRoles={[ADMIN, STUDENT, PROGRAM_DIRECTOR]}>
+          <RoleGuard allowedRoles={[ADMIN, STUDENT, PROGRAM_DIRECTOR, PROFESSOR]}>
             <ProfessorPage />
           </RoleGuard>
         ),
@@ -109,7 +109,7 @@ const protectedRoutes = [
         path: "/create-professor",
         loader: loader,
         element: (
-          <RoleGuard allowedRoles={[ADMIN]}>
+          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
             <CreateProfessorPage />
           </RoleGuard>
         ),
