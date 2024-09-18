@@ -30,7 +30,7 @@ export const menu = [
     path: "/students",
     text: "Estudiantes",
     icon: <SchoolOutlinedIcon color="primary" />,
-    roles: [PROFESSOR],
+    roles: [PROFESSOR, PROGRAM_DIRECTOR],
   },
   {
     key: "professors",
@@ -44,7 +44,7 @@ export const menu = [
     path: "/process",
     text: "Procesos",
     icon: <ChecklistOutlinedIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR,STUDENT],
   },
   {
     key: "events",
@@ -94,14 +94,14 @@ export const menu = [
     path: "/eventsByInterns", 
     text: "Inscritos",
     icon: <ViewListIcon color="primary" />, 
-    roles: [ADMIN, PROFESSOR],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR],
   },
   {
     key: "dashboard",
     path: "/dashboard",
     text: "Dashboard",
     icon: <HomeIcon color="primary" />,
-    roles: [ADMIN, PROFESSOR,STUDENT],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR,STUDENT],
   },
   {
     key: "eventHistory",
