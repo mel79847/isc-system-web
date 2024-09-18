@@ -15,6 +15,9 @@ import { Role } from "../../models/roleInterface";
 import { User } from "../../models/userInterface";
 import CreateUserPage from "../../components/users/CreateUserPage";
 import { RolePermissions } from "../../models/rolePermissionInterface";
+import { Permission } from "../../models/permissionInterface";
+import { getPermissionById } from "../../services/permissionsService";
+import { HasPermission } from "../../helper/permissions";
 
 const UsersPage = () => {
   const navigate = useNavigate()
@@ -27,6 +30,25 @@ const UsersPage = () => {
   const [filterRoles, setFilterRoles] = useState("")
   const [search, setSearch] = useState("");
   const [user, setUser] = useState<User | null>(null)
+  const [viewUserReport, setViewUserReport] = useState<Permission>()
+  const [deleteUserPermission, setDeleteUserPermission] = useState<Permission>();
+  const [editUserPermission, setEditUserPermission] = useState<Permission>();
+  const [addUserPermission, setAddUserPermission] = useState<Permission>();
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const viewReportResponse = await getPermissionById(19);
+      setViewUserReport(viewReportResponse.data[0]);
+      const deleteUserResponse = await getPermissionById(20);
+      setDeleteUserPermission(deleteUserResponse.data[0]);
+      const editUserResponse = await getPermissionById(21);
+      setEditUserPermission(editUserResponse.data[0]);
+      const addUserResponse = await getPermissionById(22);
+      setAddUserPermission(addUserResponse.data[0]);
+      console.log("permissos:",addUserPermission);
+    };
+    
+    fetchPermissions();
+  }, []);
 
   const handleCreateUser = () => {
     setUser(null)
@@ -166,27 +188,32 @@ const UsersPage = () => {
       width: 200,
       renderCell: (params) => (
         <div>
-          <IconButton
+          {HasPermission(viewUserReport?.name || "") && (
+            <IconButton
             color="primary"
             aria-label="ver"
             onClick={() => handleView(params.row.id)}
           >
             <VisibilityIcon />
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="editar"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            color="secondary"
-            aria-label="eliminar"
-            onClick={() => handleClickDelete(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
+          </IconButton>)}
+          {HasPermission(editUserPermission?.name || "") && (
+            <IconButton
+              color="primary"
+              aria-label="editar"
+              onClick={() => handleEdit(params.row.id)}
+            >
+              <EditIcon />
+            </IconButton>
+          )}
+          {HasPermission(deleteUserPermission?.name || "") && (
+            <IconButton
+              color="secondary"
+              aria-label="eliminar"
+              onClick={() => handleClickDelete(params.row.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          )}
         </div>
       ),
     }
@@ -210,7 +237,7 @@ const UsersPage = () => {
     const rolesResponse = await getRoles();
     const rolesPermissions: RolePermissions = rolesResponse.data;
     const roles: Role[] = []
-    Object.keys(rolesPermissions).forEach((roleName:string) => {
+    Object.keys(rolesPermissions).forEach((roleName: string) => {
       const rolePermissions = rolesPermissions[roleName];
       roles.push({
         id: rolePermissions.id,
@@ -235,18 +262,20 @@ const UsersPage = () => {
     <ContainerPage
       title={`Usuarios (${users.length})`}
       subtitle={"Lista de usuarios"}
-      actions={
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleCreateUser}
-          startIcon={<AddIcon />}
-        >
-          Agregar Usuario
-        </Button>
+      actions={HasPermission(addUserPermission?.name || "Agregar usuario")&&
+        (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreateUser}
+            startIcon={<AddIcon />}
+          >
+            Agregar Usuario
+          </Button>
+        )
       }
       children={
-        <div style={{ height: 400, width: "100%" }}>
+        (<div style={{ height: 400, width: "100%" }}>
           <Grid container spacing={1} style={{ paddingBottom: 20 }}>
             <Grid item xs={9} md={8}>
               <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between m-5 mb-8 overflow-hidden">
@@ -351,7 +380,7 @@ const UsersPage = () => {
           />}
 
         </div>
-      }
+        )}
     />
   )
 }
