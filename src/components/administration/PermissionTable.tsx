@@ -7,6 +7,8 @@ import SavePermissionsModal from "../common/SavePermissionsModal";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { PermissionsCategory } from "../../models/permissionsCategoryInterface";
 import { PermissionTableProps } from "../../models/permissionTablePropsInterface";
+import { addPermisionToRole, removePermisionToRole } from "../../services/roleService";
+import AlertSnackbar from "../common/AlertSnackbar";
 
 const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   const [sections, setSections] = useState<Section[]>([]);
@@ -14,6 +16,8 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   const [buttonVisible, setButtonVisible] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [openSections, setOpenSections] = useState<boolean[]>([]);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   const fetchPermissions = async () => {
     const response = await getPermissions();
@@ -64,18 +68,40 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
     setListOfChanges([]);
   };
 
+  const cancelChangesModal = () => {
+    setShowModal(false)
+  }
+
   const saveChanges = () => {
     setShowModal(true);
   }
 
-  const handleSaveComplete = () => {
-    setButtonVisible(false);
+  const handleSaveComplete = async () => {
+    try {
+      for (const permission of listOfChanges) {
+        if (!currentRol.permissions.includes(permission.name)) {
+          await addPermisionToRole(currentRol.id, permission.id);
+        } else {
+          await removePermisionToRole(currentRol.id, permission.id);
+        }
+      }
+      setButtonVisible(false);
+      setOpenSnackbar(true);
+      setSnackbarMessage("Se guardaron los permisos con éxito");
+    } catch (error) {
+      console.error("Failed to save changes:", error);
+      setOpenSnackbar(true);
+      setSnackbarMessage("Se falló al guardar los permisos");
+    }
   };
+
+  const closeSnackbar = () => {
+    setOpenSnackbar(false);
+  }
 
   return (
     <>
-      <Box sx={{ height: 'calc(100vh - 120px)', overflowY: 'auto'}}>
-        <Table className="border-table" sx={{ marginBottom: "10px" }}>
+        <Table className="border-table" sx={{ marginBottom: "10px"}}>
           <TableHead>
             <TableRow>
               <TableCell
@@ -101,11 +127,11 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
             </TableRow>
           </TableHead>
         </Table>
-  
-        {sections.length > 0 ? (
+        <Box sx={{ maxHeight: '300px', overflowY: 'auto' }}>
+          {sections.length > 0 ? (
           sections.map((section, sectionIndex) => (
             <Box key={sectionIndex} sx={{ marginBottom: "20px" }}>
-              <Box sx={{ display: "flex", alignItems: "center", backgroundColor: "#e0e0e0", padding: "10px" }}>
+              <Box sx={{ display: "flex", alignItems: "center", backgroundColor: "#e0e0e0", padding: "10px", overflow: "auto" }}>
                 <IconButton onClick={() => toggleSection(sectionIndex)}>
                   {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
@@ -158,7 +184,13 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
       )}
 
       {showModal && (
-        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={handleSaveComplete} onCancel={cancelChanges} role={currentRol.name} />
+        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={handleSaveComplete} onCancel={cancelChangesModal} role={currentRol.name} />
+      )}
+
+      {openSnackbar && (
+        <AlertSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar}>
+          
+        </AlertSnackbar>
       )}
     </>
   );

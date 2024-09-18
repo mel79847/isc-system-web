@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment, OutlinedInput, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import { Box, IconButton, InputAdornment, OutlinedInput, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -33,7 +33,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
     }
   };
 
-  const handleRoleEdit = async (id: number, role: { name: string; }) => {
+  const handleRoleEdit = async (id: number, role: { name: string }) => {
     try {
       await editRole(id, role);
       setFilteredRoles(prevRoles => 
@@ -75,7 +75,7 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
 
   return (
     <>
-      <Table className="border-table" sx={{ flex: 1 }}>
+      <Table className="border-table">
         <TableHead className="orange-header large-header">
           <TableRow>
             <TableCell className="flex justify-center items-center w-full">
@@ -89,13 +89,16 @@ const RoleTable: React.FC<RoleTableProps> = ({ roles, onRoleSelect, selectedRole
           </TableRow>
           <OutlinedInput type="text" id="roles-search" placeholder="Buscar rol" onChange={handleSearch} fullWidth sx={{ mt: 2, mb: 2 }} endAdornment={<InputAdornment position="end"><SearchIcon/></InputAdornment>} />
         </TableHead>
-        <TableBody style={{ height: '100%', overflowY: 'auto' }}>
-          {filteredRoles && filteredRoles.map((role, index) => (
-            <TableRow key={index}>
-              <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete} onEdited={handleRoleEdit}/>
-            </TableRow>
-          ))}
-        </TableBody>
+        <Box sx={{ overflow: "auto", height: "300px" }}>
+          <TableBody sx={{ overflowY: 'auto' }}>
+            {filteredRoles && filteredRoles.map((role, index) => (
+              <TableRow key={index}>
+                <RoleComponent role={role} selectedRole={selectedRole} onRoleClick={handleRoleClick} onDelete={handleRoleDelete} onEdited={handleRoleEdit}/>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Box>
+        
       </Table>
       <AlertSnackbar open={openSnackbar} message={snackbarMessage} onClose={handleCloseSnackbar}
       />
