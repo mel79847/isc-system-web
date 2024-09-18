@@ -70,7 +70,7 @@ const AdministratorPage = () => {
 
   return (
     <Grid container spacing={3} sx={{ justifyContent: isSmall ? 'center' : 'flex-start' }}>
-      <Grid item xs={12}>
+      <Grid item xs={12} >
         <Typography variant="h5" align="left" sx={{ marginBottom: 2 }}>
         <ManageAccountsIcon color="primary" fontSize="large" sx={{ marginRight: 2 }}/>
           Permisos de {title}
