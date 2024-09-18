@@ -141,45 +141,49 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
         <form
           onSubmit={form.handleSubmit}
         >
-          {!user && (
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h6">Tipo de Usuario</Typography>
-              <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
-                <Grid item xs={5} md={6}>
-                  <Card variant="outlined">
-                    <CardActionArea onClick={() => setIsTeacher(false)}>
-                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <CardMedia>
-                          <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
-                        </CardMedia>
-                        <Typography>Estudiante</Typography>
-                      </CardContent>
-                      <Radio
-                        checked={!isTeacher}
-                        disabled={true}
-                      />
-                    </CardActionArea>
-                  </Card>
-                </Grid>
-                <Grid item xs={5} md={6}>
-                  <Card variant="outlined">
-                    <CardActionArea onClick={() => setIsTeacher(true)}> 
-                      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <CardMedia >
-                          <WorkIcon sx={{ fontSize: 100 }} color="primary" />
-                        </CardMedia>
-                        <Typography>Docente</Typography>
-                      </CardContent>
-                      <Radio
-                        checked={isTeacher}
-                        disabled={true}
-                      />
-                    </CardActionArea>
-                  </Card>
-                </Grid>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6">Tipo de Usuario</Typography>
+            <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
+              <Grid item xs={5} md={6}>
+                <Card variant="outlined">
+                  <CardActionArea onClick={() => {
+                    form.setFieldValue('roles', [])
+                    setIsTeacher(false)}
+                  }>
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <CardMedia>
+                        <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
+                      </CardMedia>
+                      <Typography>Estudiante</Typography>
+                    </CardContent>
+                    <Radio
+                      checked={!isTeacher}
+                      disabled={true}
+                    />
+                  </CardActionArea>
+                </Card>
               </Grid>
-            </Box>
-          )}
+              <Grid item xs={5} md={6}>
+                <Card variant="outlined">
+                  <CardActionArea onClick={() => {
+                      form.setFieldValue('roles', [])
+                      setIsTeacher(true)
+                    }}> 
+                    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <CardMedia >
+                        <WorkIcon sx={{ fontSize: 100 }} color="primary" />
+                      </CardMedia>
+                      <Typography>Docente</Typography>
+                    </CardContent>
+                    <Radio
+                      checked={isTeacher}
+                      disabled={true}
+                    />
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
 
           <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           <Grid item xs={12}>
@@ -259,27 +263,6 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
                     />
                   </Grid>
                 </Grid>
-                {isTeacher && (
-                  <TextField
-                    id="degree"
-                    name="degree"
-                    label="Título Académico"
-                    variant="outlined"
-                    fullWidth
-                    select
-                    value={form.values.degree}
-                    onChange={form.handleChange}
-                    onBlur={form.handleBlur}
-                    error={form.touched.degree && Boolean(form.errors.degree)}
-                    helperText={form.touched.degree && form.errors.degree}
-                    margin="normal"
-                  >
-                    <MenuItem value="">Seleccione un título</MenuItem>
-                    <MenuItem value="Ing.">Ing.</MenuItem>
-                    <MenuItem value="Msc">Msc.</MenuItem>
-                    <MenuItem value="PhD">PhD.</MenuItem>
-                  </TextField>
-                )}
                 {isTeacher && (
                   <TextField
                     id="degree"
