@@ -80,6 +80,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
     navigate(path);
   };
 
+  for(const key in user?.roles_permissions){
+    if(!user.roles.some(role => role == user?.roles_permissions[key].role_name))
+      user.roles.push(user?.roles_permissions[key].role_name)
+  }
+
   const filteredMenu = menu.filter((item) =>
     item.roles?.some(role => user?.roles?.includes(role))
   );
