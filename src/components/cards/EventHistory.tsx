@@ -11,8 +11,10 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Paper from "@mui/material/Paper";
-import { getInternEvents } from "../../services/internService";
+import { getInternByUserIdService, getInternEvents } from "../../services/internService";
 import { EventInternsType } from "../../models/eventInterface";
+import { useUserStore } from "../../store/store";
+import { InternsInformation } from "../../models/internsInterface";
 
 dayjs.locale("es");
 
@@ -137,17 +139,32 @@ const SplitButton = ({
 const EventHistory = () => {
   const [historyEvents, setHistoryEvents] = useState<EventInternsType[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<number>(1);
-
+  const [internInfomation, setInternInfomation] =
+    useState<InternsInformation>();
+  const user = useUserStore((state) => state.user);
   const fetchEvents = async () => {
-    const res = await getInternEvents(1);
-    if (res.success) {
-      setHistoryEvents(res.data);
+    if(internInfomation)
+    {
+      const res = await getInternEvents(internInfomation.id_intern);
+      if (res.success) {
+        setHistoryEvents(res.data);
+      }
     }
   };
-
+  const fetchIntern = async () => {
+    try {
+      const res = await getInternByUserIdService(user!.id);
+      setInternInfomation(res.data);
+    } catch (error) {
+      console.error("Error fetching Intern:", error);
+    }
+  };
+  useEffect(() => {
+    fetchIntern();
+  }, []);
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [internInfomation]);
 
   useEffect(() => {
     if (selectedSemester !== null) {
