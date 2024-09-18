@@ -17,7 +17,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { getPermissionById } from "../../services/permissionsService";
-import { useHasPermission } from "../../helper/permissions";
+import { HasPermission } from "../../helper/permissions";
 import { Permission } from "../../models/permissionInterface";
 
 const StudentPage = () => {
@@ -29,18 +29,17 @@ const StudentPage = () => {
   const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
   const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission>();
-  const hasPermission = useHasPermission();
   
   useEffect(() => {
     const fetchPermissions = async () => {
       const response = await getPermissionById(13); 
-      setAddStudentPermission(response.data);
+      setAddStudentPermission(response.data[0]);
       const deleteStudentResponse = await getPermissionById(14);  
-      setDeleteStudentPermission(deleteStudentResponse.data);
+      setDeleteStudentPermission(deleteStudentResponse.data[0]);
       const editStudentResponse = await getPermissionById(15); 
-      setEditStudentPermission(editStudentResponse.data);
+      setEditStudentPermission(editStudentResponse.data[0]);
       const viewStudentReportResponse = await getPermissionById(16);
-      setViewStudentReportPermission(viewStudentReportResponse.data);
+      setViewStudentReportPermission(viewStudentReportResponse.data[0]);
     };
     fetchPermissions();
     fetchStudents();
@@ -84,7 +83,7 @@ const StudentPage = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
-          {hasPermission(viewStudentReportPermission?.name || "") && (
+          {HasPermission(viewStudentReportPermission?.name || "") && (
           <IconButton
             color="primary"
             aria-label="ver"
@@ -93,7 +92,7 @@ const StudentPage = () => {
             <VisibilityIcon />
           </IconButton>
           )}
-          {hasPermission(editStudentPermission?.name || "") && (
+          {HasPermission(editStudentPermission?.name || "") && (
           <IconButton
             color="primary"
             aria-label="editar"
@@ -102,7 +101,7 @@ const StudentPage = () => {
             <EditIcon />
           </IconButton>
           )}
-          {deleteStudentPermission && (
+          {HasPermission(deleteStudentPermission?.name || "") && (
           <IconButton
             color="secondary"
             aria-label="eliminar"
@@ -169,7 +168,7 @@ const StudentPage = () => {
       title={"Estudiantes"}
       subtitle={"Lista de estudiantes"}
       actions={
-        hasPermission(addStudentPermission?.name || "") && (
+        HasPermission(addStudentPermission?.name || "") && (
         <Button
           variant="contained"
           color="secondary"

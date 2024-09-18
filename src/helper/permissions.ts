@@ -1,14 +1,21 @@
 import { Permission } from "../models/permissionInterface";
 import { useUserStore } from "../store/store";
 
-export function useHasPermission() {
+
+
+export function HasPermission(permissionName: string): boolean {
   const user = useUserStore((state) => state.user);
-
-  const hasPermission = (permissionName: string) => {
-    return user?.roles?.some((role: string) => {
-      return user?.roles_permissions?.[role]?.permissions.find((permission: Permission) => permission.name === permissionName);
-    });
-  };
-
-  return hasPermission;
+  let hasThePermission = false;
+  if (user) {
+    Object.keys(user.roles_permissions).forEach((role_number: string) => {
+      const rolePermissions = user.roles_permissions[role_number];
+      rolePermissions?.permissions.forEach((permission: Permission) => {
+        if (permissionName.toLowerCase() === permission.name.toLowerCase()) {
+          hasThePermission = true;
+        }
+      })
+    })
+  }
+  return hasThePermission;
 }
+
