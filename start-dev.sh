@@ -21,13 +21,8 @@ echo "Instalando dependencias"
 npm install || { echo "Error al instalar dependencias."; exit 1; }
 
 if [ ! -f ".env" ]; then
-    if [ -f ".env.example" ]; then
-        echo "Creando .env desde .env.example"
-        cp .env.example .env
-    else
-        echo "Error: No se encontró .env ni .env.example. Crea un archivo .env manualmente."
-        exit 1
-    fi
+    echo "Error: No se encontró .env, crea un archivo .env manualmente."
+    exit 1
 fi
 
 echo "Levantando el servidor"
