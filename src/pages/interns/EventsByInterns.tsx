@@ -9,6 +9,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { getAllCompleteInternService } from "../../services/internService";
 import { IconButton, Tooltip } from "@mui/material";
 import { CompleteIntern } from "../../models/internsInterface";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const EventByInterns = () => {
   const [detailOpen, setDetailOpen] = useState(false);
@@ -113,6 +114,7 @@ const EventByInterns = () => {
         <DataGrid
           rows={students}
           columns={columns}
+          localeText={dataGridLocaleText}
           initialState={{
             pagination: {
               paginationModel: { page: 0, pageSize: 5 },
@@ -150,7 +152,7 @@ const EventByInterns = () => {
           <IconButton
             aria-label="close"
             onClick={handleEditHoursClose}
-            style={{ color: '#231F74', position:'absolute', right:3, top:11}}
+            style={{ color: '#231F74', position: 'absolute', right: 3, top: 11 }}
           >
             <CancelIcon />
           </IconButton>

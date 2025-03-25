@@ -22,6 +22,7 @@ import {
   updateInternType,
 } from "../../services/eventsService";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const EventRegisterPage = () => {
   const [addStudentOpen, setAddStudentOpen] = useState(false);
@@ -222,6 +223,7 @@ const EventRegisterPage = () => {
               <DataGrid
                 rows={students}
                 columns={columns}
+                localeText={dataGridLocaleText}
                 initialState={{
                   pagination: {
                     paginationModel: { page: 0, pageSize: 5 },

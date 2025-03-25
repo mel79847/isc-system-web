@@ -15,17 +15,17 @@ const AddTextModal: FC<AddTextModalProps> = ({ isVisible, setIsVisible, onCreate
 
   const handleCreate = async () => {
     let rolWithTheSameName = false;
-    existingRoles.forEach(role=>{
-      if(name && role.name.toLowerCase() === name.toLowerCase()){
+    existingRoles.forEach(role => {
+      if (name && role.name.toLowerCase() === name.toLowerCase()) {
         rolWithTheSameName = true;
       }
     })
-    if(!name.trim()){
+    if (!name.trim()) {
       setError("El nombre del rol no puede estar vacío");
     } else if (rolWithTheSameName) {
       setError("Rol existente")
-    }else{
-      onCreate(name, isTeacher? "professor": "student");
+    } else {
+      onCreate(name, isTeacher ? "professor" : "student");
       setIsVisible(false);
       setName('');
       setError(null);
@@ -46,20 +46,22 @@ const AddTextModal: FC<AddTextModalProps> = ({ isVisible, setIsVisible, onCreate
       aria-describedby="create-modal-description"
     >
       <Box
-        className = 'modal-box'
+        className='modal-box'
       >
-        <IconButton 
-        sx={{position: 'absolute', top: 6, left: 450}}
-          onClick={toggleModal} 
+        <IconButton
+          sx={{ position: 'absolute', top: 6, left: 450 }}
+          onClick={toggleModal}
         >
-          <CancelIcon color = "primary"/>
+          <CancelIcon color="primary" />
         </IconButton>
-        <Typography id="create-modal-title" variant = 'h5'>Crear nuevo rol</Typography>
+        <Typography id="create-modal-title" variant='h5'>Crear nuevo rol</Typography>
         <TextField
           fullWidth
           value={name}
-          onChange={(e) => {setName(e.target.value);
-                            if (error) setError(null);}}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (error) setError(null);
+          }}
           label="Ingresa el nombre del nuevo rol"
           variant="outlined"
           inputProps={{ maxLength: 25 }}
@@ -73,7 +75,7 @@ const AddTextModal: FC<AddTextModalProps> = ({ isVisible, setIsVisible, onCreate
           <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
             <Grid item xs={5} md={6}>
               <Card variant="outlined">
-                <CardActionArea onClick={() => setIsTeacher(false)}> 
+                <CardActionArea onClick={() => setIsTeacher(false)}>
                   <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <CardMedia>
                       <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
@@ -106,7 +108,7 @@ const AddTextModal: FC<AddTextModalProps> = ({ isVisible, setIsVisible, onCreate
           </Grid>
         </Box>
 
-        <Box display="flex" justifyContent="flex-end" mt={2}  sx={{ marginTop: '20px' }}>
+        <Box display="flex" justifyContent="flex-end" mt={2} sx={{ marginTop: '20px' }}>
           <Button variant="outlined" color="secondary" onClick={toggleModal} sx={{ marginRight: '10px' }}>
             Cancelar
           </Button>

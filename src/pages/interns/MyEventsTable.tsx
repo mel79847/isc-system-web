@@ -22,6 +22,7 @@ import {
 import { deleteInternFromEventService } from "../../services/eventsService";
 import { EventInternsType } from "../../models/eventInterface";
 import { InternsInformation } from "../../models/internsInterface";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 interface RowData {
   id?: number;
@@ -254,6 +255,7 @@ const MyEventsTable = () => {
             <DataGrid
               rows={rows || []}
               columns={columns}
+              localeText={dataGridLocaleText}
               initialState={{
                 pagination: {
                   paginationModel: { page: 0, pageSize: 5 },
