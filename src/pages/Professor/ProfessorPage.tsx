@@ -117,12 +117,16 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
     },
     {
       field: "actions",
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
+      resizable: false,
       flex: 1,
       renderCell: (params) => (
         <div>
