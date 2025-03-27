@@ -118,6 +118,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
       minWidth: 180,
       renderCell: (params) => (
         <div
@@ -146,6 +149,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      type: "number",
       headerAlign: "center",
       align: "center",
       flex: 1,
@@ -173,7 +177,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       maxWidth:200,
       resizable: true,
     },
-
+    
     {
       field: "actions",
       headerName: "Acciones",
@@ -191,6 +195,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
           HasPermission(viewProfessorReportPermission?.name || "") ||
           HasPermission(editProfessorPermission?.name || "") ||
           HasPermission(deleteProfessorPermission?.name || "");
+
 
         return hasActions ? (
           <div>
@@ -248,6 +253,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       ),
     },
   ];
+
 
 
   const handleCreateTeacher = () => {
@@ -333,6 +339,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
                 minWidth: '100% !important',
               }
             }}
+            disableColumnReordering
+             disableColumnSorting
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
