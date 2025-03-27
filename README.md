@@ -1,9 +1,10 @@
 
-# 🚀 ISC System Web – Frontend Interface
+#  ISC System Web 
 
-Welcome to the ISC System Web frontend repository, a web platform developed to manage requests, users, and academic processes. This project is built with **React**, **TypeScript**, **Vite**, **TailwindCSS**, and can be run in both development and production using **Docker**.
+##  Prerequisites
 
-This guide will walk you through running the system, even if it's your first time working with this project.
+- **Node.js 20.x.x**: You can download it from the [Node.js Official Website](https://nodejs.org/).
+- **Docker**: You can download it from the [Docker Official Website](https://www.docker.com/).
 
 ---
 
