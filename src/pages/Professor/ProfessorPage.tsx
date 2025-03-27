@@ -53,6 +53,9 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
     },
     {
       field: "degree",
@@ -60,6 +63,9 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
     },
     {
       field: "name",
@@ -67,6 +73,9 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
     },
     {
       field: "lastName",
@@ -74,6 +83,9 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
     },
     {
       field: "phone",
@@ -82,6 +94,10 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
+
     },
     {
       field: "tutoring_count",
@@ -90,6 +106,9 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
     },
     {
       field: "review_count",
@@ -203,6 +222,8 @@ const ProfessorPage = () => {
           <DataGrid
             rows={professors}
             columns={columns}
+            disableColumnReordering
+             disableColumnSorting
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
