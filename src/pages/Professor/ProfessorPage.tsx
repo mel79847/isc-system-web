@@ -143,7 +143,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       ),
     },
     {
-      field: "revisiones",
+      field: "review_count",
       headerName: "Revisiones",
       type: "number",
       headerAlign: "center",
@@ -153,6 +153,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:80,
+      maxWidth:150,
+      resizable: true,
       minWidth: 180,
       renderCell: (params) => (
         <div
@@ -177,15 +180,13 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       maxWidth:200,
       resizable: true,
     },
-    
+
     {
       field: "actions",
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
+      resizable: false,
       flex: 1,
       minWidth: 180,
       renderCell: (params) => {
