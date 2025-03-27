@@ -54,4 +54,4 @@ docker run -p 80:80 react-app
 
 The app will be available for production at `http://localhost`.
 
----
+
