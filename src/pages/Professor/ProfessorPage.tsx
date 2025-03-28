@@ -53,8 +53,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
     },
     {
@@ -63,8 +63,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
     },
     {
@@ -73,8 +73,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
     },
     {
@@ -83,8 +83,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
     },
     {
@@ -94,8 +94,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
 
     },
@@ -106,8 +106,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
     },
     {
@@ -117,8 +117,8 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:120,
+      maxWidth:200,
       resizable: true,
     },
     {
@@ -127,7 +127,7 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       resizable: false,
-      flex: 1,
+      width: 180,
       renderCell: (params) => (
         <div>
           {HasPermission(viewProfessorReportPermission?.name || "") &&
@@ -222,12 +222,28 @@ const ProfessorPage = () => {
         </Button>)
       }
       children={
-        <div style={{ height: 400, width: "100%" }}>
+        <div style={{ height: 400, width: "fit-content",overflowX: "auto" }}>
           <DataGrid
             rows={professors}
             columns={columns}
             disableColumnReordering
-             disableColumnSorting
+            disableColumnSorting
+            sx={{
+
+              '& .MuiDataGrid-main': {
+                minWidth: '100% !important',
+                width: 'fit-content !important'
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                overflow: 'hidden !important',
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                minWidth: '100% !important',
+              },
+              '& .MuiDataGrid-row': {
+                minWidth: '100% !important',
+              }
+            }}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
