@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
+import SpinModal from "../../components/common/SpinModal";
 import { useEffect, useState } from "react";
 import { getMentors } from "../../services/mentorsService";
 import {
@@ -24,6 +25,7 @@ const ProfessorPage = () => {
   const navigate = useNavigate();
   const [professors, setProfessors] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
   const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
@@ -40,6 +42,7 @@ const ProfessorPage = () => {
       setDeleteProfessorPermission(deleteProfessorResponse.data[0]);
       const editProfessorResponse = await getPermissionById(11);
       setEditProfessorPermission(editProfessorResponse.data[0]);
+      setIsLoading(false)
     };
   
     fetchPermissions();
@@ -237,8 +240,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
           Agregar docente
         </Button>)
       }
-      children={
-        <div style={{ height: 400, width: "100%" }}>
+      children={ isLoading ?
+        ( <SpinModal /> ) :
+        ( <div style={{ height: 400, width: "100%" }}>
           <DataGrid
             rows={professors}
             columns={columns}
@@ -281,8 +285,10 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             </DialogActions>
           </Dialog>
         </div>
+        )
       }
     ></ContainerPage>
+  
   );
 };
 
