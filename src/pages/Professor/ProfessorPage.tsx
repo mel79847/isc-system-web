@@ -109,7 +109,11 @@ const ProfessorPage = () => {
       minWidth:100,
       maxWidth:200,
       resizable: true,
+      renderCell: (params) => (
+        params.value && params.value > 0 ? params.value : "No existen tutorías registradas"
+      ),
     },
+
     {
       field: "review_count",
       headerName: "Revisiones",
@@ -117,15 +121,60 @@ const ProfessorPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      renderCell: (params) => (
+        params.value && params.value > 0 ? params.value : "No existen revisiones disponibles"
+      ),
       minWidth:120,
       maxWidth:200,
       resizable: true,
     },
+
     {
       field: "actions",
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
+      flex: 1,
+      renderCell: (params) => {
+        const hasActions =
+          HasPermission(viewProfessorReportPermission?.name || "") ||
+          HasPermission(editProfessorPermission?.name || "") ||
+          HasPermission(deleteProfessorPermission?.name || "");
+
+        return hasActions ? (
+          <div>
+            {HasPermission(viewProfessorReportPermission?.name || "") && (
+              <IconButton
+                color="primary"
+                aria-label="ver"
+                onClick={() => handleView(params.row.id)}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            )}
+            {HasPermission(editProfessorPermission?.name || "") && (
+              <IconButton
+                color="primary"
+                aria-label="editar"
+                onClick={() => handleEdit(params.row.id)}
+              >
+                <EditIcon />
+              </IconButton>
+            )}
+            {HasPermission(deleteProfessorPermission?.name || "") && (
+              <IconButton
+                color="secondary"
+                aria-label="eliminar"
+                onClick={() => handleClickOpen(params.row.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
+        ) : (
+          "No hay acciones disponibles"
+        );
+      },
       resizable: false,
       width: 180,
       renderCell: (params) => (
