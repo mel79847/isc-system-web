@@ -18,6 +18,7 @@ import { RolePermissions } from "../../models/rolePermissionInterface";
 import { Permission } from "../../models/permissionInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const UsersPage = () => {
   const navigate = useNavigate()
@@ -44,9 +45,9 @@ const UsersPage = () => {
       setEditUserPermission(editUserResponse.data[0]);
       const addUserResponse = await getPermissionById(22);
       setAddUserPermission(addUserResponse.data[0]);
-      console.log("permissos:",addUserPermission);
+      console.log("permissos:", addUserPermission);
     };
-    
+
     fetchPermissions();
   }, []);
 
@@ -101,7 +102,7 @@ const UsersPage = () => {
       setFilterRoles(selectedRole);
     }
   };
-  
+
 
   useEffect(() => {
     applyFilters();
@@ -190,12 +191,12 @@ const UsersPage = () => {
         <div>
           {HasPermission(viewUserReport?.name || "") && (
             <IconButton
-            color="primary"
-            aria-label="ver"
-            onClick={() => handleView(params.row.id)}
-          >
-            <VisibilityIcon />
-          </IconButton>)}
+              color="primary"
+              aria-label="ver"
+              onClick={() => handleView(params.row.id)}
+            >
+              <VisibilityIcon />
+            </IconButton>)}
           {HasPermission(editUserPermission?.name || "") && (
             <IconButton
               color="primary"
@@ -220,13 +221,13 @@ const UsersPage = () => {
   ]
 
   const fetchUsers = async () => {
-    
+
     const dataResponse = await getUsers()
     const usersResponse = dataResponse.data;
     for (const user of usersResponse) {
       user.fullName = `${user.name} ${user.lastname} ${user.mothername}`
       user.roles = []
-      for(const key in user.rolesAndPermissions)
+      for (const key in user.rolesAndPermissions)
         user.roles.push(user.rolesAndPermissions[key].role_name)
     }
     setUsers(usersResponse)
@@ -262,7 +263,7 @@ const UsersPage = () => {
     <ContainerPage
       title={`Usuarios (${users.length})`}
       subtitle={"Lista de usuarios"}
-      actions={HasPermission(addUserPermission?.name || "Agregar usuario")&&
+      actions={HasPermission(addUserPermission?.name || "Agregar usuario") &&
         (
           <Button
             variant="contained"
@@ -307,9 +308,9 @@ const UsersPage = () => {
                   onChange={handleSelectRoleChange}
                   value={filterRoles}
                 >
-                <MenuItem value="reset">
-                  Borrar búsqueda
-                </MenuItem>
+                  <MenuItem value="reset">
+                    Borrar búsqueda
+                  </MenuItem>
                   {roles.map((rol: Role) => (
                     <MenuItem value={rol.name}>{rol.name} ({countStudentsWithRole(rol.name)})</MenuItem>
                   ))}
@@ -321,6 +322,7 @@ const UsersPage = () => {
             <DataGrid
               rows={filteredUsers}
               columns={columns}
+              localeText={dataGridLocaleText}
               initialState={{
                 pagination: {
                   paginationModel: { page: 0, pageSize: 5 },
