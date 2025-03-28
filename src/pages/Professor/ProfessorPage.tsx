@@ -41,14 +41,14 @@ const ProfessorPage = () => {
       const editProfessorResponse = await getPermissionById(11);
       setEditProfessorPermission(editProfessorResponse.data[0]);
     };
-  
+
     fetchPermissions();
     fetchProfessors();
   }, []);
 
-const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
-const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
-const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
+  const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
+  const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
+  const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
 
   const columns: GridColDef[] = [
     {
@@ -57,8 +57,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:100,
-      maxWidth:200,
+      minWidth: 100,
+      maxWidth: 200,
       resizable: true,
     },
     {
@@ -67,8 +67,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:100,
-      maxWidth:200,
+      minWidth: 100,
+      maxWidth: 200,
       resizable: true,
     },
     {
@@ -77,8 +77,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:100,
-      maxWidth:200,
+      minWidth: 100,
+      maxWidth: 200,
       resizable: true,
     },
     {
@@ -87,8 +87,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:100,
-      maxWidth:200,
+      minWidth: 100,
+      maxWidth: 200,
       resizable: true,
     },
     {
@@ -98,32 +98,31 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:100,
-      maxWidth:200,
+      minWidth: 150, 
+      maxWidth: 200,
       resizable: true,
-
+      renderCell: (params) => (
+        <div
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            width: "100%",
+            textAlign: "center",
+          }}
+        >
+          {params.value}
+        </div>
+      ),
     },
     {
-      field: "tutoring_count",
-      headerName: "Tutorias",
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      minWidth:100,
-      maxWidth:200,
-      minWidth:100,
-      maxWidth:200,
-      resizable: true,
       field: "tutorias",
       headerName: "Tutorías",
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:100,
-      maxWidth:200,
-      resizable: true,
       minWidth: 180,
+      maxWidth: 200,
       renderCell: (params) => (
         <div
           style={{
@@ -139,28 +138,18 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             height: "100%",
           }}
         >
-          {params.value ? params.value : (<span style={{ textAlign: "center",
-          }}>No existen<br />tutorías registradas</span>)}
+          {params.value ? params.value : (<span style={{ textAlign: "center" }}>No existen<br />tutorías registradas</span>)}
         </div>
       ),
     },
     {
-      field: "review_count",
+      field: "revisiones",
       headerName: "Revisiones",
-      type: "number",
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:120,
-      maxWidth:200,
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      minWidth:80,
-      maxWidth:150,
-      resizable: true,
       minWidth: 180,
+      maxWidth: 200,
       renderCell: (params) => (
         <div
           style={{
@@ -176,62 +165,19 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             width: "100%",
           }}
         >
-          {params.value ? params.value : (<span style={{textAlign: "center",
-           }}>No existen<br />revisiones disponibles</span>)}
+          {params.value ? params.value : (<span style={{ textAlign: "center" }}>No existen<br />revisiones disponibles</span>)}
         </div>
       ),
-      minWidth:120,
-      maxWidth:200,
-      resizable: true,
     },
     {
       field: "actions",
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
-      resizable: false,
-      width: 180,
-      renderCell: (params) => (
-        <div>
-          {HasPermission(viewProfessorReportPermission?.name || "") &&
-          (<IconButton
-            color="primary"
-            aria-label="ver"
-            onClick={() => handleView(params.row.id)}
-          >
-            <VisibilityIcon />
-          </IconButton>)
-          }
-          {HasPermission(editProfessorPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="editar"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-           )}
-          {HasPermission(deleteProfessorPermission?.name || "") && (
-          <IconButton
-            color="secondary"
-            aria-label="eliminar"
-            onClick={() => handleClickOpen(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>)}
-        </div>
-      ),
       flex: 1,
       minWidth: 180,
       renderCell: (params) => {
         const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
-
-        const hasActions =
-          HasPermission(viewProfessorReportPermission?.name || "") ||
-          HasPermission(editProfessorPermission?.name || "") ||
-          HasPermission(deleteProfessorPermission?.name || "");
-
-
         return hasActions ? (
           <div>
             {hasViewPermission && (
@@ -254,42 +200,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
           "No hay acciones disponibles"
         );
       },
-      resizable: false,
-      width: 180,
-      renderCell: (params) => (
-        <div>
-          {HasPermission(viewProfessorReportPermission?.name || "") &&
-          (<IconButton
-            color="primary"
-            aria-label="ver"
-            onClick={() => handleView(params.row.id)}
-          >
-            <VisibilityIcon />
-          </IconButton>)
-          }
-          {HasPermission(editProfessorPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="editar"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-           )}
-          {HasPermission(deleteProfessorPermission?.name || "") && (
-          <IconButton
-            color="secondary"
-            aria-label="eliminar"
-            onClick={() => handleClickOpen(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>)}
-        </div>
-      ),
     },
   ];
-
-
 
   const handleCreateTeacher = () => {
     navigate("/create-professor");
@@ -340,71 +252,38 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
     <ContainerPage
       title={"Docentes"}
       subtitle={"Lista de docentes"}
-      actions={ HasPermission(addProfessorPermission?.name || "") &&
-        (<Button
+      actions={HasPermission(addProfessorPermission?.name || "") && (
+        <Button
           variant="contained"
           color="secondary"
           onClick={handleCreateTeacher}
           startIcon={<AddIcon />}
-          style={{display: "inline-flex"}}
+          style={{ display: "inline-flex" }}
         >
           Agregar docente
-        </Button>)
-      }
+        </Button>
+      )}
       children={
-        <div style={{ height: 400, width: "fit-content",overflowX: "auto" }}>
+        <div style={{ width: "100%" }}>
           <DataGrid
             rows={professors}
             columns={columns}
-            disableColumnReordering
-            disableColumnSorting
-            sx={{
-
-              '& .MuiDataGrid-main': {
-                minWidth: '100% !important',
-                width: 'fit-content !important'
-              },
-              '& .MuiDataGrid-virtualScroller': {
-                overflow: 'hidden !important',
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                minWidth: '100% !important',
-              },
-              '& .MuiDataGrid-row': {
-                minWidth: '100% !important',
-              }
-            }}
-            disableColumnReordering
-            disableColumnSorting
-            sx={{
-
-              '& .MuiDataGrid-main': {
-                minWidth: '100% !important',
-                width: 'fit-content !important'
-              },
-              '& .MuiDataGrid-virtualScroller': {
-                overflow: 'hidden !important',
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                minWidth: '100% !important',
-              },
-              '& .MuiDataGrid-row': {
-                minWidth: '100% !important',
-              }
-            }}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
               },
             }}
+            pageSizeOptions={[5, 10]}
+            disableColumnReordering
+            disableColumnSorting
+            autoHeight
             classes={{
               root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
               cell: "bg-white dark:bg-gray-800",
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
-            pageSizeOptions={[5, 10]}
           />
           <Dialog
             open={open}
@@ -417,8 +296,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este docente? Esta acción
-                no se puede deshacer.
+                ¿Estás seguro de que quieres eliminar este docente?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -432,7 +310,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
           </Dialog>
         </div>
       }
-    ></ContainerPage>
+    />
   );
 };
 
