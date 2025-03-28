@@ -1,5 +1,3 @@
-import { GridToolbarColumnsButton } from "@mui/x-data-grid";
-
 const dataGridLocaleText = {
     MuiTablePagination: {
         labelRowsPerPage: "Filas por página",
@@ -44,10 +42,15 @@ const dataGridLocaleText = {
     filterOperatorIsEmpty: "Está vacío",
     filterOperatorIsNotEmpty: "No está vacío",
     filterOperatorIsAnyOf: "Es uno de",
-    
+
     filterPanelInputPlaceholder: "Valor",
 
     noResultsOverlayLabel: "No hay resultados",
+
+    columnsManagementSearchTitle: "Buscar",
+    columnsManagementShowHideAllText: "Mostrar/Ocultar todo",
+    columnsManagementReset: "Restablecer",
+    columnsManagementNoColumns: "No hay columnas",
 };
 
 export default dataGridLocaleText;
