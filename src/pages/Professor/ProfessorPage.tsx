@@ -115,17 +115,27 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       resizable: true,
       field: "tutorias",
       headerName: "Tutorías",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      minWidth: 180,
       renderCell: (params) => (
         <div
           style={{
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
-            maxWidth: 100,
+            maxWidth: 200,
             textAlign: "center",
             lineHeight: "1.2",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
           }}
         >
-          {params.value ? params.value : "No existen\ntutorías registradas"}
+          {params.value ? params.value : (<span style={{ textAlign: "center",
+          }}>No existen<br />tutorías registradas</span>)}
         </div>
       ),
     },
@@ -136,17 +146,27 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      minWidth: 180,
       renderCell: (params) => (
         <div
           style={{
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
-            maxWidth: 100,
+            maxWidth: 200,
             textAlign: "center",
             lineHeight: "1.2",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
           }}
         >
-          {params.value ? params.value : "No existen\nrevisiones disponibles"}
+          {params.value ? params.value : (<span style={{textAlign: "center",
+           }}>No existen<br />revisiones disponibles</span>)}
         </div>
       ),
       minWidth:120,
@@ -160,6 +180,10 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      minWidth: 180,
       renderCell: (params) => {
         const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
 
@@ -224,6 +248,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       ),
     },
   ];
+
 
   const handleCreateTeacher = () => {
     navigate("/create-professor");
