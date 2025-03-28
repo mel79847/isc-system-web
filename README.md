@@ -12,7 +12,7 @@
 
 ### 1. Clone the repository
 
-Open your terminal and run:
+Open **Git Bash** and run: 
 
 ```bash
 git clone https://github.com/PaulLandaeta/isc-system-web.git
