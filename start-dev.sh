@@ -26,4 +26,4 @@ if [ ! -f ".env" ]; then
 fi
 
 echo "Levantando el servidor"
-npm run dev
+npm run dev -- --port 5173
