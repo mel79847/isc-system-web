@@ -29,7 +29,7 @@
     "docxtemplater": "^3.48.0",
     "file-saver": "^2.0.5",
     "flowbite-react": "^0.7.2",
-    "formik": "^2.4.5",
+    "formik": "^2.4.6",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "moment": "^2.30.1",
