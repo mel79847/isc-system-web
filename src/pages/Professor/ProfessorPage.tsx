@@ -45,6 +45,10 @@ const ProfessorPage = () => {
     fetchPermissions();
     fetchProfessors();
   }, []);
+
+const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
+const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
+const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
   
   const columns: GridColDef[] = [
     {
@@ -84,67 +88,60 @@ const ProfessorPage = () => {
       flex: 1,
     },
     {
-      field: "tutoring_count",
-      headerName: "Tutorias",
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
+      field: "tutorias",
+      headerName: "Tutorías",
       renderCell: (params) => (
-        params.value && params.value > 0 ? params.value : "No existen tutorías registradas"
+        <div
+          style={{
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            maxWidth: 100,
+            textAlign: "center",
+            lineHeight: "1.2",
+          }}
+        >
+          {params.value ? params.value : "No existen\ntutorías registradas"}
+        </div>
       ),
     },
-    
     {
-      field: "review_count",
+      field: "revisiones",
       headerName: "Revisiones",
-      type: "number",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
       renderCell: (params) => (
-        params.value && params.value > 0 ? params.value : "No existen revisiones disponibles"
+        <div
+          style={{
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            maxWidth: 100,
+            textAlign: "center",
+            lineHeight: "1.2",
+          }}
+        >
+          {params.value ? params.value : "No existen\nrevisiones disponibles"}
+        </div>
       ),
     },
     
     {
       field: "actions",
       headerName: "Acciones",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
       renderCell: (params) => {
-        const hasActions =
-          HasPermission(viewProfessorReportPermission?.name || "") ||
-          HasPermission(editProfessorPermission?.name || "") ||
-          HasPermission(deleteProfessorPermission?.name || "");
-    
+        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
+  
         return hasActions ? (
           <div>
-            {HasPermission(viewProfessorReportPermission?.name || "") && (
-              <IconButton
-                color="primary"
-                aria-label="ver"
-                onClick={() => handleView(params.row.id)}
-              >
+            {hasViewPermission && (
+              <IconButton color="primary" onClick={() => handleView(params.row.id)}>
                 <VisibilityIcon />
               </IconButton>
             )}
-            {HasPermission(editProfessorPermission?.name || "") && (
-              <IconButton
-                color="primary"
-                aria-label="editar"
-                onClick={() => handleEdit(params.row.id)}
-              >
+            {hasEditPermission && (
+              <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
                 <EditIcon />
               </IconButton>
             )}
-            {HasPermission(deleteProfessorPermission?.name || "") && (
-              <IconButton
-                color="secondary"
-                aria-label="eliminar"
-                onClick={() => handleClickOpen(params.row.id)}
-              >
+            {hasDeletePermission && (
+              <IconButton color="secondary" onClick={() => handleClickOpen(params.row.id)}>
                 <DeleteIcon />
               </IconButton>
             )}
