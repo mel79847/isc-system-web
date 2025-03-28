@@ -112,14 +112,16 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       flex: 1,
       minWidth:100,
       maxWidth:200,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
       field: "tutorias",
       headerName: "Tutorías",
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth:80,
-      maxWidth:150,
+      minWidth:100,
+      maxWidth:200,
       resizable: true,
       minWidth: 180,
       renderCell: (params) => (
@@ -149,6 +151,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth:120,
+      maxWidth:200,
       type: "number",
       headerAlign: "center",
       align: "center",
@@ -180,13 +184,43 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       maxWidth:200,
       resizable: true,
     },
-
     {
       field: "actions",
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
       resizable: false,
+      width: 180,
+      renderCell: (params) => (
+        <div>
+          {HasPermission(viewProfessorReportPermission?.name || "") &&
+          (<IconButton
+            color="primary"
+            aria-label="ver"
+            onClick={() => handleView(params.row.id)}
+          >
+            <VisibilityIcon />
+          </IconButton>)
+          }
+          {HasPermission(editProfessorPermission?.name || "") && (
+          <IconButton
+            color="primary"
+            aria-label="editar"
+            onClick={() => handleEdit(params.row.id)}
+          >
+            <EditIcon />
+          </IconButton>
+           )}
+          {HasPermission(deleteProfessorPermission?.name || "") && (
+          <IconButton
+            color="secondary"
+            aria-label="eliminar"
+            onClick={() => handleClickOpen(params.row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>)}
+        </div>
+      ),
       flex: 1,
       minWidth: 180,
       renderCell: (params) => {
@@ -341,7 +375,23 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
               }
             }}
             disableColumnReordering
-             disableColumnSorting
+            disableColumnSorting
+            sx={{
+
+              '& .MuiDataGrid-main': {
+                minWidth: '100% !important',
+                width: 'fit-content !important'
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                overflow: 'hidden !important',
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                minWidth: '100% !important',
+              },
+              '& .MuiDataGrid-row': {
+                minWidth: '100% !important',
+              }
+            }}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
