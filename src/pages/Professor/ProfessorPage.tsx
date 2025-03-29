@@ -255,6 +255,23 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
               columnHeaderTitle: "!font-bold text-center",
             }}
             pageSizeOptions={[5, 10]}
+            checkboxSelection={false}
+            disableRowSelectionOnClick
+            sx={{
+              
+              "& .MuiDataGrid-cell": {
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                MozUserSelect: "none",
+                msUserSelect: "none",
+              },
+              "& .MuiDataGrid-cell:focus": {
+                outline: "none !important",
+              },
+              "& .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+              },
+            }}
           />
           <Dialog
             open={open}
