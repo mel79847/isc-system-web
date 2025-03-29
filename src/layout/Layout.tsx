@@ -21,13 +21,13 @@ interface AppBarProps extends MuiAppBarProps {
 }
 const drawerWidth = 240;
 
-const traducirRol = (rol: string) => {
-  const rolesTraducidos: { [key: string]: string } = {
+const TranslateRole = (rol: string) => {
+  const translatedRoles: { [key: string]: string } = {
     professor: "Profesor",
     student: "Estudiante",
     admin: "Administrador",
   };
-  return rolesTraducidos[rol] || rol;
+  return translatedRoles[rol] || rol;
 };
 
 
@@ -127,7 +127,7 @@ const Layout = () => {
               color="textSecondary"
               textAlign={"right"}
             >
-              {traducirRol(user?.roles)}
+              {TranslateRole(user?.roles)}
             </Typography>
           </Box>
 
