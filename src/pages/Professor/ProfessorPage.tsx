@@ -241,7 +241,13 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
         </Button>)
       }
       children={ isLoading ?
-        ( <SpinModal /> ) :
+        ( <div style={{
+            position: "absolute",
+            top: "50%",
+            left: "55%"
+          }}>
+            <SpinModal />
+          </div> ) :
         ( <div style={{ height: 400, width: "100%" }}>
           <DataGrid
             rows={professors}
