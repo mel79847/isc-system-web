@@ -45,6 +45,10 @@ const ProfessorPage = () => {
     fetchPermissions();
     fetchProfessors();
   }, []);
+
+const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
+const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
+const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
   
   const columns: GridColDef[] = [
     {
@@ -84,60 +88,95 @@ const ProfessorPage = () => {
       flex: 1,
     },
     {
-      field: "tutoring_count",
-      headerName: "Tutorias",
-      type: "number",
+      field: "tutorias",
+      headerName: "Tutorías",
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 180,
+      renderCell: (params) => (
+        <div
+          style={{
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            maxWidth: 200,
+            textAlign: "center",
+            lineHeight: "1.2",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {params.value ? params.value : (<span style={{ textAlign: "center",
+          }}>No existen<br />tutorías registradas</span>)}
+        </div>
+      ),
     },
     {
-      field: "review_count",
+      field: "revisiones",
       headerName: "Revisiones",
-      type: "number",
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 180,
+      renderCell: (params) => (
+        <div
+          style={{
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            maxWidth: 200,
+            textAlign: "center",
+            lineHeight: "1.2",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          {params.value ? params.value : (<span style={{textAlign: "center",
+           }}>No existen<br />revisiones disponibles</span>)}
+        </div>
+      ),
     },
+    
     {
       field: "actions",
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
       flex: 1,
-      renderCell: (params) => (
-        <div>
-          {HasPermission(viewProfessorReportPermission?.name || "") &&
-          (<IconButton
-            color="primary"
-            aria-label="ver"
-            onClick={() => handleView(params.row.id)}
-          >
-            <VisibilityIcon />
-          </IconButton>)
-          }
-          {HasPermission(editProfessorPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="editar"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-           )}
-          {HasPermission(deleteProfessorPermission?.name || "") && (
-          <IconButton
-            color="secondary"
-            aria-label="eliminar"
-            onClick={() => handleClickOpen(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>)}
-        </div>
-      ),
+      minWidth: 180,
+      renderCell: (params) => {
+        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
+  
+        return hasActions ? (
+          <div>
+            {hasViewPermission && (
+              <IconButton color="primary" onClick={() => handleView(params.row.id)}>
+                <VisibilityIcon />
+              </IconButton>
+            )}
+            {hasEditPermission && (
+              <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
+                <EditIcon />
+              </IconButton>
+            )}
+            {hasDeletePermission && (
+              <IconButton color="secondary" onClick={() => handleClickOpen(params.row.id)}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
+        ) : (
+          "No hay acciones disponibles"
+        );
+      },
     },
   ];
-
+  
   const handleCreateTeacher = () => {
     navigate("/create-professor");
   };
