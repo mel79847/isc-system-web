@@ -308,15 +308,15 @@ const ProfessorPage = () => {
                 outline: "none !important",
               },
               "& .MuiDataGrid-virtualScroller": {
-                minHeight: "0px", // Forzamos que no haya altura mínima
-                overflow: "hidden", // Eliminamos cualquier desbordamiento
+                minHeight: "0px",
+                overflow: "hidden", 
               },
               "& .MuiDataGrid-main": {
-                overflow: "hidden", // Controlamos el contenedor principal
-                paddingBottom: 0, // Eliminamos relleno inferior
+                overflow: "hidden", 
+                paddingBottom: 0,
               },
               "& .MuiDataGrid-footerContainer": {
-                display: professors.length <= 5 ? "none" : "flex", // Ocultamos la paginación si hay pocas filas
+                display: professors.length <= 5 ? "none" : "flex", 
               },
             }}
           />
