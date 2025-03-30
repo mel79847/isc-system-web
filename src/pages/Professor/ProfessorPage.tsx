@@ -138,7 +138,13 @@ const ProfessorPage = () => {
             height: "100%",
           }}
         >
-          {params.value ? params.value : (<span style={{ textAlign: "center" }}>No existen<br />tutorías registradas</span>)}
+          {params.value ? (
+            params.value
+          ) : (
+            <span style={{ textAlign: "center" }}>
+              No existen<br />tutorías registradas
+            </span>
+          )}
         </div>
       ),
     },
@@ -165,7 +171,13 @@ const ProfessorPage = () => {
             width: "100%",
           }}
         >
-          {params.value ? params.value : (<span style={{ textAlign: "center" }}>No existen<br />revisiones disponibles</span>)}
+          {params.value ? (
+            params.value
+          ) : (
+            <span style={{ textAlign: "center" }}>
+              No existen<br />revisiones disponibles
+            </span>
+          )}
         </div>
       ),
     },
@@ -252,19 +264,21 @@ const ProfessorPage = () => {
     <ContainerPage
       title={"Docentes"}
       subtitle={"Lista de docentes"}
-      actions={HasPermission(addProfessorPermission?.name || "") && (
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleCreateTeacher}
-          startIcon={<AddIcon />}
-          style={{ display: "inline-flex" }}
-        >
-          Agregar docente
-        </Button>
-      )}
+      actions={
+        HasPermission(addProfessorPermission?.name || "") && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreateTeacher}
+            startIcon={<AddIcon />}
+            style={{ display: "inline-flex" }}
+          >
+            Agregar docente
+          </Button>
+        )
+      }
       children={
-        <div style={{ width: "100%" }}>
+        <div style={{ width: "100%", paddingBottom: 0 }}>
           <DataGrid
             rows={professors}
             columns={columns}
@@ -287,12 +301,6 @@ const ProfessorPage = () => {
               columnHeaderTitle: "!font-bold text-center",
             }}
             sx={{
-              "& .MuiDataGrid-cell": {
-                userSelect: "none",
-                WebkitUserSelect: "none",
-                MozUserSelect: "none",
-                msUserSelect: "none",
-              },
               "& .MuiDataGrid-cell:focus": {
                 outline: "none !important",
               },
@@ -300,10 +308,15 @@ const ProfessorPage = () => {
                 outline: "none !important",
               },
               "& .MuiDataGrid-virtualScroller": {
-                minHeight: "auto", // Ajusta el scroller para que no reserve espacio extra
+                minHeight: "0px", // Forzamos que no haya altura mínima
+                overflow: "hidden", // Eliminamos cualquier desbordamiento
               },
               "& .MuiDataGrid-main": {
-                overflow: "hidden", // Evita que el contenedor principal tenga espacio innecesario
+                overflow: "hidden", // Controlamos el contenedor principal
+                paddingBottom: 0, // Eliminamos relleno inferior
+              },
+              "& .MuiDataGrid-footerContainer": {
+                display: professors.length <= 5 ? "none" : "flex", // Ocultamos la paginación si hay pocas filas
               },
             }}
           />
@@ -313,9 +326,7 @@ const ProfessorPage = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirmar eliminación"}
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 ¿Estás seguro de que quieres eliminar este docente?
