@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
+import SpinModal from "../../components/common/SpinModal";
 import { useEffect, useState } from "react";
 import { getMentors } from "../../services/mentorsService";
 import {
@@ -24,6 +25,7 @@ const ProfessorPage = () => {
   const navigate = useNavigate();
   const [professors, setProfessors] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
   const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
@@ -40,6 +42,7 @@ const ProfessorPage = () => {
       setDeleteProfessorPermission(deleteProfessorResponse.data[0]);
       const editProfessorResponse = await getPermissionById(11);
       setEditProfessorPermission(editProfessorResponse.data[0]);
+      setIsLoading(false); 
     };
 
     fetchPermissions();
@@ -223,6 +226,7 @@ const ProfessorPage = () => {
     const professors = await getMentors();
     setProfessors(professors.data);
     console.log(professors);
+    setIsLoading(false); 
   };
 
   useEffect(() => {
@@ -278,70 +282,83 @@ const ProfessorPage = () => {
         )
       }
       children={
-        <div style={{ width: "100%", paddingBottom: 0 }}>
-          <DataGrid
-            rows={professors}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
+        isLoading ? (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "55%",
             }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection={false}
-            disableRowSelectionOnClick
-            disableColumnReordering
-            disableColumnSorting
-            autoHeight
-            classes={{
-              root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800",
-              cell: "bg-white dark:bg-gray-800",
-              row: "bg-white dark:bg-gray-800",
-              columnHeaderTitle: "!font-bold text-center",
-            }}
-            sx={{
-              "& .MuiDataGrid-cell:focus": {
-                outline: "none !important",
-              },
-              "& .MuiDataGrid-cell:focus-within": {
-                outline: "none !important",
-              },
-              "& .MuiDataGrid-virtualScroller": {
-                minHeight: "0px",
-                overflow: "hidden", 
-              },
-              "& .MuiDataGrid-main": {
-                overflow: "hidden", 
-                paddingBottom: 0,
-              },
-              "& .MuiDataGrid-footerContainer": {
-                display: professors.length <= 5 ? "none" : "flex", 
-              },
-            }}
-          />
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que quieres eliminar este docente?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancelar
-              </Button>
-              <Button onClick={handleDelete} color="secondary" autoFocus>
-                Eliminar
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
+            <SpinModal />
+          </div>
+        ) : (
+          <div style={{ width: "100%", paddingBottom: 0 }}>
+            <DataGrid
+              rows={professors}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection={false}
+              disableRowSelectionOnClick
+              disableColumnReordering
+              disableColumnSorting
+              autoHeight
+              classes={{
+                root: "bg-white dark:bg-gray-800",
+                columnHeader: "bg-gray-200 dark:bg-gray-800",
+                cell: "bg-white dark:bg-gray-800",
+                row: "bg-white dark:bg-gray-800",
+                columnHeaderTitle: "!font-bold text-center",
+              }}
+              sx={{
+                "& .MuiDataGrid-cell:focus": {
+                  outline: "none !important",
+                },
+                "& .MuiDataGrid-cell:focus-within": {
+                  outline: "none !important",
+                },
+                "& .MuiDataGrid-virtualScroller": {
+                  minHeight: "0px",
+                  overflow: "hidden",
+                },
+                "& .MuiDataGrid-main": {
+                  overflow: "hidden",
+                  paddingBottom: 0,
+                },
+                "& .MuiDataGrid-footerContainer": {
+                  minHeight: "auto",
+                  marginBottom: 0,
+                },
+              }}
+            />
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  ¿Estás seguro de que quieres eliminar este docente?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                  Cancelar
+                </Button>
+                <Button onClick={handleDelete} color="secondary" autoFocus>
+                  Eliminar
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        )
       }
     />
   );
