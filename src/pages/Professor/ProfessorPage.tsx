@@ -190,8 +190,9 @@ const ProfessorPage = () => {
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
-      flex: 1,
-      minWidth: 180,
+      resizable:false,
+      minWidth: 150,
+      maxWidth: 200,
       renderCell: (params) => {
         const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
         return hasActions ? (
