@@ -22,6 +22,7 @@ import {
   updateInternType,
 } from "../../services/eventsService";
 import { internRegisterStates } from "../../constants/internRegisterStates";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 interface FullEvent extends Event {
   interns: any[];
@@ -220,6 +221,7 @@ const InternsListPage = () => {
                 <DataGrid
                   rows={students}
                   columns={columns}
+                  localeText={dataGridLocaleText}
                   initialState={{
                     pagination: {
                       paginationModel: { page: 0, pageSize: 5 },

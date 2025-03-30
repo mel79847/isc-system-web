@@ -6,7 +6,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import {} from "@mui/material";
 import dayjs from "dayjs";
 import ContainerPage from "../../components/common/ContainerPage";
 import {
@@ -19,6 +18,7 @@ import {
 } from "../../models/eventInterface";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import { getInternData } from "../../services/internService";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const EventTable = () => {
   const navigate = useNavigate();
@@ -266,6 +266,7 @@ const EventTable = () => {
           <DataGrid
             rows={eventsSupervisor || []}
             columns={columns}
+            localeText={dataGridLocaleText}
             getRowId={(row) => row.id}
             autoHeight
             initialState={{

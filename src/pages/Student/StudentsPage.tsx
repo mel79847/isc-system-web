@@ -19,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
 import { Permission } from "../../models/permissionInterface";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const StudentPage = () => {
   const navigate = useNavigate();
@@ -185,6 +186,7 @@ const StudentPage = () => {
           <DataGrid
             rows={students}
             columns={columns}
+            localeText={dataGridLocaleText}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
