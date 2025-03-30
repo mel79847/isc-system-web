@@ -1,7 +1,6 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
-import SpinModal from "../../components/common/SpinModal";
 import { useEffect, useState } from "react";
 import { getMentors } from "../../services/mentorsService";
 import {
@@ -25,7 +24,6 @@ const ProfessorPage = () => {
   const navigate = useNavigate();
   const [professors, setProfessors] = useState([]);
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
   const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
@@ -42,17 +40,16 @@ const ProfessorPage = () => {
       setDeleteProfessorPermission(deleteProfessorResponse.data[0]);
       const editProfessorResponse = await getPermissionById(11);
       setEditProfessorPermission(editProfessorResponse.data[0]);
-      setIsLoading(false)
     };
-  
+
     fetchPermissions();
     fetchProfessors();
   }, []);
 
-const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
-const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
-const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
-  
+  const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
+  const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
+  const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
+
   const columns: GridColDef[] = [
     {
       field: "code",
@@ -60,6 +57,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 100,
+      maxWidth: 200,
+      resizable: true,
     },
     {
       field: "degree",
@@ -67,6 +67,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 100,
+      maxWidth: 200,
+      resizable: true,
     },
     {
       field: "name",
@@ -74,6 +77,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 100,
+      maxWidth: 200,
+      resizable: true,
     },
     {
       field: "lastName",
@@ -81,6 +87,9 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 100,
+      maxWidth: 200,
+      resizable: true,
     },
     {
       field: "phone",
@@ -89,6 +98,22 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 150,
+      maxWidth: 200,
+      resizable: true,
+      renderCell: (params) => (
+        <div
+          style={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            width: "100%",
+            textAlign: "center",
+          }}
+        >
+          {params.value}
+        </div>
+      ),
     },
     {
       field: "tutorias",
@@ -97,6 +122,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       align: "center",
       flex: 1,
       minWidth: 180,
+      maxWidth: 200,
       renderCell: (params) => (
         <div
           style={{
@@ -112,8 +138,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             height: "100%",
           }}
         >
-          {params.value ? params.value : (<span style={{ textAlign: "center",
-          }}>No existen<br />tutorías registradas</span>)}
+          {params.value ? params.value : (<span style={{ textAlign: "center" }}>No existen<br />tutorías registradas</span>)}
         </div>
       ),
     },
@@ -124,6 +149,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       align: "center",
       flex: 1,
       minWidth: 180,
+      maxWidth: 200,
       renderCell: (params) => (
         <div
           style={{
@@ -139,12 +165,10 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             width: "100%",
           }}
         >
-          {params.value ? params.value : (<span style={{textAlign: "center",
-           }}>No existen<br />revisiones disponibles</span>)}
+          {params.value ? params.value : (<span style={{ textAlign: "center" }}>No existen<br />revisiones disponibles</span>)}
         </div>
       ),
     },
-    
     {
       field: "actions",
       headerName: "Acciones",
@@ -154,7 +178,6 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       minWidth: 180,
       renderCell: (params) => {
         const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
-  
         return hasActions ? (
           <div>
             {hasViewPermission && (
@@ -179,7 +202,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
       },
     },
   ];
-  
+
   const handleCreateTeacher = () => {
     navigate("/create-professor");
   };
@@ -229,26 +252,19 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
     <ContainerPage
       title={"Docentes"}
       subtitle={"Lista de docentes"}
-      actions={ HasPermission(addProfessorPermission?.name || "") &&
-        (<Button
+      actions={HasPermission(addProfessorPermission?.name || "") && (
+        <Button
           variant="contained"
           color="secondary"
           onClick={handleCreateTeacher}
           startIcon={<AddIcon />}
-          style={{display: "inline-flex"}}
+          style={{ display: "inline-flex" }}
         >
           Agregar docente
-        </Button>)
-      }
-      children={ isLoading ?
-        ( <div style={{
-            position: "absolute",
-            top: "50%",
-            left: "55%"
-          }}>
-            <SpinModal />
-          </div> ) :
-        ( <div style={{ height: 400, width: "100%" }}>
+        </Button>
+      )}
+      children={
+        <div style={{ width: "100%" }}>
           <DataGrid
             rows={professors}
             columns={columns}
@@ -257,18 +273,20 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
                 paginationModel: { page: 0, pageSize: 5 },
               },
             }}
+            pageSizeOptions={[5, 10]}
+            checkboxSelection={false}
+            disableRowSelectionOnClick
+            disableColumnReordering
+            disableColumnSorting
+            autoHeight
             classes={{
               root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
               cell: "bg-white dark:bg-gray-800",
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection={false}
-            disableRowSelectionOnClick
             sx={{
-              
               "& .MuiDataGrid-cell": {
                 userSelect: "none",
                 WebkitUserSelect: "none",
@@ -280,6 +298,12 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
               },
               "& .MuiDataGrid-cell:focus-within": {
                 outline: "none !important",
+              },
+              "& .MuiDataGrid-virtualScroller": {
+                minHeight: "auto", // Ajusta el scroller para que no reserve espacio extra
+              },
+              "& .MuiDataGrid-main": {
+                overflow: "hidden", // Evita que el contenedor principal tenga espacio innecesario
               },
             }}
           />
@@ -294,8 +318,7 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este docente? Esta acción
-                no se puede deshacer.
+                ¿Estás seguro de que quieres eliminar este docente?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -308,10 +331,8 @@ const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "")
             </DialogActions>
           </Dialog>
         </div>
-        )
       }
-    ></ContainerPage>
-  
+    />
   );
 };
 
