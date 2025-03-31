@@ -1,4 +1,8 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridColumnVisibilityModel,
+} from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
 import SpinModal from "../../components/common/SpinModal";
@@ -28,10 +32,26 @@ const ProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
-  const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
-  const [deleteProfessorPermission, setDeleteProfessorPermission] = useState<Permission>();
-  const [editProfessorPermission, setEditProfessorPermission] = useState<Permission>();
+  const [columnVisibilityModel, setColumnVisibilityModel] =
+    useState<GridColumnVisibilityModel>({
+      code: true,
+      degree: true,
+      name: true,
+      lastName: true,
+      phone: true,
+      tutorias: true,
+      revisiones: true,
+      actions: true,
+    });
+
+  const [addProfessorPermission, setAddProfessorPermission] =
+    useState<Permission>();
+  const [viewProfessorReportPermission, setViewProfessorReportPermission] =
+    useState<Permission>();
+  const [deleteProfessorPermission, setDeleteProfessorPermission] =
+    useState<Permission>();
+  const [editProfessorPermission, setEditProfessorPermission] =
+    useState<Permission>();
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -43,16 +63,20 @@ const ProfessorPage = () => {
       setDeleteProfessorPermission(deleteProfessorResponse.data[0]);
       const editProfessorResponse = await getPermissionById(11);
       setEditProfessorPermission(editProfessorResponse.data[0]);
-      setIsLoading(false); 
+      setIsLoading(false);
     };
 
     fetchPermissions();
     fetchProfessors();
   }, []);
 
-  const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
+  const hasViewPermission = HasPermission(
+    viewProfessorReportPermission?.name || ""
+  );
   const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
-  const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
+  const hasDeletePermission = HasPermission(
+    deleteProfessorPermission?.name || ""
+  );
 
   const columns: GridColDef[] = [
     {
@@ -146,7 +170,9 @@ const ProfessorPage = () => {
             params.value
           ) : (
             <span style={{ textAlign: "center" }}>
-              No existen<br />tutorías registradas
+              No existen
+              <br />
+              tutorías registradas
             </span>
           )}
         </div>
@@ -179,7 +205,9 @@ const ProfessorPage = () => {
             params.value
           ) : (
             <span style={{ textAlign: "center" }}>
-              No existen<br />revisiones disponibles
+              No existen
+              <br />
+              revisiones disponibles
             </span>
           )}
         </div>
@@ -194,21 +222,31 @@ const ProfessorPage = () => {
       minWidth: 150,
       maxWidth: 200,
       renderCell: (params) => {
-        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
+        const hasActions =
+          hasViewPermission || hasEditPermission || hasDeletePermission;
         return hasActions ? (
           <div>
             {hasViewPermission && (
-              <IconButton color="primary" onClick={() => handleView(params.row.id)}>
+              <IconButton
+                color="primary"
+                onClick={() => handleView(params.row.id)}
+              >
                 <VisibilityIcon />
               </IconButton>
             )}
             {hasEditPermission && (
-              <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
+              <IconButton
+                color="primary"
+                onClick={() => handleEdit(params.row.id)}
+              >
                 <EditIcon />
               </IconButton>
             )}
             {hasDeletePermission && (
-              <IconButton color="secondary" onClick={() => handleClickOpen(params.row.id)}>
+              <IconButton
+                color="secondary"
+                onClick={() => handleClickOpen(params.row.id)}
+              >
                 <DeleteIcon />
               </IconButton>
             )}
@@ -228,7 +266,7 @@ const ProfessorPage = () => {
     const professors = await getMentors();
     setProfessors(professors.data);
     console.log(professors);
-    setIsLoading(false); 
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -308,9 +346,21 @@ const ProfessorPage = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection={false}
               disableRowSelectionOnClick
-              disableColumnReordering
               disableColumnSorting
               autoHeight
+              columnVisibilityModel={columnVisibilityModel}
+              onColumnVisibilityModelChange={(newModel) => {
+                const updatedModel = {
+                  ...newModel,
+                  name: true,
+                };
+                const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
+                if (visibleColumns === 0) {
+                  return;
+                }
+                
+                setColumnVisibilityModel(updatedModel);
+              }}
               classes={{
                 root: "bg-white dark:bg-gray-800",
                 columnHeader: "bg-gray-200 dark:bg-gray-800",
@@ -339,13 +389,16 @@ const ProfessorPage = () => {
                 },
               }}
             />
+
             <Dialog
               open={open}
               onClose={handleClose}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
+              <DialogTitle id="alert-dialog-title">
+                {"Confirmar eliminación"}
+              </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   ¿Estás seguro de que quieres eliminar este docente?
