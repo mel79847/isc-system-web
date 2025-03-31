@@ -358,7 +358,6 @@ const ProfessorPage = () => {
                 if (visibleColumns === 0) {
                   return;
                 }
-                
                 setColumnVisibilityModel(updatedModel);
               }}
               classes={{
