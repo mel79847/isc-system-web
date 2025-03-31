@@ -94,4 +94,3 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) => {
 };
 
 export default RoleGuard;
-
