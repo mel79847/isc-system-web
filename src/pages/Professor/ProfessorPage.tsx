@@ -349,10 +349,16 @@ const ProfessorPage = () => {
               autoHeight
               columnVisibilityModel={columnVisibilityModel}
               onColumnVisibilityModelChange={(newModel) => {
-                if (Object.values(newModel).filter(Boolean).length === 0) {
+                const updatedModel = {
+                  ...newModel,
+                  name: true,
+                };
+                const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
+                if (visibleColumns === 0) {
                   return;
                 }
-                setColumnVisibilityModel(newModel);
+                
+                setColumnVisibilityModel(updatedModel);
               }}
               classes={{
                 root: "bg-white dark:bg-gray-800",
