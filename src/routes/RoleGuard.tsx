@@ -38,6 +38,7 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) => {
   const userRoles = user.roles ?? [];
   const isAdminOrProfessor = userRoles.includes("ADMIN") || userRoles.includes("professor");
 
+
   // Si el usuario intenta entrar a /create-professor y no es admin ni professor, mostrar mensaje de error
   if (location.pathname === "/create-professor" && !isAdminOrProfessor) {
     return (
@@ -62,6 +63,7 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) => {
     );
   }
 
+  
   // Verifica si el usuario tiene al menos uno de los roles permitidos
   const hasRole = allowedRoles.some((role) => userRoles.includes(role));
 
