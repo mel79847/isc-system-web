@@ -21,6 +21,16 @@ interface AppBarProps extends MuiAppBarProps {
 }
 const drawerWidth = 240;
 
+const TranslateRole = (rol: string) => {
+  const translatedRoles: { [key: string]: string } = {
+    professor: "Profesor",
+    student: "Estudiante",
+    admin: "Administrador",
+  };
+  return translatedRoles[rol] || rol;
+};
+
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
@@ -117,11 +127,11 @@ const Layout = () => {
               color="textSecondary"
               textAlign={"right"}
             >
-              {user?.roles}
+              {TranslateRole(user?.roles)}
             </Typography>
           </Box>
 
-          <Tooltip 
+          <Tooltip
             data-test-id="user_icon"
             title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
