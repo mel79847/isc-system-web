@@ -24,6 +24,8 @@ function ProcessForm() {
   const [modes, setModes] = useState<Modes[]>([]);
   const updateProcess = useProcessStore((state) => state.setProcess);
   const navigate = useNavigate();
+  const actualDate = new Date();
+  const numberPeriods = 3;
 
   const fetchData = useCallback(async () => {
     try {
@@ -40,6 +42,19 @@ function ProcessForm() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const setPeriods = (option: number) => {
+    let firstSemester = actualDate.getMonth() <= 5;
+    let currentYear = actualDate.getFullYear()
+    const listPeriods = [];
+    for (let i = 0; i < option; i++) {
+      let strPeriod = firstSemester ? "Primero" : "Segundo"
+      listPeriods.push(strPeriod + currentYear)
+      if (!firstSemester) currentYear++;
+      firstSemester = !firstSemester
+    }
+    return listPeriods;
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -187,9 +202,12 @@ function ProcessForm() {
                 error={formik.touched.period && Boolean(formik.errors.period)}
                 helperText={formik.touched.period && formik.errors.period}
               >
-                <MenuItem value="Segundo2024">Segundo 2024</MenuItem>
-                <MenuItem value="Primero2023">Primero 2025</MenuItem>
-                <MenuItem value="Segundo2023">Segundo 2025</MenuItem>
+                {setPeriods(numberPeriods).map((value) => {
+                  const desc = value.slice(0, value.length - 4) + "-" + value.slice(value.length-4)
+                  return (
+                    <MenuItem value={value}>{desc}</MenuItem>
+                  );
+                })}
               </TextField>
             </Grid>
           </Grid>
