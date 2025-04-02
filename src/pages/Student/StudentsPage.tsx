@@ -126,7 +126,6 @@ const StudentPage = () => {
       ),
     },
   ];
-  
   const handleCreateTeacher = () => {
     navigate("/create-student");
   };
