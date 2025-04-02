@@ -103,8 +103,7 @@ const StudentPage = () => {
               color="primary"
               aria-label="ver"
               onClick={() => handleView(params.row.id)}
-            >
-              <VisibilityIcon />
+            ><VisibilityIcon />
             </IconButton>
           )}
           {HasPermission(editStudentPermission?.name || "") && (
@@ -112,8 +111,7 @@ const StudentPage = () => {
               color="primary"
               aria-label="editar"
               onClick={() => handleEdit(params.row.id)}
-            >
-              <EditIcon />
+            ><EditIcon />
             </IconButton>
           )}
           {HasPermission(deleteStudentPermission?.name || "") && (
@@ -121,8 +119,7 @@ const StudentPage = () => {
               color="secondary"
               aria-label="eliminar"
               onClick={() => handleClickOpen(params.row.id)}
-            >
-              <DeleteIcon />
+            >DeleteIcon />
             </IconButton>
           )}
         </div>
@@ -130,7 +127,6 @@ const StudentPage = () => {
     },
   ];
   
-
   const handleCreateTeacher = () => {
     navigate("/create-student");
   };
