@@ -99,27 +99,38 @@ const StudentPage = () => {
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
-            <IconButton
-              color="primary"
-              aria-label="ver"
-              onClick={() => handleView(params.row.id)}
-            ><VisibilityIcon /></IconButton>)}
+                      <IconButton
+            color="primary"
+            aria-label="ver"
+            onClick={() => handleView(params.row.id)}
+          >
+            <VisibilityIcon />
+          </IconButton>
+          )}
           {HasPermission(editStudentPermission?.name || "") && (
-            <IconButton
-              color="primary"
-              aria-label="editar"
-              onClick={() => handleEdit(params.row.id)}
-            ><EditIcon /></IconButton>)}
+          <IconButton
+            color="primary"
+            aria-label="editar"
+            onClick={() => handleEdit(params.row.id)}
+          >
+            <EditIcon />
+          </IconButton>
+          )}
           {HasPermission(deleteStudentPermission?.name || "") && (
-            <IconButton
-              color="secondary"
-              aria-label="eliminar"
-              onClick={() => handleClickOpen(params.row.id)}
-            >DeleteIcon /></IconButton>)}
+          <IconButton
+            color="secondary"
+            aria-label="eliminar"
+            onClick={() => handleClickOpen(params.row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>
+          )}
+          
         </div>
       ),
     },
   ];
+  
   const handleCreateTeacher = () => {
     navigate("/create-student");
   };
