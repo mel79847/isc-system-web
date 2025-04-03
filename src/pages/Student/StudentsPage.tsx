@@ -31,7 +31,6 @@ const StudentPage = () => {
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
   const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission>();
 
-  // Estado para el modelo de visibilidad de columnas
   const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
     code: true,
     name: true,
@@ -94,31 +93,31 @@ const StudentPage = () => {
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
-            <IconButton
-              color="primary"
-              aria-label="ver"
-              onClick={() => handleView(params.row.id)}
-            >
-              <VisibilityIcon />
-            </IconButton>
+          <IconButton
+            color="primary"
+            aria-label="ver"
+            onClick={() => handleView(params.row.id)}
+          >
+            <VisibilityIcon />
+          </IconButton>
           )}
           {HasPermission(editStudentPermission?.name || "") && (
-            <IconButton
-              color="primary"
-              aria-label="editar"
-              onClick={() => handleEdit(params.row.id)}
-            >
-              <EditIcon />
-            </IconButton>
+          <IconButton
+            color="primary"
+            aria-label="editar"
+            onClick={() => handleEdit(params.row.id)}
+          >
+            <EditIcon />
+          </IconButton>
           )}
           {HasPermission(deleteStudentPermission?.name || "") && (
-            <IconButton
-              color="secondary"
-              aria-label="eliminar"
-              onClick={() => handleClickOpen(params.row.id)}
-            >
-              <DeleteIcon />
-            </IconButton>
+          <IconButton
+            color="secondary"
+            aria-label="eliminar"
+            onClick={() => handleClickOpen(params.row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>
           )}
         </div>
       ),
@@ -178,15 +177,15 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleCreateTeacher}
-            startIcon={<AddIcon />}
-            disabled={!addStudentPermission}
-          >
-            Agregar Estudiante
-          </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCreateTeacher}
+          startIcon={<AddIcon />}
+          disabled={!addStudentPermission}
+        >
+          Agregar Estudiante
+        </Button>
         )
       }
       children={
@@ -202,7 +201,6 @@ const StudentPage = () => {
             }}
             columnVisibilityModel={columnVisibilityModel}
             onColumnVisibilityModelChange={(newModel) => {
-              // Forzamos que la columna "name" (Nombre Completo) siempre esté visible
               const updatedModel = {
                 ...newModel,
                 name: true,
