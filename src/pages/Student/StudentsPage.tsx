@@ -103,25 +103,19 @@ const StudentPage = () => {
               color="primary"
               aria-label="ver"
               onClick={() => handleView(params.row.id)}
-            ><VisibilityIcon />
-            </IconButton>
-          )}
+            ><VisibilityIcon /></IconButton>)}
           {HasPermission(editStudentPermission?.name || "") && (
             <IconButton
               color="primary"
               aria-label="editar"
               onClick={() => handleEdit(params.row.id)}
-            ><EditIcon />
-            </IconButton>
-          )}
+            ><EditIcon /></IconButton>)}
           {HasPermission(deleteStudentPermission?.name || "") && (
             <IconButton
               color="secondary"
               aria-label="eliminar"
               onClick={() => handleClickOpen(params.row.id)}
-            >DeleteIcon />
-            </IconButton>
-          )}
+            >DeleteIcon /></IconButton>)}
         </div>
       ),
     },
