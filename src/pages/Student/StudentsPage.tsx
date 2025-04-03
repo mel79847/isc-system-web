@@ -99,7 +99,7 @@ const StudentPage = () => {
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
-                      <IconButton
+          <IconButton
             color="primary"
             aria-label="ver"
             onClick={() => handleView(params.row.id)}
@@ -130,7 +130,7 @@ const StudentPage = () => {
       ),
     },
   ];
-  
+
   const handleCreateTeacher = () => {
     navigate("/create-student");
   };
