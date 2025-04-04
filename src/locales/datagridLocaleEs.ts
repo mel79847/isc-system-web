@@ -16,6 +16,7 @@ const dataGridLocaleText = {
   columnMenuShowColumns: "Mostrar columnas",
   columnMenuUnsort: "Quitar orden",
   columnMenuManageColumns: "Administrar columnas",
+  columnHeaderSortIconLabel: "Ordenar",
 
   filterPanelTitle: "Filtros",
   filterPanelColumns: "Columna",

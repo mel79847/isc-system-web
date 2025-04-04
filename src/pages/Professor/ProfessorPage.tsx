@@ -25,6 +25,8 @@ import { Permission } from "../../models/permissionInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../theme/theme";
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
@@ -305,6 +307,7 @@ const ProfessorPage = () => {
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <ContainerPage
       title={"Docentes"}
       subtitle={"Lista de docentes"}
@@ -346,7 +349,6 @@ const ProfessorPage = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection={false}
               disableRowSelectionOnClick
-              disableColumnSorting
               autoHeight
               columnVisibilityModel={columnVisibilityModel}
               onColumnVisibilityModelChange={(newModel) => {
@@ -416,6 +418,7 @@ const ProfessorPage = () => {
         )
       }
     />
+    </ThemeProvider>
   );
 };
 
