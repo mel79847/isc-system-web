@@ -66,8 +66,7 @@ const ProfessorPage = () => {
       setIsLoading(false);
     };
 
-    fetchPermissions();
-    fetchProfessors();
+    fetchPermissions(); 
   }, []);
 
   const hasViewPermission = HasPermission(
