@@ -43,7 +43,7 @@ const ProfessorPage = () => {
       revisiones: true,
       actions: true,
     });
-
+  
   const [addProfessorPermission, setAddProfessorPermission] =
     useState<Permission>();
   const [viewProfessorReportPermission, setViewProfessorReportPermission] =
@@ -52,6 +52,13 @@ const ProfessorPage = () => {
     useState<Permission>();
   const [editProfessorPermission, setEditProfessorPermission] =
     useState<Permission>();
+
+  
+  const permissionsReady =
+  viewProfessorReportPermission !== undefined &&
+  editProfessorPermission !== undefined &&
+  deleteProfessorPermission !== undefined;
+
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -213,49 +220,48 @@ const ProfessorPage = () => {
         </div>
       ),
     },
-    {
-      field: "actions",
-      headerName: "Acciones",
-      headerAlign: "center",
-      align: "center",
-      resizable:false,
-      minWidth: 150,
-      maxWidth: 200,
-      renderCell: (params) => {
-        const hasActions =
-          hasViewPermission || hasEditPermission || hasDeletePermission;
-        return hasActions ? (
-          <div>
-            {hasViewPermission && (
-              <IconButton
-                color="primary"
-                onClick={() => handleView(params.row.id)}
-              >
-                <VisibilityIcon />
-              </IconButton>
-            )}
-            {hasEditPermission && (
-              <IconButton
-                color="primary"
-                onClick={() => handleEdit(params.row.id)}
-              >
-                <EditIcon />
-              </IconButton>
-            )}
-            {hasDeletePermission && (
-              <IconButton
-                color="secondary"
-                onClick={() => handleClickOpen(params.row.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            )}
-          </div>
-        ) : (
-          "No hay acciones disponibles"
-        );
+      {
+        field: "actions",
+        headerName: "Acciones",
+        headerAlign: "center",
+        align: "center",
+        resizable: false,
+        minWidth: 150,
+        maxWidth: 200,
+        renderCell: (params) => {
+          // Si aún no cargaron los permisos, mostrar "Cargando acciones..."
+          if (!permissionsReady) {
+            return <span>Cargando acciones...</span>;
+          }
+          const hasActions =
+            hasViewPermission || hasEditPermission || hasDeletePermission;
+      
+          return hasActions ? (
+            <div>
+              {hasViewPermission && (
+                <IconButton color="primary" onClick={() => handleView(params.row.id)}>
+                  <VisibilityIcon />
+                </IconButton>
+              )}
+              {hasEditPermission && (
+                <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
+                  <EditIcon />
+                </IconButton>
+              )}
+              {hasDeletePermission && (
+                <IconButton
+                  color="secondary"
+                  onClick={() => handleClickOpen(params.row.id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </div>
+          ) : (
+            "No hay acciones disponibles"
+          );
+        },
       },
-    },
   ];
 
   const handleCreateTeacher = () => {
