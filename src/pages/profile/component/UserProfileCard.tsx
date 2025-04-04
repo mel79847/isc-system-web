@@ -15,15 +15,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
   const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission>();
   const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission>();
   const user = useUserStore((state) => state.user);
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      const scheduleAppointmentStudentResponse = await getPermissionById(17);
-      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data[0]);
-      const scheduleAppointmentProfessorResponse = await getPermissionById(9);
-      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data[0]);
-    };
-    fetchPermissions();
-  }, []);
+  
 
   return (
     <Paper
@@ -131,6 +123,17 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
       </Paper>
     </Paper>
   );
+
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const scheduleAppointmentStudentResponse = await getPermissionById(17);
+      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data[0]);
+      const scheduleAppointmentProfessorResponse = await getPermissionById(9);
+      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data[0]);
+    };
+    fetchPermissions();
+  }, []);
+
 };
 
 export default UserProfileCard;
