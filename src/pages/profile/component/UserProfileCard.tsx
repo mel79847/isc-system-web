@@ -122,17 +122,6 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
       </Paper>
     </Paper>
   );
-
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      const scheduleAppointmentStudentResponse = await getPermissionById(17);
-      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data[0]);
-      const scheduleAppointmentProfessorResponse = await getPermissionById(9);
-      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data[0]);
-    };
-    fetchPermissions();
-  }, []);
-
 };
 
 export default UserProfileCard;
