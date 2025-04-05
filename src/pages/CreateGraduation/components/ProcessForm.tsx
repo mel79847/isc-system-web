@@ -17,6 +17,7 @@ import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
 import { useNavigate } from "react-router-dom";
 import { useProcessStore } from "../../../store/store";
+import * as yup from "yup";
 
 function ProcessForm() {
   const [, setError] = useState<string | null>(null);
@@ -24,7 +25,38 @@ function ProcessForm() {
   const [modes, setModes] = useState<Modes[]>([]);
   const updateProcess = useProcessStore((state) => state.setProcess);
   const navigate = useNavigate();
+  const actualDate = new Date();
+  const numberPeriods = 3;
 
+  const validationSchema = yup.object().shape({
+    studentId: yup
+      .number()
+      .typeError("El ID del estudiante debe ser un número")
+      .required("Campo requerido"),
+  
+    studentCode: yup
+      .number()
+      .typeError("El código del estudiante debe ser un número")
+      .integer("El código debe ser un número entero")
+      .positive("El código debe ser positivo")
+      .required("Campo requerido"),
+  
+    modeId: yup
+      .number()
+      .required("Campo requerido"),
+  
+    period: yup
+      .string()
+      .required("Campo requerido"),
+  
+    titleProject: yup
+      .string()
+      .min(5, "El título debe tener al menos 5 caracteres")
+      .max(80, "El título no debe superar los 80 caracteres")
+      .matches(/^[a-zA-Z0-9\s]+$/, "El título solo debe contener letras y números")
+      .required("Campo requerido"),
+  });
+  
   const fetchData = useCallback(async () => {
     try {
       const responseStudents = await getStudents();
@@ -41,15 +73,29 @@ function ProcessForm() {
     fetchData();
   }, [fetchData]);
 
+  const setPeriods = (option: number) => {
+    let firstSemester = actualDate.getMonth() <= 5;
+    let currentYear = actualDate.getFullYear()
+    const listPeriods = [];
+    for (let i = 0; i < option; i++) {
+      let strPeriod = firstSemester ? "Primero" : "Segundo"
+      listPeriods.push(strPeriod + currentYear)
+      if (!firstSemester) currentYear++;
+      firstSemester = !firstSemester
+    }
+    return listPeriods;
+  }
+
   const formik = useFormik({
     initialValues: {
-      studentId: "",
-      studentCode: "",
-      modeId: "",
-      period: "",
-      titleProject: "",
+      studentId: " ",
+      studentCode: " ",
+      modeId: " ",
+      period: " ",
+      titleProject: " ",
       stageId: 1,
     },
+    validationSchema: validationSchema,
     onSubmit: async (values) => {
       const response = await createGraduationProcess(values);
       if (response.success) {
@@ -187,9 +233,12 @@ function ProcessForm() {
                 error={formik.touched.period && Boolean(formik.errors.period)}
                 helperText={formik.touched.period && formik.errors.period}
               >
-                <MenuItem value="Segundo2024">Segundo 2024</MenuItem>
-                <MenuItem value="Primero2023">Primero 2025</MenuItem>
-                <MenuItem value="Segundo2023">Segundo 2025</MenuItem>
+                {setPeriods(numberPeriods).map((value) => {
+                  const desc = value.slice(0, value.length - 4) + "-" + value.slice(value.length-4)
+                  return (
+                    <MenuItem value={value}>{desc}</MenuItem>
+                  );
+                })}
               </TextField>
             </Grid>
           </Grid>
