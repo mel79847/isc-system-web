@@ -43,14 +43,26 @@ const Profile = () => {
   const [userProfile, setUserProfile] = useState<User | null>(null);
 
   const fetchUserProfile = async (id: string) => {
-    const response = await getUserById(Number(id));
-    setUserProfile(response);
+    try {
+      const response = await getUserById(Number(id));
+      console.log("Datos del usuario obtenidos:", response);
+  
+      if (response.success) {
+        setUserProfile(response.data);
+      } else {
+        console.error("Error al obtener usuario:", response.message);
+      }
+    } catch (error) {
+      console.error("Error obteniendo usuario:", error);
+    }
   };
+  
   useEffect(() => {
     if (id) {
       fetchUserProfile(id);
     }
   }, [id]);
+  
 
   const [value, setValue] = useState(0);
 
