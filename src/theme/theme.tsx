@@ -13,17 +13,16 @@ export const theme = createTheme({
       MuiTooltip: {
         styleOverrides: {
           tooltip: {
-            backgroundColor: "#2F2F2F",
+            backgroundColor: "#333",
             color: "#fff",
-            fontSize: "0.75rem",
-            fontWeight: "normal",
+            fontSize: "0.7rem",
+            fontWeight: 400,
             borderRadius: "4px",
-            padding: "2px 6px",
+            padding: "1px 2px",
             boxShadow: "0px 2px 10px rgba(0,0,0,0.2)",
-            fontFamily: "Roboto, Arial, sans-serif",
           },
           arrow: {
-            color: "#2F2F2F",
+            color: "#333",
           },
         },
       },
