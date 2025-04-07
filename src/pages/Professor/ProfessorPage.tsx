@@ -54,10 +54,7 @@ const ProfessorPage = () => {
     useState<Permission>();
 
   
-  const permissionsReady =
-  viewProfessorReportPermission !== undefined &&
-  editProfessorPermission !== undefined &&
-  deleteProfessorPermission !== undefined;
+  const permissionsReady = viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
 
 
   useEffect(() => {
@@ -229,7 +226,6 @@ const ProfessorPage = () => {
         minWidth: 150,
         maxWidth: 200,
         renderCell: (params) => {
-          // Si aún no cargaron los permisos, mostrar "Cargando acciones..."
           if (!permissionsReady) {
             return <span>Cargando acciones...</span>;
           }
