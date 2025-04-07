@@ -1,10 +1,8 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { HasPermission } from "../../../helper/permissions";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Permission } from "../../../models/permissionInterface";
-import { getPermissionById } from "../../../services/permissionsService";
-import { useUserStore } from "../../../store/store";
 import { UserResponse } from "../../../services/models/LoginResponse";
 
 interface UserProfileCardProps {
@@ -12,8 +10,8 @@ interface UserProfileCardProps {
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
-  const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission>();
-  const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission>();
+  const [scheduleAppointmentPermissionStudent] = useState<Permission>();
+  const [scheduleAppointmentPermissionProffesor] = useState<Permission>();
 
   return (
     <Paper
@@ -33,7 +31,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
     >
       <Box sx={{ position: "relative", mb: 2 }}>
         <Avatar
-          alt={user.name}
+          alt={user?.name}
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYuwSeW_wPuwldJSnYf2ibAvVG2zmARUwSBw&s" 
           sx={{ width: { xs: 80, sm: 100 }, height: { xs: 80, sm: 100 } }}
         />
@@ -85,7 +83,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         <Typography variant="body2" color="textSecondary">
           Email
         </Typography>
-        <Typography variant="body1">{user.email}</Typography>
+        <Typography variant="body1">{user?.email}</Typography>
       </Paper>
       <Paper
         elevation={0}

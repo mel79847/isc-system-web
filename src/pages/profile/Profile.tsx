@@ -44,7 +44,6 @@ const Profile = () => {
 
   const fetchUserProfile = async (id: string) => {
     const response = await getUserById(Number(id));
-    console.log("Datos del usuario obtenidos:", response);
     try {
       if (response.success) {
         setUserProfile(response.data);
