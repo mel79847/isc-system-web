@@ -4,17 +4,15 @@ import { HasPermission } from "../../../helper/permissions";
 import { useEffect, useState } from "react";
 import { Permission } from "../../../models/permissionInterface";
 import { getPermissionById } from "../../../services/permissionsService";
-import { useUserStore } from "../../../store/store";
 import { UserResponse } from "../../../services/models/LoginResponse";
 
 interface UserProfileCardProps {
   user: UserResponse;
 }
 
-const UserProfileCard: React.FC<UserProfileCardProps> = () => {
-  const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission>();
-  const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission>();
-  const user = useUserStore((state) => state.user);
+const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
+    const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission | null>(null);
+    const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission | null>(null);
   useEffect(() => {
     const fetchPermissions = async () => {
       const scheduleAppointmentStudentResponse = await getPermissionById(17);
@@ -24,6 +22,9 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
     };
     fetchPermissions();
   }, []);
+
+  const hasProfessorPermission = HasPermission(scheduleAppointmentPermissionProffesor?.name || "");
+  const hasStudentPermission = HasPermission(scheduleAppointmentPermissionStudent?.name || "");
 
   return (
     <Paper
@@ -73,7 +74,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
       {user?.roles}
       </Typography>
       {
-        (HasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || HasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
+                (hasProfessorPermission || hasStudentPermission) &&
         (
           <Button variant="contained" color="primary" sx={{ mb: 3 }}>
             Agendar una reunión
