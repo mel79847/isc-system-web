@@ -145,7 +145,7 @@ const CreateStudentPage = () => {
             </Typography>
             <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           </Grid>
-          
+
           <Grid item xs={12}>
             <Grid container spacing={2} sx={{ padding: 2 }}>
               <Grid item xs={3}>
