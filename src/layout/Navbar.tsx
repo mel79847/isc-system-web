@@ -1,13 +1,13 @@
-import { FC } from "react";
+import { FC } from 'react'
 interface NavbarProps {
-  setIsSidebarOpen: (isOpen: boolean) => void;
-  isSidebarOpen: boolean;
+  setIsSidebarOpen: (isOpen: boolean) => void
+  isSidebarOpen: boolean
 }
 
 const Navbar: FC<NavbarProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
   const clickButton = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+    setIsSidebarOpen(!isSidebarOpen)
+  }
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b shadow-sm border-gray-200">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -43,6 +43,6 @@ const Navbar: FC<NavbarProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
         </div>
       </div>
     </nav>
-  );
-};
-export default Navbar;
+  )
+}
+export default Navbar

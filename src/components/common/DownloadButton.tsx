@@ -1,35 +1,35 @@
-import React, { useState } from "react";
-import { Button, ButtonProps } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import { generateDocument } from "../../utils/files";
+import React, { useState } from 'react'
+import { Button, ButtonProps } from '@mui/material'
+import DownloadIcon from '@mui/icons-material/Download'
+import { generateDocument } from '../../utils/files'
 
 interface DownloadButtonProps extends ButtonProps {
-  url: string;
+  url: string
   data: {
-    [key: string]: string | number;
-  };
-  filename: string;
-  buttonText?: string;
+    [key: string]: string | number
+  }
+  filename: string
+  buttonText?: string
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
   url,
   data,
   filename,
-  buttonText = "Descargar",
+  buttonText = 'Descargar',
   ...buttonProps
 }) => {
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false)
   const handleDownload = async () => {
-    setIsDownloading(true);
+    setIsDownloading(true)
     try {
-      await generateDocument(url, data, filename);
+      await generateDocument(url, data, filename)
     } catch (error) {
-      console.error("Error downloading document:", error);
+      console.error('Error downloading document:', error)
     } finally {
-      setIsDownloading(false);
+      setIsDownloading(false)
     }
-  };
+  }
 
   return (
     <Button
@@ -39,9 +39,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       disabled={isDownloading}
       {...buttonProps}
     >
-      {isDownloading ? "Descargando..." : buttonText}
+      {isDownloading ? 'Descargando...' : buttonText}
     </Button>
-  );
-};
+  )
+}
 
-export default DownloadButton;
+export default DownloadButton

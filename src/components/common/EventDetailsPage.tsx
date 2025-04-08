@@ -1,45 +1,42 @@
-import { ReactNode, useEffect, useState } from "react";
-import { Container, Grid, Typography } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import { FullEvent } from "../../models/eventInterface";
-import { internRegisterStates } from "../../constants/internRegisterStates";
-import dayjs from "dayjs";
-import { InternsInformation } from "../../models/internsInterface";
-import { getInternData } from "../../services/internService";
+import { ReactNode, useEffect, useState } from 'react'
+import { Container, Grid, Typography } from '@mui/material'
+import PersonIcon from '@mui/icons-material/Person'
+import { FullEvent } from '../../models/eventInterface'
+import { internRegisterStates } from '../../constants/internRegisterStates'
+import dayjs from 'dayjs'
+import { InternsInformation } from '../../models/internsInterface'
+import { getInternData } from '../../services/internService'
 
 interface TablePageProps {
-  event: FullEvent;
-  children: ReactNode;
+  event: FullEvent
+  children: ReactNode
 }
 
 const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
-  const [internEventInfomation, setInternEventInfomation] =
-    useState<InternsInformation>();
-  const [responsible, setResponsible] = useState<String>("Ninguno");
+  const [internEventInfomation, setInternEventInfomation] = useState<InternsInformation>()
+  const [responsible, setResponsible] = useState<String>('Ninguno')
 
   const fetchInternEvent = async () => {
     try {
       if (event.responsible_intern_id) {
-        const res = await getInternData(event.responsible_intern_id);
-        setInternEventInfomation(res.data);
+        const res = await getInternData(event.responsible_intern_id)
+        setInternEventInfomation(res.data)
       }
     } catch (error) {
-      console.error("Error fetching Intern:", error);
+      console.error('Error fetching Intern:', error)
     }
-  };
+  }
 
   useEffect(() => {
     if (internEventInfomation) {
-      setResponsible(
-        internEventInfomation.name + " " + internEventInfomation.lastname
-      );
+      setResponsible(internEventInfomation.name + ' ' + internEventInfomation.lastname)
     }
-  }, [internEventInfomation]);
+  }, [internEventInfomation])
   useEffect(() => {
-    fetchInternEvent();
-  }, [event]);
-  
-  const { PENDING } = internRegisterStates;
+    fetchInternEvent()
+  }, [event])
+
+  const { PENDING } = internRegisterStates
   return event ? (
     <Container fixed>
       <Grid container spacing={3}>
@@ -48,7 +45,7 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
             variant="h4"
             component="h1"
             color="primary"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
           >
             <PersonIcon color="primary" />
             {event.title}
@@ -56,12 +53,10 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
           <Grid container spacing={-30} sx={{ marginTop: 2 }}>
             <Grid item xs={6}>
               <Typography variant="body1" color="textSecondary">
-                <strong>Fecha Inicial:</strong>{" "}
-                {dayjs(event.start_date).format("DD/MM/YYYY")}
+                <strong>Fecha Inicial:</strong> {dayjs(event.start_date).format('DD/MM/YYYY')}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                <strong>Fecha Final:</strong>{" "}
-                {dayjs(event.end_date).format("DD/MM/YYYY")}
+                <strong>Fecha Final:</strong> {dayjs(event.end_date).format('DD/MM/YYYY')}
               </Typography>
               <Typography variant="body1" color="textSecondary">
                 <strong>Encargado:</strong> {responsible}
@@ -75,9 +70,9 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body1" color="textSecondary">
-                <strong>Periodo de Inscripción/Baja:</strong>{" "}
-                {dayjs(event.start_cancellation_date).format("DD/MM/YYYY")} -{" "}
-                {dayjs(event.end_cancellation_date).format("DD/MM/YYYY")}
+                <strong>Periodo de Inscripción/Baja:</strong>{' '}
+                {dayjs(event.start_cancellation_date).format('DD/MM/YYYY')} -{' '}
+                {dayjs(event.end_cancellation_date).format('DD/MM/YYYY')}
               </Typography>
               <Typography variant="body1" color="textSecondary">
                 <strong>Horas Becarias:</strong> {event.assigned_hours} horas
@@ -87,12 +82,12 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
               </Typography>
               <Typography variant="body1" color="textSecondary">
                 <strong>
-                  Solicitudes de Becarios:{" "}
+                  Solicitudes de Becarios:{' '}
                   {event.interns.reduce((acc: number, intern) => {
                     if (intern.type == PENDING) {
-                      return acc + 1;
+                      return acc + 1
                     } else {
-                      return acc;
+                      return acc
                     }
                   }, 0)}
                 </strong>
@@ -109,7 +104,7 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
     <Typography variant="h6" align="center">
       Cargando detalles del evento...
     </Typography>
-  );
-};
+  )
+}
 
-export default TablePage;
+export default TablePage

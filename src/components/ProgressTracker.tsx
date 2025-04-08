@@ -1,83 +1,60 @@
-import { FC, useState, useCallback } from "react";
-import { InternalDefenseStage } from "./stages/InternalDefenseStage";
-import { MentorStage } from "./stages/MentorStage";
-import { RegistrationStage } from "./stages/RegistrationStage";
-import { ReviewerStage } from "./stages/ReviewerStage";
-import { ExternalDefenseStage } from "./stages/ExternalDefenseStage";
-import { Seminar } from "../models/studentProcess";
-import { steps } from "../data/steps";
-import {
-  Stepper,
-  Step,
-  StepLabel,
-  Box,
-  Typography,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import { useProcessStore } from "../store/store";
+import { FC, useState, useCallback } from 'react'
+import { InternalDefenseStage } from './stages/InternalDefenseStage'
+import { MentorStage } from './stages/MentorStage'
+import { RegistrationStage } from './stages/RegistrationStage'
+import { ReviewerStage } from './stages/ReviewerStage'
+import { ExternalDefenseStage } from './stages/ExternalDefenseStage'
+import { Seminar } from '../models/studentProcess'
+import { steps } from '../data/steps'
+import { Stepper, Step, StepLabel, Box, Typography, Snackbar, Alert } from '@mui/material'
+import { useProcessStore } from '../store/store'
 
 interface ProgressTrackerProps {
-  currentStepIndex: number;
-  status: string;
-  studentProcess: Seminar;
+  currentStepIndex: number
+  status: string
+  studentProcess: Seminar
 }
 
-const ProgressTracker: FC<ProgressTrackerProps> = ({
-  currentStepIndex,
-  status,
-}) => {
-  const process = useProcessStore((state) => state.process);
-  const [currentStage, setCurrentStage] = useState(currentStepIndex);
-  const { stage_id } = process || { stage_id: 0 };
-  const [alertOpen, setAlertOpen] = useState(false);
+const ProgressTracker: FC<ProgressTrackerProps> = ({ currentStepIndex, status }) => {
+  const process = useProcessStore((state) => state.process)
+  const [currentStage, setCurrentStage] = useState(currentStepIndex)
+  const { stage_id } = process || { stage_id: 0 }
+  const [alertOpen, setAlertOpen] = useState(false)
 
   const goToNextStage = useCallback(() => {
-    setCurrentStage((prevStage) => prevStage + 1);
-  }, []);
+    setCurrentStage((prevStage) => prevStage + 1)
+  }, [])
 
   const goToPreviousStage = useCallback(() => {
-    setCurrentStage((prevStage) => prevStage - 1);
-  }, []);
+    setCurrentStage((prevStage) => prevStage - 1)
+  }, [])
 
   const handleAlertClose = () => {
-    setAlertOpen(false);
-  };
+    setAlertOpen(false)
+  }
 
   const handleStep = (step: number) => () => {
     if (step > stage_id) {
-      setAlertOpen(true);
+      setAlertOpen(true)
     } else {
-      setCurrentStage(step);
+      setCurrentStage(step)
     }
-  };
+  }
 
   const renderStage = () => {
     switch (currentStage) {
       case 0:
-        return <RegistrationStage onNext={goToNextStage} />;
+        return <RegistrationStage onNext={goToNextStage} />
       case 1:
-        return (
-          <MentorStage onNext={goToNextStage} onPrevious={goToPreviousStage} />
-        );
+        return <MentorStage onNext={goToNextStage} onPrevious={goToPreviousStage} />
       case 2:
-        return (
-          <ReviewerStage
-            onNext={goToNextStage}
-            onPrevious={goToPreviousStage}
-          />
-        );
+        return <ReviewerStage onNext={goToNextStage} onPrevious={goToPreviousStage} />
       case 3:
-        return (
-          <InternalDefenseStage
-            onPrevious={goToPreviousStage}
-            onNext={goToNextStage}
-          />
-        );
+        return <InternalDefenseStage onPrevious={goToPreviousStage} onNext={goToNextStage} />
       case 4:
-        return <ExternalDefenseStage onPrevious={goToPreviousStage} />;
+        return <ExternalDefenseStage onPrevious={goToPreviousStage} />
     }
-  };
+  }
 
   return (
     <Box className="bg-white m-5 p-5 shadow-md rounded-lg h-full">
@@ -107,18 +84,14 @@ const ProgressTracker: FC<ProgressTrackerProps> = ({
         open={alertOpen}
         autoHideDuration={6000}
         onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert
-          onClose={handleAlertClose}
-          severity="warning"
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleAlertClose} severity="warning" sx={{ width: '100%' }}>
           Debe completar la etapa actual para continuar.
         </Alert>
       </Snackbar>
     </Box>
-  );
-};
+  )
+}
 
-export default ProgressTracker;
+export default ProgressTracker

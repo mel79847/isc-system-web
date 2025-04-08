@@ -1,12 +1,12 @@
-import { FormContainer } from "./components/FormContainer";
-import ProcessForm from "./components/ProcessForm";
+import { FormContainer } from './components/FormContainer'
+import ProcessForm from './components/ProcessForm'
 
 const CreateProcessPage = () => {
   return (
     <FormContainer>
       <ProcessForm />
     </FormContainer>
-  );
-};
+  )
+}
 
-export default CreateProcessPage;
+export default CreateProcessPage

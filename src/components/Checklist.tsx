@@ -1,5 +1,5 @@
-import dayjs from "dayjs";
-import "dayjs/locale/es";
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 import {
   FaEnvelope,
   FaCalendarCheck,
@@ -7,25 +7,25 @@ import {
   FaUserSecret,
   // FaUserShield,
   // FaUserGraduate,
-} from "react-icons/fa";
-import { Seminar } from "../models/studentProcess";
-import { useProcessStore } from "../store/store";
+} from 'react-icons/fa'
+import { Seminar } from '../models/studentProcess'
+import { useProcessStore } from '../store/store'
 
 const Checklist = () => {
-  const process = useProcessStore((state) => state.process);
-  let formattedDate = "";
+  const process = useProcessStore((state) => state.process)
+  let formattedDate = ''
   if (process) {
     formattedDate = process.tutor_approval_date
-      ? dayjs(process.tutor_approval_date).format("DD/MM/YYYY")
-      : "";
+      ? dayjs(process.tutor_approval_date).format('DD/MM/YYYY')
+      : ''
   }
 
   const {
     student_name: studentName,
     project_name: titleProject,
     modality_name: mode,
-  } = process as Seminar;
-  const telegramLink = `https://t.me/+59176517816`;
+  } = process as Seminar
+  const telegramLink = `https://t.me/+59176517816`
   return (
     <div className="h-full bg-white rounded-lg shadow-lg p-4 m-4">
       <div className="flex items-center justify-between">
@@ -71,7 +71,7 @@ const Checklist = () => {
             <FaUserTie className="text-blue-800" />
           </span>
           <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Tutor: {process?.tutor_degree}. {process?.tutor_fullname || " "}
+            Tutor: {process?.tutor_degree}. {process?.tutor_fullname || ' '}
           </h3>
           {process?.tutor_approval ? (
             <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
@@ -86,8 +86,7 @@ const Checklist = () => {
             <FaUserSecret className="text-blue-800" />
           </span>
           <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Revisor: {process?.reviewer_degree}.{" "}
-            {process?.reviewer_fullname || " "}
+            Revisor: {process?.reviewer_degree}. {process?.reviewer_fullname || ' '}
           </h3>
           {process?.reviewer_approval ? (
             <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
@@ -133,7 +132,7 @@ const Checklist = () => {
         </li> */}
       </ol>
     </div>
-  );
-};
+  )
+}
 
-export default Checklist;
+export default Checklist

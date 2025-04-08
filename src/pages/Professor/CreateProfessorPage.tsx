@@ -1,92 +1,83 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import {
-  Button,
-  Divider,
-  Grid,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { ProfessorInterface } from "../../services/models/Professor";
-import { createProfessor } from "../../services/mentorsService";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import ErrorDialog from "../../components/common/ErrorDialog";
-import SuccessDialog from "../../components/common/SucessDialog";
-import LoadingOverlay from "../../components/common/Loading";
+import React, { useState } from 'react'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { Button, Divider, Grid, MenuItem, TextField, Typography } from '@mui/material'
+import { ProfessorInterface } from '../../services/models/Professor'
+import { createProfessor } from '../../services/mentorsService'
+import { FormContainer } from '../CreateGraduation/components/FormContainer'
+import ErrorDialog from '../../components/common/ErrorDialog'
+import SuccessDialog from '../../components/common/SucessDialog'
+import LoadingOverlay from '../../components/common/Loading'
 const validationSchema = Yup.object({
-  name: Yup.string().required("El nombre completo es obligatorio"),
-  lastname: Yup.string().required("El apellido es obligatorio"),
-  mothername: Yup.string().required("El apellido materno es obligatorio"),
+  name: Yup.string().required('El nombre completo es obligatorio'),
+  lastname: Yup.string().required('El apellido es obligatorio'),
+  mothername: Yup.string().required('El apellido materno es obligatorio'),
   email: Yup.string()
-    .email("Ingrese un correo electrónico válido")
-    .required("El correo electrónico es obligatorio"),
+    .email('Ingrese un correo electrónico válido')
+    .required('El correo electrónico es obligatorio'),
   phone: Yup.string()
     .matches(
       /^\+\d{1,3}\s\d+$/,
-      "El número de teléfono debe tener una extensión válida y un número de teléfono",
+      'El número de teléfono debe tener una extensión válida y un número de teléfono'
     )
-    .required("El número de teléfono es requerido"),
-  degree: Yup.string().required("El título académico es obligatorio"),
-  code: Yup.number().required("El código de docente es obligatorio"),
-});
+    .required('El número de teléfono es requerido'),
+  degree: Yup.string().required('El título académico es obligatorio'),
+  code: Yup.number().required('El código de docente es obligatorio'),
+})
 
 const CreateProfessorPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [successDialog, setSuccessDialog] = useState(false);
-  const [errorDialog, setErrorDialog] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  const [successDialog, setSuccessDialog] = useState(false)
+  const [errorDialog, setErrorDialog] = useState(false)
 
   const sucessDialogClose = () => {
-    setSuccessDialog(false);
-    formik.resetForm();
-  };
+    setSuccessDialog(false)
+    formik.resetForm()
+  }
 
   const errorDialogClose = () => {
-    setErrorDialog(false);
-  };
+    setErrorDialog(false)
+  }
 
   const formik = useFormik<ProfessorInterface>({
     initialValues: {
-      name: "",
-      lastname: "",
-      mothername: "",
-      email: "",
-      phone: "",
-      degree: "",
-      code: "",
+      name: '',
+      lastname: '',
+      mothername: '',
+      email: '',
+      phone: '',
+      degree: '',
+      code: '',
     },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
+      setLoading(true)
       try {
-        await createProfessor(values);
-        setMessage("Profesor creado con éxito");
-        setSuccessDialog(true);
+        await createProfessor(values)
+        setMessage('Profesor creado con éxito')
+        setSuccessDialog(true)
       } catch (error) {
-        setMessage("Error al crear el docente");
-        setErrorDialog(true);
+        setMessage('Error al crear el docente')
+        setErrorDialog(true)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
-  });
+  })
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const formattedValue = value
-      .replace(/[^+\d\s]/g, '')
-      .replace(/(\+\d{1,3})\s?(\d{0,})/, '$1 $2');
-    formik.setFieldValue('phone', formattedValue);
-  };
+    const { value } = event.target
+    const formattedValue = value.replace(/[^+\d\s]/g, '').replace(/(\+\d{1,3})\s?(\d{0,})/, '$1 $2')
+    formik.setFieldValue('phone', formattedValue)
+  }
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const value = event.target.value
     if (/^[0-9]*$/.test(value)) {
-      formik.setFieldValue("code", value);
+      formik.setFieldValue('code', value)
     }
-  };
+  }
 
   return (
     <FormContainer>
@@ -95,7 +86,7 @@ const CreateProfessorPage = () => {
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
             <Typography variant="h4">Crear Nuevo Docente</Typography>
-            <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
+            <Typography variant="body2" sx={{ fontSize: 14, color: 'gray' }}>
               Ingrese los datos del docente a continuación.
             </Typography>
             <Divider flexItem sx={{ mt: 2, mb: 2 }} />
@@ -131,13 +122,8 @@ const CreateProfessorPage = () => {
                       fullWidth
                       value={formik.values.lastname}
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.lastname &&
-                        Boolean(formik.errors.lastname)
-                      }
-                      helperText={
-                        formik.touched.lastname && formik.errors.lastname
-                      }
+                      error={formik.touched.lastname && Boolean(formik.errors.lastname)}
+                      helperText={formik.touched.lastname && formik.errors.lastname}
                       margin="normal"
                     />
                   </Grid>
@@ -152,13 +138,8 @@ const CreateProfessorPage = () => {
                       fullWidth
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.mothername &&
-                        Boolean(formik.errors.mothername)
-                      }
-                      helperText={
-                        formik.touched.mothername && formik.errors.mothername
-                      }
+                      error={formik.touched.mothername && Boolean(formik.errors.mothername)}
+                      helperText={formik.touched.mothername && formik.errors.mothername}
                       margin="normal"
                     />
                   </Grid>
@@ -250,17 +231,17 @@ const CreateProfessorPage = () => {
       <SuccessDialog
         open={successDialog}
         onClose={sucessDialogClose}
-        title={"Docente Creado!"}
-        subtitle={"El docente ha sido creado con éxito."}
+        title={'Docente Creado!'}
+        subtitle={'El docente ha sido creado con éxito.'}
       />
       <ErrorDialog
         open={errorDialog}
         onClose={errorDialogClose}
-        title={"¡Vaya!"}
+        title={'¡Vaya!'}
         subtitle={message}
       />
     </FormContainer>
-  );
-};
+  )
+}
 
-export default CreateProfessorPage;
+export default CreateProfessorPage

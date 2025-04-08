@@ -1,29 +1,27 @@
-import { Grid, Box, Container } from "@mui/material";
-import { useState, useEffect } from "react";
-import GraphicHours from "./GraphicHours";
-import HoursCard from "../../components/common/HoursCard";
-import { Interns } from "../../models/internsInterface";
-import {
-  getInternByUserIdService,
-} from "../../services/internService";
-import { useUserStore } from "../../store/store";
-import SimpleHoursCard from "../../components/common/SimpleHoursCard";
-import { getCurrentSemester } from "../../utils/general";
+import { Grid, Box, Container } from '@mui/material'
+import { useState, useEffect } from 'react'
+import GraphicHours from './GraphicHours'
+import HoursCard from '../../components/common/HoursCard'
+import { Interns } from '../../models/internsInterface'
+import { getInternByUserIdService } from '../../services/internService'
+import { useUserStore } from '../../store/store'
+import SimpleHoursCard from '../../components/common/SimpleHoursCard'
+import { getCurrentSemester } from '../../utils/general'
 
 function HoursPage() {
-  const [intern, setIntern] = useState<Interns>();
-  const currentSemester = getCurrentSemester();
-  const user = useUserStore((state) => state.user);
+  const [intern, setIntern] = useState<Interns>()
+  const currentSemester = getCurrentSemester()
+  const user = useUserStore((state) => state.user)
   const fetchIntern = async () => {
-    const res = await getInternByUserIdService(user!.id);
+    const res = await getInternByUserIdService(user!.id)
     if (res.success) {
-      setIntern(res.data);
+      setIntern(res.data)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchIntern();
-  }, []);
+    fetchIntern()
+  }, [])
 
   return (
     <Container fixed>
@@ -46,11 +44,7 @@ function HoursPage() {
                 title="Horas Realizadas"
                 subtitle=""
                 count={intern?.completed_hours || 0}
-                percentage={
-                  ((intern?.completed_hours || 0) /
-                    (intern?.total_hours || 1)) *
-                  100
-                }
+                percentage={((intern?.completed_hours || 0) / (intern?.total_hours || 1)) * 100}
               />
             </Grid>
             <Grid item xs={12}>
@@ -60,22 +54,19 @@ function HoursPage() {
                 title="Horas Faltantes"
                 subtitle=""
                 count={intern?.pending_hours || 0}
-                percentage={
-                  ((intern?.pending_hours || 0) / (intern?.total_hours || 1)) *
-                  100
-                }
+                percentage={((intern?.pending_hours || 0) / (intern?.total_hours || 1)) * 100}
               />
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={16} md={6}>
-          <Box sx={{ width: "100%", padding: "20px" }}>
+          <Box sx={{ width: '100%', padding: '20px' }}>
             <GraphicHours />
           </Box>
         </Grid>
       </Grid>
     </Container>
-  );
+  )
 }
 
-export default HoursPage;
+export default HoursPage

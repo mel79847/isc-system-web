@@ -1,23 +1,23 @@
-import { useLoaderData } from "react-router-dom";
-import Checklist from "../../components/Checklist";
-import ProgressTracker from "../../components/ProgressTracker";
-import { Seminar } from "../../models/studentProcess";
-import { useProcessStore } from "../../store/store";
-import { Grid } from "@mui/material";
-import { useEffect } from "react";
-import { steps } from "../../data/steps";
+import { useLoaderData } from 'react-router-dom'
+import Checklist from '../../components/Checklist'
+import ProgressTracker from '../../components/ProgressTracker'
+import { Seminar } from '../../models/studentProcess'
+import { useProcessStore } from '../../store/store'
+import { Grid } from '@mui/material'
+import { useEffect } from 'react'
+import { steps } from '../../data/steps'
 
 const ProcessInfoPage = () => {
-  const updateProcess = useProcessStore((state) => state.setProcess);
-  const process = useLoaderData() as { data: Seminar };
-  const { data } = process;
-  updateProcess(data);
+  const updateProcess = useProcessStore((state) => state.setProcess)
+  const process = useLoaderData() as { data: Seminar }
+  const { data } = process
+  updateProcess(data)
 
   useEffect(() => {
-    updateProcess(data);
-  }, [data, updateProcess]);
+    updateProcess(data)
+  }, [data, updateProcess])
 
-  const stageProcess = data.stage_id;
+  const stageProcess = data.stage_id
 
   return (
     <Grid container spacing={2}>
@@ -32,7 +32,7 @@ const ProcessInfoPage = () => {
         <Checklist />
       </Grid>
     </Grid>
-  );
-};
+  )
+}
 
-export default ProcessInfoPage;
+export default ProcessInfoPage

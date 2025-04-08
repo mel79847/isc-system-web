@@ -1,8 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import publicRoutes from "./routes/PublicRoutes";
-import protectedRoutes from "./routes/ProtectedRoutes";
-import AuthGuard from "./routes/AuthGuard";
+import publicRoutes from './routes/PublicRoutes'
+import protectedRoutes from './routes/ProtectedRoutes'
+import AuthGuard from './routes/AuthGuard'
 
 const router = createBrowserRouter([
   ...publicRoutes,
@@ -10,10 +10,10 @@ const router = createBrowserRouter([
     element: <AuthGuard />,
     children: protectedRoutes,
   },
-]);
+])
 
 function App() {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />
 }
 
-export default App;
+export default App

@@ -1,40 +1,40 @@
-import { useState, useEffect } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { styled } from "@mui/system";
-import { useCarrerStore } from "../../store/carrerStore";
-import { sendEmail } from "../../services/emailService";
-import { useProcessStore } from "../../store/store";
+import { useState, useEffect } from 'react'
+import { Box, Button, TextField, Typography } from '@mui/material'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+import { styled } from '@mui/system'
+import { useCarrerStore } from '../../store/carrerStore'
+import { sendEmail } from '../../services/emailService'
+import { useProcessStore } from '../../store/store'
 
 const Root = styled(Box)(({ theme }) => ({
-  width: "100%",
+  width: '100%',
   maxWidth: 800,
-  margin: "auto",
+  margin: 'auto',
   marginTop: theme.spacing(5),
-}));
+}))
 
 const quillModules = {
   toolbar: [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["bold", "italic", "underline"],
+    [{ header: '1' }, { header: '2' }, { font: [] }],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['bold', 'italic', 'underline'],
     [{ color: [] }, { background: [] }],
     [{ align: [] }],
-    ["link", "image", "video"],
-    ["clean"],
+    ['link', 'image', 'video'],
+    ['clean'],
   ],
-};
+}
 
 const EmailSender = () => {
-  const process = useProcessStore((state) => state.process);
-  const carrer = useCarrerStore((state) => state.carrer);
-  const [emailSent, setEmailSent] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [error, setError] = useState<string>("");
+  const process = useProcessStore((state) => state.process)
+  const carrer = useCarrerStore((state) => state.carrer)
+  const [emailSent, setEmailSent] = useState(false)
+  const [isSending, setIsSending] = useState(false)
+  const [error, setError] = useState<string>('')
   const [subject, setSubject] = useState(
-    `Revision de Carpeta - ${carrer?.shortName} - ${process?.student_fullname}`,
-  );
+    `Revision de Carpeta - ${carrer?.shortName} - ${process?.student_fullname}`
+  )
   const defaultEmailContent = `
     <p><strong><u>ALUMNO 1</u></strong></p>
     <p><strong>Nombre:</strong> ${process?.student_fullname}</p>
@@ -42,41 +42,37 @@ const EmailSender = () => {
     <p><strong>Celular:</strong> ${process?.student_phone}</p>
     <p><strong>Email:</strong> <a href="mailto:${process?.student_email}">${process?.student_email}</a></p>
     <p><strong>Modalidad:</strong> ${process?.modality_name}</p>
-  `;
-  const [emailContent, setEmailContent] = useState(defaultEmailContent);
+  `
+  const [emailContent, setEmailContent] = useState(defaultEmailContent)
 
   useEffect(() => {
-    setEmailContent(defaultEmailContent);
-    setSubject(
-      `Revision de Carpeta - ${carrer?.shortName} - ${process?.student_fullname}`,
-    );
-  }, [process, carrer?.shortName]);
+    setEmailContent(defaultEmailContent)
+    setSubject(`Revision de Carpeta - ${carrer?.shortName} - ${process?.student_fullname}`)
+  }, [process, carrer?.shortName])
 
   const handleEmailContentChange = (content: string) => {
-    setEmailContent(content);
-  };
+    setEmailContent(content)
+  }
 
   const handleSendEmail = async () => {
-    setIsSending(true);
-    setError("");
+    setIsSending(true)
+    setError('')
     try {
       const response = await sendEmail({
-        email: process?.student_email || "",
+        email: process?.student_email || '',
         subject,
         textHtml: emailContent,
-      });
+      })
       if (!response.success) {
-        throw new Error("Error al enviar el correo");
+        throw new Error('Error al enviar el correo')
       }
-      setEmailSent(true);
+      setEmailSent(true)
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Error al enviar el correo",
-      );
+      setError(err instanceof Error ? err.message : 'Error al enviar el correo')
     } finally {
-      setIsSending(false);
+      setIsSending(false)
     }
-  };
+  }
 
   return (
     <Root>
@@ -112,11 +108,11 @@ const EmailSender = () => {
           onClick={handleSendEmail}
           disabled={isSending}
         >
-          {isSending ? "Enviando..." : "Enviar Correo"}
+          {isSending ? 'Enviando...' : 'Enviar Correo'}
         </Button>
       )}
     </Root>
-  );
-};
+  )
+}
 
-export default EmailSender;
+export default EmailSender

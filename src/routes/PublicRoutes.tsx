@@ -1,18 +1,18 @@
-import { Navigate } from "react-router-dom";
-import LoginPage from "../pages/auth/LoginPage";
-import ErrorPage from "../pages/ErrorPage";
+import { Navigate } from 'react-router-dom'
+import LoginPage from '../pages/auth/LoginPage'
+import ErrorPage from '../pages/ErrorPage'
 
 const publicRoutes = [
   {
-    path: "/login",
+    path: '/login',
     element: <LoginPage />,
   },
   {
-    path: "forgotPassword",
+    path: 'forgotPassword',
     element: <LoginPage />,
   },
   {
-    path: "/singup",
+    path: '/singup',
     element: <LoginPage />,
   },
   {
@@ -22,7 +22,7 @@ const publicRoutes = [
   {
     path: '/',
     element: <Navigate to="/login" replace />,
-  }
-];
+  },
+]
 
-export default publicRoutes;
+export default publicRoutes

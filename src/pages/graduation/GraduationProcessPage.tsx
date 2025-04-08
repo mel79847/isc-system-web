@@ -1,98 +1,99 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { useLoaderData } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa";
-import { Student } from "../../models/studentInterface";
-import { getPermissionById } from "../../services/permissionsService";
-import { Permission } from "../../models/permissionInterface";
-import { HasPermission } from "../../helper/permissions";
-import { Box, IconButton, Paper } from "@mui/material"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { ChangeEvent, useEffect, useState } from 'react'
+import { useLoaderData } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { FaSearch } from 'react-icons/fa'
+import { Student } from '../../models/studentInterface'
+import { getPermissionById } from '../../services/permissionsService'
+import { Permission } from '../../models/permissionInterface'
+import { HasPermission } from '../../helper/permissions'
+import { Box, IconButton, Paper } from '@mui/material'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 const GraduationProcessPage = () => {
-  const [filteredData, setFilteredData] = useState<Student[] | []>([]);
-  const [search, setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState<Student[] | []>([])
+  const [search, setSearch] = useState('')
   const studentsResponse = useLoaderData() as {
-    data: Student[];
-    message: string;
-  };
-  const { data: students } = studentsResponse;
-  const navigate = useNavigate();
-  const [createProcess, setCreateProcess] = useState<Permission>();
+    data: Student[]
+    message: string
+  }
+  const { data: students } = studentsResponse
+  const navigate = useNavigate()
+  const [createProcess, setCreateProcess] = useState<Permission>()
 
   useEffect(() => {
     const fetchCreateProcess = async () => {
-      const response = await getPermissionById(3);
-      setCreateProcess(response.data[0]);
-    };
-    fetchCreateProcess();
-  }, []);
+      const response = await getPermissionById(3)
+      setCreateProcess(response.data[0])
+    }
+    fetchCreateProcess()
+  }, [])
 
   useEffect(() => {
     const results = students.filter((item: Student) =>
-      item.student_name.toLowerCase().includes(search.toLowerCase()),
-    );
-    setFilteredData(results);
-  }, [search, students]);
+      item.student_name.toLowerCase().includes(search.toLowerCase())
+    )
+    setFilteredData(results)
+  }, [search, students])
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+    setSearch(e.target.value)
+  }
 
   const goToCreateProcessPage = () => {
-    navigate("/createProcess");
-  };
+    navigate('/createProcess')
+  }
 
   const tableHeaders: GridColDef[] = [
     {
-      field: "student_name",
-      headerName: "Estudiante",
-      headerAlign: "center",
-      align: "center",
+      field: 'student_name',
+      headerName: 'Estudiante',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
     },
     {
-      field: "period",
-      headerName: "Periodo",
-      headerAlign: "center",
-      align: "center",
+      field: 'period',
+      headerName: 'Periodo',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
     },
     {
-      field: "tutor_name",
-      headerName: "Tutor",
-      headerAlign: "center",
-      align: "center",
+      field: 'tutor_name',
+      headerName: 'Tutor',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
     },
     {
-      field: "reviewer_name",
-      headerName: "Revisor",
-      headerAlign: "center",
-      align: "center",
+      field: 'reviewer_name',
+      headerName: 'Revisor',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
     },
     {
-      field: "actions",
-      headerName: "Acciones",
-      headerAlign: "center",
-      align: "center",
+      field: 'actions',
+      headerName: 'Acciones',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
       renderCell: (params) => (
         <div>
-          {(
+          {
             <IconButton
               color="primary"
               aria-label="ver"
               onClick={() => navigate(`/studentProfile/${params.row.id}`)}
             >
               <VisibilityIcon />
-            </IconButton>)}
+            </IconButton>
+          }
         </div>
       ),
-    }
-  ];
+    },
+  ]
 
   return (
     <>
@@ -113,10 +114,12 @@ const GraduationProcessPage = () => {
             onChange={handleSearchChange}
           />
         </div>
-        {HasPermission(createProcess?.name || "") && (<button className="btn z-50 relative" onClick={goToCreateProcessPage}>
-          {" "}
-          Crear Proceso de Graduación
-        </button>)}
+        {HasPermission(createProcess?.name || '') && (
+          <button className="btn z-50 relative" onClick={goToCreateProcessPage}>
+            {' '}
+            Crear Proceso de Graduación
+          </button>
+        )}
       </div>
 
       {/* Tabla de Datos */}
@@ -131,11 +134,11 @@ const GraduationProcessPage = () => {
               },
             }}
             classes={{
-              root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
-              cell: "bg-white dark:bg-gray-800",
-              row: "bg-white dark:bg-gray-800",
-              columnHeaderTitle: "!font-bold text-center",
+              root: 'bg-white dark:bg-gray-800',
+              columnHeader: 'bg-gray-200 dark:bg-gray-800 ',
+              cell: 'bg-white dark:bg-gray-800',
+              row: 'bg-white dark:bg-gray-800',
+              columnHeaderTitle: '!font-bold text-center',
             }}
             pageSizeOptions={[5, 10, 25]}
             disableRowSelectionOnClick
@@ -143,7 +146,7 @@ const GraduationProcessPage = () => {
         </Paper>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default GraduationProcessPage;
+export default GraduationProcessPage

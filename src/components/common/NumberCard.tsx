@@ -1,14 +1,14 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
-import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import { Card, CardContent, Grid, Typography } from '@mui/material'
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
+import 'react-circular-progressbar/dist/styles.css'
 
 interface NumberCardProps {
-  backgroundColor: string;
-  textColor: string;
-  title: string;
-  subtitle: string;
-  count: number;
-  percentage: number;
+  backgroundColor: string
+  textColor: string
+  title: string
+  subtitle: string
+  count: number
+  percentage: number
 }
 
 function NumberCard({
@@ -19,17 +19,13 @@ function NumberCard({
   count,
   percentage,
 }: NumberCardProps) {
-  const roundedPercentage = Math.round(percentage);
+  const roundedPercentage = Math.round(percentage)
   return (
     <Card sx={{ maxWidth: 345, background: backgroundColor, borderRadius: 3 }}>
       <CardContent>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item xs={6}>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ color: textColor, fontWeight: "bold" }}
-            >
+            <Typography variant="h5" component="div" sx={{ color: textColor, fontWeight: 'bold' }}>
               {count}
             </Typography>
             <Typography
@@ -37,16 +33,13 @@ function NumberCard({
                 fontSize: 14,
                 color: textColor,
                 mb: 1.5,
-                fontWeight: "bold",
+                fontWeight: 'bold',
               }}
               color="text.secondary"
             >
               {title}
             </Typography>
-            <Typography
-              sx={{ fontSize: 12, color: textColor, mb: 1.5 }}
-              color="text.secondary"
-            >
+            <Typography sx={{ fontSize: 12, color: textColor, mb: 1.5 }} color="text.secondary">
               {subtitle}
             </Typography>
           </Grid>
@@ -54,23 +47,23 @@ function NumberCard({
             item
             xs={6}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 100,
             }}
           >
-            <div style={{ width: "70%", height: 100 }}>
+            <div style={{ width: '70%', height: 100 }}>
               <CircularProgressbar
                 value={roundedPercentage}
                 text={`${roundedPercentage}%`}
                 background
                 backgroundPadding={6}
                 styles={buildStyles({
-                  backgroundColor: "#FFFFFF",
-                  textColor: "#000",
+                  backgroundColor: '#FFFFFF',
+                  textColor: '#000',
                   pathColor: backgroundColor,
-                  trailColor: "#FFFFFF",
+                  trailColor: '#FFFFFF',
                 })}
               />
             </div>
@@ -78,7 +71,7 @@ function NumberCard({
         </Grid>
       </CardContent>
     </Card>
-  );
+  )
 }
 
-export default NumberCard;
+export default NumberCard

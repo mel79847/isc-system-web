@@ -1,47 +1,47 @@
-import { Container, Grid } from "@mui/material";
-import NumberCard from "../../components/common/NumberCard";
-import AreaChartCard from "../../components/common/AreaChart";
-import CalendarCard from "../../components/common/CalendarComponent";
-import { useEffect, useState } from "react";
-import { getStats } from "../../services/statsService";
+import { Container, Grid } from '@mui/material'
+import NumberCard from '../../components/common/NumberCard'
+import AreaChartCard from '../../components/common/AreaChart'
+import CalendarCard from '../../components/common/CalendarComponent'
+import { useEffect, useState } from 'react'
+import { getStats } from '../../services/statsService'
 const data = [
-  { period: "2021 Q1", approved: 200 },
-  { period: "2021 Q2", approved: 450 },
-  { period: "2021 Q3", approved: 300 },
-  { period: "2021 Q4", approved: 500 },
-  { period: "2022 Q1", approved: 600 },
-  { period: "2022 Q2", approved: 700 },
-];
+  { period: '2021 Q1', approved: 200 },
+  { period: '2021 Q2', approved: 450 },
+  { period: '2021 Q3', approved: 300 },
+  { period: '2021 Q4', approved: 500 },
+  { period: '2022 Q1', approved: 600 },
+  { period: '2022 Q2', approved: 700 },
+]
 const myEventsList = [
   {
-    title: "Conferencia sobre Graduación",
+    title: 'Conferencia sobre Graduación',
     start: new Date(2023, 9, 20, 10, 0, 0),
     end: new Date(2023, 9, 20, 15, 0, 0),
   },
   {
-    title: "Revisión de Tesis",
+    title: 'Revisión de Tesis',
     start: new Date(2023, 9, 22, 9, 30, 0),
     end: new Date(2023, 9, 22, 12, 0, 0),
   },
-];
+]
 
 interface Stats {
-  num_tutorias_progreso: number;
-  num_tutorias_aprobadas: number;
-  num_reviewers_progreso: number;
-  num_reviewers_aprobados: number;
-  total_procesos: number;
-  num_procesos_finalizados: number;
+  num_tutorias_progreso: number
+  num_tutorias_aprobadas: number
+  num_reviewers_progreso: number
+  num_reviewers_aprobados: number
+  total_procesos: number
+  num_procesos_finalizados: number
 }
 
 export const DashboardPage = () => {
   // get stats from the server
-  const [stats, setStats] = useState<Stats>();
+  const [stats, setStats] = useState<Stats>()
   useEffect(() => {
     getStats().then((result) => {
-      setStats(result.data);
-    });
-  }, []);
+      setStats(result.data)
+    })
+  }, [])
 
   return (
     <Container fixed>
@@ -49,20 +49,18 @@ export const DashboardPage = () => {
         <Grid item xs={12}>
           <Grid container spacing={3}>
             <Grid item xs={4}>
-              <Grid container spacing={3} marginTop={"15px"}>
+              <Grid container spacing={3} marginTop={'15px'}>
                 <Grid item xs={12}>
                   <NumberCard
                     backgroundColor="#FAAA1E"
                     textColor="#ffffff"
                     title="Procesos Finalizados"
                     subtitle={`${
-                      (stats?.total_procesos || 0) -
-                      (stats?.num_procesos_finalizados || 0)
+                      (stats?.total_procesos || 0) - (stats?.num_procesos_finalizados || 0)
                     } en curso`}
                     count={stats?.num_procesos_finalizados || 0}
                     percentage={
-                      ((stats?.num_procesos_finalizados || 0) * 100) /
-                      (stats?.total_procesos || 1)
+                      ((stats?.num_procesos_finalizados || 0) * 100) / (stats?.total_procesos || 1)
                     }
                   />
                 </Grid>
@@ -74,8 +72,7 @@ export const DashboardPage = () => {
                     subtitle={`${stats?.num_tutorias_progreso || 0} en curso`}
                     count={stats?.num_tutorias_aprobadas || 0}
                     percentage={
-                      ((stats?.num_tutorias_aprobadas || 0) * 100) /
-                      (stats?.total_procesos || 1)
+                      ((stats?.num_tutorias_aprobadas || 0) * 100) / (stats?.total_procesos || 1)
                     }
                   />
                 </Grid>
@@ -87,8 +84,7 @@ export const DashboardPage = () => {
                     subtitle={`${stats?.num_reviewers_progreso || 0} en curso`}
                     count={stats?.num_reviewers_aprobados || 0}
                     percentage={
-                      ((stats?.num_reviewers_aprobados || 0) * 100) /
-                      (stats?.total_procesos || 1)
+                      ((stats?.num_reviewers_aprobados || 0) * 100) / (stats?.total_procesos || 1)
                     }
                   />
                 </Grid>
@@ -100,12 +96,9 @@ export const DashboardPage = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <AreaChartCard
-            title="Estudiantes Aprobados por Período"
-            data={data}
-          />
+          <AreaChartCard title="Estudiantes Aprobados por Período" data={data} />
         </Grid>
       </Grid>
     </Container>
-  );
-};
+  )
+}

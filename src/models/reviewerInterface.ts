@@ -1,4 +1,4 @@
 export interface Reviewer {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }

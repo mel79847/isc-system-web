@@ -1,113 +1,101 @@
-import { FC, useCallback, useState } from "react";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-import { Box, Button, Typography, Grid } from "@mui/material";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { FC, useCallback, useState } from 'react'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
+import { Box, Button, Typography, Grid } from '@mui/material'
+import ModeEditIcon from '@mui/icons-material/ModeEdit'
 
-import MentorSelection from "./MentorSelection";
-import DateSelection from "./DateSelection";
-import DocumentCheckbox from "./DocumentCheckbox";
-import LoadingBackdrop from "../common/LoadingBackdrop";
-import ConfirmModal from "../common/ConfirmModal";
-import { steps } from "../../data/steps";
-import { useProcessStore } from "../../store/store";
-import { updateProcess } from "../../services/processServicer";
-import { useCarrerStore } from "../../store/carrerStore";
-import useMentorFormik from "../../hooks/useMentorFormik";
-import { STAGE } from "../../constants/stages";
+import MentorSelection from './MentorSelection'
+import DateSelection from './DateSelection'
+import DocumentCheckbox from './DocumentCheckbox'
+import LoadingBackdrop from '../common/LoadingBackdrop'
+import ConfirmModal from '../common/ConfirmModal'
+import { steps } from '../../data/steps'
+import { useProcessStore } from '../../store/store'
+import { updateProcess } from '../../services/processServicer'
+import { useCarrerStore } from '../../store/carrerStore'
+import useMentorFormik from '../../hooks/useMentorFormik'
+import { STAGE } from '../../constants/stages'
 
-const CURRENT_STAGE = STAGE.MENTOR;
+const CURRENT_STAGE = STAGE.MENTOR
 
 interface InternalDefenseStageProps {
-  onPrevious: () => void;
-  onNext: () => void;
+  onPrevious: () => void
+  onNext: () => void
 }
 
-export const MentorStage: FC<InternalDefenseStageProps> = ({
-  onPrevious,
-  onNext,
-}) => {
-  const process = useProcessStore((state) => state.process);
-  const carrer = useCarrerStore((state) => state.carrer);
-  const setProcess = useProcessStore((state) => state.setProcess);
+export const MentorStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext }) => {
+  const process = useProcessStore((state) => state.process)
+  const carrer = useCarrerStore((state) => state.carrer)
+  const setProcess = useProcessStore((state) => state.setProcess)
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(
-    CURRENT_STAGE < (process?.stage_id || 0),
-  );
+  const [loading, setLoading] = useState<boolean>(false)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [editMode, setEditMode] = useState<boolean>(CURRENT_STAGE < (process?.stage_id || 0))
 
   const { formik, canApproveStage } = useMentorFormik(process, () => {
     if (canApproveStage) {
-      setShowModal(true);
+      setShowModal(true)
     } else {
-      saveStage();
+      saveStage()
     }
-  });
+  })
 
   const saveStage = useCallback(async () => {
-    if (!process) return;
+    if (!process) return
 
-    setLoading(true);
+    setLoading(true)
 
-    const {
-      mentor,
-      mentorName,
-      tutorDesignationLetterSubmitted,
-      date_tutor_assignament,
-    } = formik.values;
+    const { mentor, mentorName, tutorDesignationLetterSubmitted, date_tutor_assignament } =
+      formik.values
 
     const updatedProcess = {
       ...process,
       tutor_letter: tutorDesignationLetterSubmitted,
       tutor_id: Number(mentor),
       tutor_name: mentorName,
-      date_tutor_assignament: date_tutor_assignament
-        ? dayjs(date_tutor_assignament)
-        : null,
+      date_tutor_assignament: date_tutor_assignament ? dayjs(date_tutor_assignament) : null,
       ...(canApproveStage && {
         stage_id: 2,
         tutor_approval: true,
         tutor_approval_date: dayjs(),
       }),
-    };
+    }
     try {
-      await updateProcess(updatedProcess);
-      setProcess(updatedProcess);
+      await updateProcess(updatedProcess)
+      setProcess(updatedProcess)
       if (canApproveStage) {
-        onNext();
+        onNext()
       }
     } catch (error) {
-      console.error("Error updating process:", error);
+      console.error('Error updating process:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [process, formik.values, setProcess, onNext, canApproveStage]);
+  }, [process, formik.values, setProcess, onNext, canApproveStage])
 
   const handleModalAction = useCallback(() => {
-    saveStage();
-    setShowModal(false);
-  }, [saveStage]);
+    saveStage()
+    setShowModal(false)
+  }, [saveStage])
 
   const renderFieldError = (fieldName: string) => {
-    const touched = formik.touched[fieldName as keyof typeof formik.touched];
-    const error = formik.errors[fieldName as keyof typeof formik.errors];
+    const touched = formik.touched[fieldName as keyof typeof formik.touched]
+    const error = formik.errors[fieldName as keyof typeof formik.errors]
     return touched && error ? (
       <Typography color="error" variant="caption">
         {String(error)}
       </Typography>
-    ) : null;
-  };
+    ) : null
+  }
 
   const editForm = () => {
-    setEditMode(false);
-  };
+    setEditMode(false)
+  }
 
   return (
     <>
       <Typography variant="h6" gutterBottom>
-        Etapa 2: Seleccionar Tutor{" "}
-        <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
+        Etapa 2: Seleccionar Tutor <ModeEditIcon onClick={editForm} style={{ cursor: 'pointer' }} />
       </Typography>
 
       <form onSubmit={formik.handleSubmit} className="mx-16">
@@ -118,29 +106,15 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({
             process={process}
             renderFieldError={renderFieldError}
           />
-          <DateSelection
-            disabled={editMode}
-            formik={formik}
-            renderFieldError={renderFieldError}
-          />
+          <DateSelection disabled={editMode} formik={formik} renderFieldError={renderFieldError} />
         </Grid>
-        <DocumentCheckbox
-          disabled={editMode}
-          formik={formik}
-          carrer={carrer}
-          process={process}
-        />
+        <DocumentCheckbox disabled={editMode} formik={formik} carrer={carrer} process={process} />
         <Box display="flex" justifyContent="space-between" mt={4}>
-          <Button
-            type="button"
-            onClick={onPrevious}
-            variant="contained"
-            color="secondary"
-          >
+          <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
             Anterior
           </Button>
           <Button type="submit" variant="contained" color="primary">
-            {canApproveStage ? "Aprobar Etapa" : "Guardar"}
+            {canApproveStage ? 'Aprobar Etapa' : 'Guardar'}
           </Button>
         </Box>
       </form>
@@ -155,5 +129,5 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({
       )}
       <LoadingBackdrop loading={loading} canApproveStage={canApproveStage} />
     </>
-  );
-};
+  )
+}

@@ -1,8 +1,8 @@
-import { Role } from "./roleInterface";
+import { Role } from './roleInterface'
 
 export interface RoleTableProps {
-    roles: Role[];
-    selectedRole : string;
-    onRoleSelect: (roleName: string) => void;
-    setIsModalVisible : any
-    }
+  roles: Role[]
+  selectedRole: string
+  onRoleSelect: (roleName: string) => void
+  setIsModalVisible: any
+}

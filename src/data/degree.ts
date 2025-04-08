@@ -19,4 +19,4 @@ const degree = [
     name: 'Doctorado',
     abbreviation: 'PhD.',
   },
-];
+]

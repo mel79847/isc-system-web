@@ -1,21 +1,18 @@
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import dayjs from "dayjs";
-import { FC, ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Event } from "../../models/eventInterface";
-import {
-  finishEventService,
-  getFullEventInformationService,
-} from "../../services/eventsService";
-import ConfirmDialog from "../common/ConfirmDialog";
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import dayjs from 'dayjs'
+import { FC, ReactNode, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Event } from '../../models/eventInterface'
+import { finishEventService, getFullEventInformationService } from '../../services/eventsService'
+import ConfirmDialog from '../common/ConfirmDialog'
 
 interface CSHCardProps {
-  event: Event;
-  children?: ReactNode;
+  event: Event
+  children?: ReactNode
 }
 
 const CompleteScholarshipHourEventCard: FC<CSHCardProps> = ({ event }) => {
@@ -29,73 +26,69 @@ const CompleteScholarshipHourEventCard: FC<CSHCardProps> = ({ event }) => {
     location,
     max_interns,
     min_interns,
-  } = event;
-  const navigate = useNavigate();
-  dayjs.locale("es");
+  } = event
+  const navigate = useNavigate()
+  dayjs.locale('es')
 
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
 
   const fetchFullEvent = async () => {
     if (!id) {
-      console.error("Could not event with such id");
-      return;
+      console.error('Could not event with such id')
+      return
     }
     try {
-      await getFullEventInformationService(id.toString());
+      await getFullEventInformationService(id.toString())
     } catch (error) {
-      console.error("Could not fetch event", error);
+      console.error('Could not fetch event', error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchFullEvent();
-  }, [id]);
+    fetchFullEvent()
+  }, [id])
 
   const goToEditHours = () => {
-    navigate(`/eventRegisters/${id}`);
-  };
+    navigate(`/eventRegisters/${id}`)
+  }
 
   const handleConfirmDialogOpen = () => {
-    setConfirmDialogOpen(true);
-  };
+    setConfirmDialogOpen(true)
+  }
 
   const handleConfirmDialogClose = () => {
-    setConfirmDialogOpen(false);
-  };
+    setConfirmDialogOpen(false)
+  }
 
   const handleConfirmDialogFinish = async () => {
     try {
       if (!id) {
-        console.error("Id is undefined");
-        return;
+        console.error('Id is undefined')
+        return
       }
-      await finishEventService(id);
+      await finishEventService(id)
     } catch (error) {
-      console.error("Error while finishing event");
+      console.error('Error while finishing event')
     }
-    setConfirmDialogOpen(false);
-  };
+    setConfirmDialogOpen(false)
+  }
   const handleEditHours = () => {
-    setConfirmDialogOpen(false);
-    goToEditHours();
-  };
+    setConfirmDialogOpen(false)
+    goToEditHours()
+  }
 
   return (
     <Card sx={{ maxWidth: 1150 }}>
       <CardContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Typography
-              fontSize={20}
-              color="text.primary"
-              sx={{ fontWeight: "bold" }}
-            >
+            <Typography fontSize={20} color="text.primary" sx={{ fontWeight: 'bold' }}>
               {title}
             </Typography>
           </Grid>
           <Grid item xs={12} md={3.5}>
             <Typography fontSize={17} color="text.primary">
-              <strong>Fecha:</strong> {dayjs(start_date).format("DD/MM/YYYY")}
+              <strong>Fecha:</strong> {dayjs(start_date).format('DD/MM/YYYY')}
             </Typography>
             <Typography fontSize={17} color="text.primary">
               <strong>Duración:</strong> {duration_hours}
@@ -123,9 +116,9 @@ const CompleteScholarshipHourEventCard: FC<CSHCardProps> = ({ event }) => {
             xs={12}
             md={3.5}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
             <Button
@@ -154,15 +147,15 @@ const CompleteScholarshipHourEventCard: FC<CSHCardProps> = ({ event }) => {
         open={confirmDialogOpen}
         onClose={handleConfirmDialogClose}
         onConfirm={handleConfirmDialogFinish}
-        title={"Finalizar evento"}
+        title={'Finalizar evento'}
         description={
-          "¿Estás seguro de que deseas finalizar este evento? Esta acción no se puede deshacer"
+          '¿Estás seguro de que deseas finalizar este evento? Esta acción no se puede deshacer'
         }
         secondaryButtonText="Editar horas"
         onSecondaryButtonClick={handleEditHours}
       />
     </Card>
-  );
-};
+  )
+}
 
-export default CompleteScholarshipHourEventCard;
+export default CompleteScholarshipHourEventCard

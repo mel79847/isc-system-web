@@ -1,88 +1,88 @@
-import { useEffect, useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import CancelIcon from '@mui/icons-material/Cancel';
-import DialogContent from "@mui/material/DialogContent";
-import Typography from "@mui/material/Typography";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { getAllCompleteInternService } from "../../services/internService";
-import { IconButton, Tooltip } from "@mui/material";
-import { CompleteIntern } from "../../models/internsInterface";
-import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import { useEffect, useState } from 'react'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import CancelIcon from '@mui/icons-material/Cancel'
+import DialogContent from '@mui/material/DialogContent'
+import Typography from '@mui/material/Typography'
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
+import { getAllCompleteInternService } from '../../services/internService'
+import { IconButton, Tooltip } from '@mui/material'
+import { CompleteIntern } from '../../models/internsInterface'
+import dataGridLocaleText from '../../locales/datagridLocaleEs'
 
 const EventByInterns = () => {
-  const [detailOpen, setDetailOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [students, setStudents] = useState<CompleteIntern[]>([]);
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [students, setStudents] = useState<CompleteIntern[]>([])
 
   useEffect(() => {
-    fetchInternsFull();
-  }, []);
+    fetchInternsFull()
+  }, [])
   const fetchInternsFull = async () => {
     try {
-      const res = await getAllCompleteInternService();
-      setStudents(res.data);
+      const res = await getAllCompleteInternService()
+      setStudents(res.data)
     } catch (error) {
-      console.error("Error fetching complete students info", error);
+      console.error('Error fetching complete students info', error)
     }
-  };
+  }
   const handleEditHoursOpen = (id: number) => {
-    setSelectedId(id);
-    setDetailOpen(true);
-  };
+    setSelectedId(id)
+    setDetailOpen(true)
+  }
 
   const handleEditHoursClose = () => {
-    setDetailOpen(false);
-    setSelectedId(null);
-  };
+    setDetailOpen(false)
+    setSelectedId(null)
+  }
 
   const columns: GridColDef[] = [
     {
-      field: "code",
-      headerName: "Código",
-      headerAlign: "center",
-      align: "center",
+      field: 'code',
+      headerName: 'Código',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
-      headerClassName: "headerStyle",
-      cellClassName: "cellStyle",
+      headerClassName: 'headerStyle',
+      cellClassName: 'cellStyle',
     },
     {
-      field: "full_name",
-      headerName: "Nombre",
-      headerAlign: "center",
-      align: "center",
+      field: 'full_name',
+      headerName: 'Nombre',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
-      headerClassName: "headerStyle",
-      cellClassName: "cellStyle",
+      headerClassName: 'headerStyle',
+      cellClassName: 'cellStyle',
     },
     {
-      field: "completed_hours",
-      headerName: "Horas Hechas",
-      headerAlign: "center",
-      align: "center",
+      field: 'completed_hours',
+      headerName: 'Horas Hechas',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
-      headerClassName: "headerStyle",
-      cellClassName: "cellStyle",
+      headerClassName: 'headerStyle',
+      cellClassName: 'cellStyle',
       valueGetter: (params: GridRenderCellParams) => `${params} horas`,
     },
     {
-      field: "pending_hours",
-      headerName: "Horas Faltantes",
-      headerAlign: "center",
-      align: "center",
+      field: 'pending_hours',
+      headerName: 'Horas Faltantes',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
-      headerClassName: "headerStyle",
-      cellClassName: "cellStyle",
+      headerClassName: 'headerStyle',
+      cellClassName: 'cellStyle',
       valueGetter: (params: GridRenderCellParams) => `${params} horas`,
     },
     {
-      field: "events",
-      headerName: "Eventos",
-      headerAlign: "center",
-      align: "center",
+      field: 'events',
+      headerName: 'Eventos',
+      headerAlign: 'center',
+      align: 'center',
       flex: 1,
-      headerClassName: "headerStyle",
+      headerClassName: 'headerStyle',
       renderCell: (params) => (
         <Tooltip title="Ver eventos" placement="bottom">
           <IconButton
@@ -95,22 +95,18 @@ const EventByInterns = () => {
         </Tooltip>
       ),
     },
-  ];
+  ]
 
   return (
-    <div style={{ height: "100vh", padding: "20px" }}>
-      <Typography variant="h4" color="primary" style={{ marginBottom: "10px" }}>
+    <div style={{ height: '100vh', padding: '20px' }}>
+      <Typography variant="h4" color="primary" style={{ marginBottom: '10px' }}>
         Lista de Becarios
       </Typography>
-      <Typography
-        variant="subtitle1"
-        color="textSecondary"
-        style={{ marginBottom: "20px" }}
-      >
+      <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: '20px' }}>
         Eventos hechos por becarios
       </Typography>
 
-      <div style={{ height: 400, width: "100%" }}>
+      <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={students}
           columns={columns}
@@ -122,11 +118,11 @@ const EventByInterns = () => {
           }}
           getRowId={(row) => row.id}
           classes={{
-            root: "bg-white dark:bg-gray-800",
-            columnHeader: "bg-gray-200 dark:bg-gray-800 ",
-            cell: "bg-white dark:bg-gray-800",
-            row: "bg-white dark:bg-gray-800",
-            columnHeaderTitle: "!font-bold text-center",
+            root: 'bg-white dark:bg-gray-800',
+            columnHeader: 'bg-gray-200 dark:bg-gray-800 ',
+            cell: 'bg-white dark:bg-gray-800',
+            row: 'bg-white dark:bg-gray-800',
+            columnHeaderTitle: '!font-bold text-center',
           }}
           pageSizeOptions={[5, 10]}
         />
@@ -136,18 +132,12 @@ const EventByInterns = () => {
         open={detailOpen}
         onClose={handleEditHoursClose}
         aria-labelledby="edit-hours-dialog-title"
-        sx={{ "& .MuiDialog-paper": { width: "500px", maxWidth: "80%" } }}
+        sx={{ '& .MuiDialog-paper': { width: '500px', maxWidth: '80%' } }}
       >
         <DialogTitle id="edit-hours-dialog-title">
-          <Typography
-            variant="h5"
-            align="center"
-            color="primary"
-            style={{ fontWeight: "bold" }}
-          >
-            {students.find((student) => student.id === selectedId)?.name} -{" "}
-            {students.find((student) => student.id === selectedId)?.total_hours}{" "}
-            horas
+          <Typography variant="h5" align="center" color="primary" style={{ fontWeight: 'bold' }}>
+            {students.find((student) => student.id === selectedId)?.name} -{' '}
+            {students.find((student) => student.id === selectedId)?.total_hours} horas
           </Typography>
           <IconButton
             aria-label="close"
@@ -162,29 +152,29 @@ const EventByInterns = () => {
             <div>
               <table
                 style={{
-                  width: "100%",
-                  marginTop: "10px",
-                  borderCollapse: "collapse",
+                  width: '100%',
+                  marginTop: '10px',
+                  borderCollapse: 'collapse',
                 }}
               >
                 <thead>
                   <tr>
                     <th
                       style={{
-                        textAlign: "left",
-                        padding: "8px",
-                        backgroundColor: "#f0f0f0",
-                        border: "1px solid #ddd",
+                        textAlign: 'left',
+                        padding: '8px',
+                        backgroundColor: '#f0f0f0',
+                        border: '1px solid #ddd',
                       }}
                     >
                       Evento
                     </th>
                     <th
                       style={{
-                        textAlign: "left",
-                        padding: "8px",
-                        backgroundColor: "#f0f0f0",
-                        border: "1px solid #ddd",
+                        textAlign: 'left',
+                        padding: '8px',
+                        backgroundColor: '#f0f0f0',
+                        border: '1px solid #ddd',
                       }}
                     >
                       Estado
@@ -196,19 +186,15 @@ const EventByInterns = () => {
                     .find((student) => student.id === selectedId)
                     ?.events?.map((event, index) => (
                       <tr key={index}>
-                        <td
-                          style={{ padding: "8px", border: "1px solid #ddd" }}
-                        >
-                          {event.title}
-                        </td>
+                        <td style={{ padding: '8px', border: '1px solid #ddd' }}>{event.title}</td>
                         <td
                           style={{
-                            padding: "8px",
-                            border: "1px solid #ddd",
-                            color: event.is_supervisor ? "orange" : "blue",
+                            padding: '8px',
+                            border: '1px solid #ddd',
+                            color: event.is_supervisor ? 'orange' : 'blue',
                           }}
                         >
-                          {event.is_supervisor ? "Supervisor" : "Participante"}
+                          {event.is_supervisor ? 'Supervisor' : 'Participante'}
                         </td>
                       </tr>
                     ))}
@@ -219,7 +205,7 @@ const EventByInterns = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}
 
-export default EventByInterns;
+export default EventByInterns

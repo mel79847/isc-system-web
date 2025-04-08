@@ -1,33 +1,27 @@
-import { FC } from "react";
-import { FaEye } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { Student } from "../../../models/studentInterface";
+import { FC } from 'react'
+import { FaEye } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
+import { Student } from '../../../models/studentInterface'
 
 interface tableHeader {
-  key: string;
-  label: string;
+  key: string
+  label: string
 }
 interface TableProps {
-  data: Student[];
-  pageSize: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-  tableHeaders: tableHeader[];
+  data: Student[]
+  pageSize: number
+  currentPage: number
+  onPageChange: (page: number) => void
+  tableHeaders: tableHeader[]
 }
 
-const Table: FC<TableProps> = ({
-  data,
-  pageSize,
-  currentPage,
-  onPageChange,
-  tableHeaders,
-}) => {
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedData = data.slice(startIndex, startIndex + pageSize);
-  const navigate = useNavigate();
+const Table: FC<TableProps> = ({ data, pageSize, currentPage, onPageChange, tableHeaders }) => {
+  const startIndex = (currentPage - 1) * pageSize
+  const paginatedData = data.slice(startIndex, startIndex + pageSize)
+  const navigate = useNavigate()
   const goStudentProcess = (studentId: number) => {
-    navigate(`/studentProfile/${studentId}`);
-  };
+    navigate(`/studentProfile/${studentId}`)
+  }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg m-10">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -68,10 +62,7 @@ const Table: FC<TableProps> = ({
         </tbody>
       </table>
       {/* Paginación */}
-      <nav
-        className="flex items-center justify-end p-5"
-        aria-label="Table navigation"
-      >
+      <nav className="flex items-center justify-end p-5" aria-label="Table navigation">
         <ul className="inline-flex -space-x-px">
           {/* Botón Anterior */}
           <li>
@@ -88,9 +79,7 @@ const Table: FC<TableProps> = ({
             <li key={i}>
               <button
                 onClick={() => onPageChange(i + 1)}
-                className={`px-3 py-1 border ${
-                  currentPage === i + 1 ? "bg-blue-200" : ""
-                }`}
+                className={`px-3 py-1 border ${currentPage === i + 1 ? 'bg-blue-200' : ''}`}
               >
                 {i + 1}
               </button>
@@ -109,7 +98,7 @@ const Table: FC<TableProps> = ({
         </ul>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table
