@@ -1,4 +1,4 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -31,13 +31,23 @@ const StudentPage = () => {
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
   const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission | null>();
   
+  const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission>();
+
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
+    code: true,
+    name: true,
+    email: true,
+    phone: true,
+    actions: true,
+  });
+
   useEffect(() => {
     const fetchPermissions = async () => {
-      const response = await getPermissionById(13); 
+      const response = await getPermissionById(13);
       setAddStudentPermission(response.data[0]);
-      const deleteStudentResponse = await getPermissionById(14);  
+      const deleteStudentResponse = await getPermissionById(14);
       setDeleteStudentPermission(deleteStudentResponse.data[0]);
-      const editStudentResponse = await getPermissionById(15); 
+      const editStudentResponse = await getPermissionById(15);
       setEditStudentPermission(editStudentResponse.data[0]);
       const viewStudentReportResponse = await getPermissionById(16);
       setViewStudentReportPermission(viewStudentReportResponse.data[0]);
@@ -53,6 +63,9 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 100,
+      maxWidth: 200,
+      resizable: true,
     },
     {
       field: "name",
@@ -60,6 +73,9 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 150,
+      maxWidth: 250,
+      resizable: true,
     },
     {
       field: "email",
@@ -67,6 +83,9 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 180,
+      maxWidth: 300,
+      resizable: true,
     },
     {
       field: "phone",
@@ -75,6 +94,9 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 120,
+      maxWidth: 180,
+      resizable: true,
     },
     {
       field: "actions",
@@ -82,6 +104,8 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 150,
+      maxWidth: 200,
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
@@ -111,7 +135,6 @@ const StudentPage = () => {
             <DeleteIcon />
           </IconButton>
           )}
-          
         </div>
       ),
     },
@@ -192,9 +215,21 @@ const StudentPage = () => {
                 paginationModel: { page: 0, pageSize: 5 },
               },
             }}
+            columnVisibilityModel={columnVisibilityModel}
+            onColumnVisibilityModelChange={(newModel) => {
+              const updatedModel = {
+                ...newModel,
+                name: true,
+              };
+              const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
+              if (visibleColumns === 0) {
+                return;
+              }
+              setColumnVisibilityModel(updatedModel);
+            }}
             classes={{
               root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
               cell: "bg-white dark:bg-gray-800",
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
@@ -212,8 +247,7 @@ const StudentPage = () => {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este estudiante? Esta
-                acción no se puede deshacer.
+                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede deshacer.
               </DialogContentText>
             </DialogContent>
             <DialogActions>

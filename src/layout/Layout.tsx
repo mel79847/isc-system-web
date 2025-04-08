@@ -166,7 +166,7 @@ const Layout = () => {
         </Toolbar>
       </AppBar>
       <Sidebar open={open} setOpen={setOpen} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, overflowX: 'auto', width: '100%' }}>
         <DrawerHeader />
         <Outlet />
       </Box>
