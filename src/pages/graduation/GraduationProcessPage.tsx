@@ -6,7 +6,8 @@ import { Student } from "../../models/studentInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { Permission } from "../../models/permissionInterface";
 import { HasPermission } from "../../helper/permissions";
-import { Box, IconButton, Paper } from "@mui/material"
+import { Box, Button, IconButton, Paper } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
@@ -113,14 +114,20 @@ const GraduationProcessPage = () => {
             onChange={handleSearchChange}
           />
         </div>
-        {HasPermission(createProcess?.name || "") && (<button className="btn z-50 relative" onClick={goToCreateProcessPage}>
-          {" "}
-          Crear Proceso de Graduación
-        </button>)}
+        {HasPermission(createProcess?.name || "") && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={goToCreateProcessPage}
+            startIcon={<AddIcon/>}
+            style={{display: "inline-flex"}}>
+              Crear Proceso de Graduación
+            </Button>
+        )}
       </div>
 
       {/* Tabla de Datos */}
-      <Box sx={{ width: '95%', mb: 2 }}>
+      <Box sx={{ mb: 2 }}>
         <Paper>
           <DataGrid
             rows={filteredData}
