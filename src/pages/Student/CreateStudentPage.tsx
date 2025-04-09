@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
+import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
   Divider,
@@ -12,6 +14,7 @@ import {
   Alert,
   Switch,
   FormControlLabel,
+  IconButton,
 } from "@mui/material";
 import { createStudent } from "../../services/studentService";
 import SuccessDialog from "../../components/common/SucessDialog";
@@ -41,6 +44,12 @@ const CreateStudentPage = () => {
   const [errorDialog, setErrorDialog] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+
+  const navigate = useNavigate();
+
+  const handleBackNavigate = () => {
+    navigate("/students");
+  };
 
   const sucessDialogClose = () => {
     setSuccessDialog(false);
@@ -111,6 +120,16 @@ const CreateStudentPage = () => {
   };
 
   return (
+    <Grid container spacing={0} alignItems="center">
+      <Grid container spacing={4} sx={{ padding: 2, position: "relative" }}>
+        <IconButton
+          onClick={handleBackNavigate}
+          aria-label="back"
+          sx={{ position: "absolute", left: 21, top: 60 }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+      </Grid>
     <FormContainer>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -300,6 +319,7 @@ const CreateStudentPage = () => {
         subtitle={message}
       />
     </FormContainer>
+    </Grid>
   );
 };
 

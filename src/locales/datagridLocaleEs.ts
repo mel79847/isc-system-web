@@ -2,20 +2,21 @@ const dataGridLocaleText = {
   MuiTablePagination: {
     labelRowsPerPage: 'Filas por página',
     labelDisplayedRows: ({ from, to, count }) =>
-      `${from}–${to} de ${count !== -1 ? count : `más de ${to}`}`,
+      `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`,
   },
   noRowsLabel: 'No hay registros',
   footerRowSelected: (count: number) =>
     count > 1
       ? `${count.toLocaleString()} filas seleccionadas`
       : `${count.toLocaleString()} fila seleccionada`,
-  columnMenuSortAsc: 'Ordenar ascendente',
-  columnMenuSortDesc: 'Ordenar descendente',
-  columnMenuFilter: 'Filtrar',
-  columnMenuHideColumn: 'Ocultar columna',
-  columnMenuShowColumns: 'Mostrar columnas',
-  columnMenuUnsort: 'Quitar orden',
-  columnMenuManageColumns: 'Administrar columnas',
+  columnMenuSortAsc: "Ordenar ascendente",
+  columnMenuSortDesc: "Ordenar descendente",
+  columnMenuFilter: "Filtrar",
+  columnMenuHideColumn: "Ocultar columna",
+  columnMenuShowColumns: "Mostrar columnas",
+  columnMenuUnsort: "Quitar orden",
+  columnMenuManageColumns: "Administrar columnas",
+  columnHeaderSortIconLabel: "Ordenar",
 
   filterPanelTitle: 'Filtros',
   filterPanelColumns: 'Columna',

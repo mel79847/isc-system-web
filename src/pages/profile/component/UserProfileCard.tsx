@@ -1,8 +1,9 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { HasPermission } from "../../../helper/permissions";
-import { useState } from "react";
+import { useState, useEffect,  } from "react";
 import { Permission } from "../../../models/permissionInterface";
+import { getPermissionById } from "../../../services/permissionsService";
 import { UserResponse } from "../../../services/models/LoginResponse";
 
 interface UserProfileCardProps {
@@ -10,8 +11,20 @@ interface UserProfileCardProps {
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
-  const [scheduleAppointmentPermissionStudent] = useState<Permission>();
-  const [scheduleAppointmentPermissionProffesor] = useState<Permission>();
+    const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] = useState<Permission | null>(null);
+    const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] = useState<Permission | null>(null);
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const scheduleAppointmentStudentResponse = await getPermissionById(17);
+      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data[0]);
+      const scheduleAppointmentProfessorResponse = await getPermissionById(9);
+      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data[0]);
+    };
+    fetchPermissions();
+  }, []);
+
+  const hasProfessorPermission = HasPermission(scheduleAppointmentPermissionProffesor?.name || "");
+  const hasStudentPermission = HasPermission(scheduleAppointmentPermissionStudent?.name || "");
 
   return (
     <Paper
@@ -60,13 +73,15 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
       <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2, textAlign: "center" }}>
         {user?.roles}
       </Typography>
-      {(HasPermission(scheduleAppointmentPermissionProffesor?.name || "") ||
-        HasPermission(scheduleAppointmentPermissionStudent?.name || "")) && (
-        <Button variant="contained" color="primary" sx={{ mb: 3 }}>
-          Agendar una reunión
-        </Button>
-      )}
-      <Paper
+      {
+                (hasProfessorPermission || hasStudentPermission) &&
+        (
+          <Button variant="contained" color="primary" sx={{ mb: 3 }}>
+            Agendar una reunión
+          </Button>
+        )
+      }
+      <Paper 
         elevation={0}
         sx={{
           width: "100%",

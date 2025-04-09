@@ -44,6 +44,9 @@ const ProfessorPage = () => {
   const [deleteProfessorPermission, setDeleteProfessorPermission] = useState<Permission>();
   const [editProfessorPermission, setEditProfessorPermission] = useState<Permission>();
 
+  const permissionsReady = viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
+
+
   useEffect(() => {
     const fetchPermissions = async () => {
       const addProfessorResponse = await getPermissionById(7);
@@ -208,7 +211,12 @@ const ProfessorPage = () => {
       minWidth: 150,
       maxWidth: 200,
       renderCell: (params) => {
-        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
+        if (!permissionsReady) {
+          return <span>Cargando acciones...</span>;
+        }
+        const hasActions =
+          hasViewPermission || hasEditPermission || hasDeletePermission;
+
         return hasActions ? (
           <div>
             {hasViewPermission && (
@@ -322,7 +330,6 @@ const ProfessorPage = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection={false}
               disableRowSelectionOnClick
-              disableColumnSorting
               autoHeight
               columnVisibilityModel={columnVisibilityModel}
               onColumnVisibilityModelChange={(newModel) => {
@@ -342,6 +349,7 @@ const ProfessorPage = () => {
                 cell: "bg-white dark:bg-gray-800",
                 row: "bg-white dark:bg-gray-800",
                 columnHeaderTitle: "!font-bold text-center",
+                sortIcon: "bg-gray-200 dark:bg-gray-800",
               }}
               sx={{
                 "& .MuiDataGrid-cell:focus": {
