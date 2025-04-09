@@ -13,6 +13,8 @@ import {
 import { useEffect, useState } from "react";
 import { getUserById, updateStudent } from "../../services/studentService";
 import { useParams } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IconButton } from "@mui/material";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -99,6 +101,18 @@ const EditStudentPage = () => {
   };
 
   return (
+    <div style={{ position: "relative" }}>
+      <IconButton
+        onClick={() => window.history.back()}
+        aria-label="back"
+        style={{
+          position: "absolute",
+          top: "-5px",
+          left: "-20px",
+        }}
+      >
+        <ArrowBackIcon />
+      </IconButton>
     <FormContainer>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -249,6 +263,7 @@ const EditStudentPage = () => {
         </Alert>
       </Snackbar>
     </FormContainer>
+    </div>
   );
 };
 
