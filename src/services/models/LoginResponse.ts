@@ -1,4 +1,4 @@
-import { Permission } from "../../models/permissionInterface";
+import { Permission } from '../../models/permissionInterface';
 
 export interface LoginResponse {
   token: string;

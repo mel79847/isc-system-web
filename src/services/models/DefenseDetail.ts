@@ -1,8 +1,8 @@
-import { Dayjs } from "dayjs";
+import { Dayjs } from 'dayjs';
 
 export interface CreateDefenseDetail {
   graduation_process_id: number;
-  type: "internal" | "external";
+  type: 'internal' | 'external';
   president?: number;
   first_juror?: number;
   second_juror?: number;
@@ -14,7 +14,7 @@ export interface CreateDefenseDetail {
 export interface DefenseDetail {
   id: number;
   graduation_process_id: number;
-  type: "internal" | "external";
+  type: 'internal' | 'external';
   president?: number;
   first_juror?: number;
   second_juror?: number;

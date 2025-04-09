@@ -1,4 +1,4 @@
-import { Color, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
+import { Color, PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
 
 export interface PDFInsertData {
   x: number;

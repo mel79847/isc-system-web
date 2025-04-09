@@ -7,7 +7,7 @@
   "endOfLine": "auto",
   "overrides": [
     {
-      "files": ["*.tsx", "*.ts"],
+      "files": ["*.tsx", "*.jsx"],
       "options": {
         "singleQuote": false
       }

@@ -1,4 +1,4 @@
-import { Dayjs } from "dayjs";
+import { Dayjs } from 'dayjs';
 export interface Seminar {
   date_seminar_enrollment: string | null;
   id: number;

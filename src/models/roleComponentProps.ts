@@ -1,4 +1,4 @@
-import { Role } from "./roleInterface";
+import { Role } from './roleInterface';
 
 export interface RoleComponentProps {
   role: Role;

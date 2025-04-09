@@ -1,5 +1,5 @@
-import { Permission } from "../models/permissionInterface";
-import { useUserStore } from "../store/store";
+import { Permission } from '../models/permissionInterface';
+import { useUserStore } from '../store/store';
 
 export function HasPermission(permissionName: string): boolean {
   const user = useUserStore((state) => state.user);

@@ -1,6 +1,6 @@
-import axios from "axios";
-import apiClient from "./apiInstance";
-import { CreateDefenseDetail } from "./models/DefenseDetail";
+import axios from 'axios';
+import apiClient from './apiInstance';
+import { CreateDefenseDetail } from './models/DefenseDetail';
 
 const getDefenseDetail = async (processId: number, type: string) => {
   try {
@@ -12,13 +12,13 @@ const getDefenseDetail = async (processId: number, type: string) => {
     if (response.status === 200) {
       return response.data.data;
     } else {
-      throw new Error("Failed to get defense detail");
+      throw new Error('Failed to get defense detail');
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data.message || "Network error");
+      throw new Error(error.response?.data.message || 'Network error');
     } else {
-      throw new Error("An unexpected error occurred");
+      throw new Error('An unexpected error occurred');
     }
   }
 };
@@ -31,13 +31,13 @@ const postDefenseDetail = async (processId: number, data: CreateDefenseDetail) =
     if (response.status === 201) {
       return response.data.data;
     } else {
-      throw new Error("Failed to post defense detail");
+      throw new Error('Failed to post defense detail');
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data.message || "Network error");
+      throw new Error(error.response?.data.message || 'Network error');
     } else {
-      throw new Error("An unexpected error occurred");
+      throw new Error('An unexpected error occurred');
     }
   }
 };

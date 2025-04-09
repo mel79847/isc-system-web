@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Mentor } from "../models/mentorInterface";
-import { getMentors } from "../services/mentorsService";
+import { useState, useEffect } from 'react';
+import { Mentor } from '../models/mentorInterface';
+import { getMentors } from '../services/mentorsService';
 
 export const useReviewers = () => {
   const [reviewers, setReviewers] = useState<Mentor[]>([]);
@@ -12,7 +12,7 @@ export const useReviewers = () => {
         const response = await getMentors();
         setReviewers(response.data);
       } catch (error) {
-        setError("Error getting mentors");
+        setError('Error getting mentors');
       }
     };
 

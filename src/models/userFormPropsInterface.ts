@@ -1,4 +1,4 @@
-import { User } from "./userInterface";
+import { User } from './userInterface';
 
 export interface UserFormProps {
   handleClose: () => void;
