@@ -53,7 +53,6 @@ const ProfessorPage = () => {
   const [editProfessorPermission, setEditProfessorPermission] =
     useState<Permission>();
 
-  
   const permissionsReady = viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
 
 
@@ -70,8 +69,7 @@ const ProfessorPage = () => {
       setIsLoading(false);
     };
 
-    fetchPermissions();
-    fetchProfessors();
+    fetchPermissions(); 
   }, []);
 
   const hasViewPermission = HasPermission(
@@ -217,47 +215,47 @@ const ProfessorPage = () => {
         </div>
       ),
     },
-      {
-        field: "actions",
-        headerName: "Acciones",
-        headerAlign: "center",
-        align: "center",
-        resizable: false,
-        minWidth: 150,
-        maxWidth: 200,
-        renderCell: (params) => {
-          if (!permissionsReady) {
-            return <span>Cargando acciones...</span>;
-          }
-          const hasActions =
-            hasViewPermission || hasEditPermission || hasDeletePermission;
-      
-          return hasActions ? (
-            <div>
-              {hasViewPermission && (
-                <IconButton color="primary" onClick={() => handleView(params.row.id)}>
-                  <VisibilityIcon />
-                </IconButton>
-              )}
-              {hasEditPermission && (
-                <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
-                  <EditIcon />
-                </IconButton>
-              )}
-              {hasDeletePermission && (
-                <IconButton
-                  color="secondary"
-                  onClick={() => handleClickOpen(params.row.id)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </div>
-          ) : (
-            "No hay acciones disponibles"
-          );
-        },
+    {
+      field: "actions",
+      headerName: "Acciones",
+      headerAlign: "center",
+      align: "center",
+      resizable: false,
+      minWidth: 150,
+      maxWidth: 200,
+      renderCell: (params) => {
+        if (!permissionsReady) {
+          return <span>Cargando acciones...</span>;
+        }
+        const hasActions =
+          hasViewPermission || hasEditPermission || hasDeletePermission;
+
+        return hasActions ? (
+          <div>
+            {hasViewPermission && (
+              <IconButton color="primary" onClick={() => handleView(params.row.id)}>
+                <VisibilityIcon />
+              </IconButton>
+            )}
+            {hasEditPermission && (
+              <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
+                <EditIcon />
+              </IconButton>
+            )}
+            {hasDeletePermission && (
+              <IconButton
+                color="secondary"
+                onClick={() => handleClickOpen(params.row.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
+        ) : (
+          "No hay acciones disponibles"
+        );
       },
+    },
   ];
 
   const handleCreateTeacher = () => {
@@ -348,7 +346,6 @@ const ProfessorPage = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection={false}
               disableRowSelectionOnClick
-              disableColumnSorting
               autoHeight
               columnVisibilityModel={columnVisibilityModel}
               onColumnVisibilityModelChange={(newModel) => {
@@ -368,6 +365,7 @@ const ProfessorPage = () => {
                 cell: "bg-white dark:bg-gray-800",
                 row: "bg-white dark:bg-gray-800",
                 columnHeaderTitle: "!font-bold text-center",
+                sortIcon: "bg-gray-200 dark:bg-gray-800",
               }}
               sx={{
                 "& .MuiDataGrid-cell:focus": {

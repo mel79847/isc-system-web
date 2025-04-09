@@ -1,24 +1,17 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Table from "./components/Table";
 import { FaSearch } from "react-icons/fa";
 import { Student } from "../../models/studentInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { Permission } from "../../models/permissionInterface";
 import { HasPermission } from "../../helper/permissions";
-
-const tableHeaders = [
-  { key: "studentName", label: "Estudiante" },
-  { key: "period", label: "Periodo" },
-  { key: "tutorName", label: "Tutor" },
-  { key: "reviewerName", label: "Revisor" },
-  { key: "actions", label: "Acciones" },
-];
+import { Box, Button, IconButton, Paper } from "@mui/material"
+import AddIcon from "@mui/icons-material/Add";
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const GraduationProcessPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
   const [search, setSearch] = useState("");
   const studentsResponse = useLoaderData() as {
@@ -36,7 +29,7 @@ const GraduationProcessPage = () => {
     };
     fetchCreateProcess();
   }, []);
-  
+
   useEffect(() => {
     const results = students.filter((item: Student) =>
       item.student_name.toLowerCase().includes(search.toLowerCase()),
@@ -48,13 +41,59 @@ const GraduationProcessPage = () => {
     setSearch(e.target.value);
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const goToCreateProcessPage = () => {
     navigate("/createProcess");
   };
+
+  const tableHeaders: GridColDef[] = [
+    {
+      field: "student_name",
+      headerName: "Estudiante",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+    },
+    {
+      field: "period",
+      headerName: "Periodo",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+    },
+    {
+      field: "tutor_name",
+      headerName: "Tutor",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+    },
+    {
+      field: "reviewer_name",
+      headerName: "Revisor",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Acciones",
+      headerAlign: "center",
+      align: "center",
+      flex: 1,
+      renderCell: (params) => (
+        <div>
+          {(
+            <IconButton
+              color="primary"
+              aria-label="ver"
+              onClick={() => navigate(`/studentProfile/${params.row.id}`)}
+            >
+              <VisibilityIcon />
+            </IconButton>)}
+        </div>
+      ),
+    }
+  ];
 
   return (
     <>
@@ -75,18 +114,41 @@ const GraduationProcessPage = () => {
             onChange={handleSearchChange}
           />
         </div>
-        {HasPermission(createProcess?.name || "") && (<button className="btn z-50 relative" onClick={goToCreateProcessPage}>
-          {" "}
-          Crear Proceso de Graduación
-        </button>)}
+        {HasPermission(createProcess?.name || "") && (
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={goToCreateProcessPage}
+            startIcon={<AddIcon/>}
+            style={{display: "inline-flex"}}>
+              Crear Proceso de Graduación
+            </Button>
+        )}
       </div>
-      <Table
-        data={filteredData}
-        pageSize={pageSize}
-        currentPage={currentPage}
-        tableHeaders={tableHeaders}
-        onPageChange={handlePageChange}
-      />
+
+      {/* Tabla de Datos */}
+      <Box sx={{ mb: 2 }}>
+        <Paper>
+          <DataGrid
+            rows={filteredData}
+            columns={tableHeaders}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
+            }}
+            classes={{
+              root: "bg-white dark:bg-gray-800",
+              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+              cell: "bg-white dark:bg-gray-800",
+              row: "bg-white dark:bg-gray-800",
+              columnHeaderTitle: "!font-bold text-center",
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            disableRowSelectionOnClick
+          />
+        </Paper>
+      </Box>
     </>
   );
 };
