@@ -1,34 +1,34 @@
-import { Box, Card, CardContent, Typography, IconButton } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import { Box, Card, CardContent, Typography, IconButton } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 // @ts-ignore
 interface ProcessCardProps {
-  count: number
-  percentage?: number // Hacer percentage opcional
-  label: string
+  count: number;
+  percentage?: number; // Hacer percentage opcional
+  label: string;
 }
 
 const ProcessCard: React.FC<ProcessCardProps> = ({ count, percentage, label }) => {
   return (
     <Card
       sx={{
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
         padding: 2,
         borderRadius: 2,
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
       }}
     >
       <CardContent
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold', mr: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: "bold", mr: 1 }}>
             {count}
           </Typography>
           <IconButton size="small">
@@ -39,16 +39,16 @@ const ProcessCard: React.FC<ProcessCardProps> = ({ count, percentage, label }) =
           {label}
         </Typography>
         {percentage !== undefined && (
-          <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-            <ArrowUpwardIcon fontSize="small" sx={{ color: 'green', mr: 0.5 }} />
-            <Typography variant="body2" sx={{ color: 'green' }}>
+          <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+            <ArrowUpwardIcon fontSize="small" sx={{ color: "green", mr: 0.5 }} />
+            <Typography variant="body2" sx={{ color: "green" }}>
               {percentage}%
             </Typography>
           </Box>
         )}
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ProcessCard
+export default ProcessCard;

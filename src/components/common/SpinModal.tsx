@@ -23,7 +23,7 @@ const SpinModal = () => {
         <label className="flex text-center"> Cargando . . .</label>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SpinModal
+export default SpinModal;

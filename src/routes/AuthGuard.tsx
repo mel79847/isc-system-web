@@ -1,13 +1,13 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from "react-router-dom";
 
 const AuthGuard = () => {
-  const isAuthenticated = localStorage.getItem('token')
+  const isAuthenticated = localStorage.getItem("token");
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/login" replace />;
   }
 
-  return <Outlet />
-}
+  return <Outlet />;
+};
 
-export default AuthGuard
+export default AuthGuard;

@@ -1,110 +1,110 @@
-import { useState, useCallback, useEffect } from 'react'
-import { TextField, Button, Grid, Typography, MenuItem, Autocomplete } from '@mui/material'
-import Divider from '@mui/material/Divider'
-import { useFormik } from 'formik'
+import { useState, useCallback, useEffect } from "react";
+import { TextField, Button, Grid, Typography, MenuItem, Autocomplete } from "@mui/material";
+import Divider from "@mui/material/Divider";
+import { useFormik } from "formik";
 
-import { Student } from '../../../models/studentInterface'
-import { getStudents } from '../../../services/studentService'
-import { getModes } from '../../../services/modesService'
-import { Modes } from '../../../models/modeInterface'
-import { createGraduationProcess } from '../../../services/processServicer'
-import { useNavigate } from 'react-router-dom'
-import { useProcessStore } from '../../../store/store'
-import * as yup from 'yup'
+import { Student } from "../../../models/studentInterface";
+import { getStudents } from "../../../services/studentService";
+import { getModes } from "../../../services/modesService";
+import { Modes } from "../../../models/modeInterface";
+import { createGraduationProcess } from "../../../services/processServicer";
+import { useNavigate } from "react-router-dom";
+import { useProcessStore } from "../../../store/store";
+import * as yup from "yup";
 
 function ProcessForm() {
-  const [, setError] = useState<string | null>(null)
-  const [students, setStudents] = useState<Student[]>([])
-  const [modes, setModes] = useState<Modes[]>([])
-  const updateProcess = useProcessStore((state) => state.setProcess)
-  const navigate = useNavigate()
-  const actualDate = new Date()
-  const numberPeriods = 3
+  const [, setError] = useState<string | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [modes, setModes] = useState<Modes[]>([]);
+  const updateProcess = useProcessStore((state) => state.setProcess);
+  const navigate = useNavigate();
+  const actualDate = new Date();
+  const numberPeriods = 3;
 
   const validationSchema = yup.object().shape({
     studentId: yup
       .number()
-      .typeError('El ID del estudiante debe ser un número')
-      .required('Campo requerido'),
+      .typeError("El ID del estudiante debe ser un número")
+      .required("Campo requerido"),
 
     studentCode: yup
       .number()
-      .typeError('El código del estudiante debe ser un número')
-      .integer('El código debe ser un número entero')
-      .positive('El código debe ser positivo')
-      .required('Campo requerido'),
+      .typeError("El código del estudiante debe ser un número")
+      .integer("El código debe ser un número entero")
+      .positive("El código debe ser positivo")
+      .required("Campo requerido"),
 
-    modeId: yup.number().required('Campo requerido'),
+    modeId: yup.number().required("Campo requerido"),
 
-    period: yup.string().required('Campo requerido'),
+    period: yup.string().required("Campo requerido"),
 
     titleProject: yup
       .string()
-      .min(5, 'El título debe tener al menos 5 caracteres')
-      .max(80, 'El título no debe superar los 80 caracteres')
-      .matches(/^[a-zA-Z0-9\s]+$/, 'El título solo debe contener letras y números')
-      .required('Campo requerido'),
-  })
+      .min(5, "El título debe tener al menos 5 caracteres")
+      .max(80, "El título no debe superar los 80 caracteres")
+      .matches(/^[a-zA-Z0-9\s]+$/, "El título solo debe contener letras y números")
+      .required("Campo requerido"),
+  });
 
   const fetchData = useCallback(async () => {
     try {
-      const responseStudents = await getStudents()
-      const responseModes = await getModes()
-      setModes(responseModes.data)
-      setStudents(responseStudents.data)
+      const responseStudents = await getStudents();
+      const responseModes = await getModes();
+      setModes(responseModes.data);
+      setStudents(responseStudents.data);
     } catch (error) {
-      console.error('Failed to fetch data: ', error)
-      setError('Failed to load data, please try again.')
+      console.error("Failed to fetch data: ", error);
+      setError("Failed to load data, please try again.");
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    fetchData();
+  }, [fetchData]);
 
   const setPeriods = (option: number) => {
-    let firstSemester = actualDate.getMonth() <= 5
-    let currentYear = actualDate.getFullYear()
-    const listPeriods = []
+    let firstSemester = actualDate.getMonth() <= 5;
+    let currentYear = actualDate.getFullYear();
+    const listPeriods = [];
     for (let i = 0; i < option; i++) {
-      let strPeriod = firstSemester ? 'Primero' : 'Segundo'
-      listPeriods.push(strPeriod + currentYear)
-      if (!firstSemester) currentYear++
-      firstSemester = !firstSemester
+      let strPeriod = firstSemester ? "Primero" : "Segundo";
+      listPeriods.push(strPeriod + currentYear);
+      if (!firstSemester) currentYear++;
+      firstSemester = !firstSemester;
     }
-    return listPeriods
-  }
+    return listPeriods;
+  };
 
   const formik = useFormik({
     initialValues: {
-      studentId: ' ',
-      studentCode: ' ',
-      modeId: ' ',
-      period: ' ',
-      titleProject: ' ',
+      studentId: " ",
+      studentCode: " ",
+      modeId: " ",
+      period: " ",
+      titleProject: " ",
       stageId: 1,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const response = await createGraduationProcess(values)
+      const response = await createGraduationProcess(values);
       if (response.success) {
-        updateProcess(response.data)
-        navigate(`/studentProfile/${response.data.id}`)
+        updateProcess(response.data);
+        navigate(`/studentProfile/${response.data.id}`);
       }
     },
-  })
+  });
 
   const handleStudentChange = (_event: React.ChangeEvent<object | null>, value: Student | null) => {
-    formik.setFieldValue('studentId', value ? value.id : '')
-    formik.setFieldValue('studentCode', value ? value.code : '')
-  }
+    formik.setFieldValue("studentId", value ? value.id : "");
+    formik.setFieldValue("studentCode", value ? value.code : "");
+  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <Grid container spacing={2} sx={{ padding: 2 }}>
         <Grid item xs={12}>
           <Typography variant="h4">Crear Proceso de Graduación</Typography>
-          <Typography variant="body2" sx={{ fontSize: 14, color: 'gray' }}>
+          <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
             Completa los siguientes campos para definir los criterios y requisitos del proceso de
             graduación.
           </Typography>
@@ -206,8 +206,8 @@ function ProcessForm() {
               >
                 {setPeriods(numberPeriods).map((value) => {
                   const desc =
-                    value.slice(0, value.length - 4) + '-' + value.slice(value.length - 4)
-                  return <MenuItem value={value}>{desc}</MenuItem>
+                    value.slice(0, value.length - 4) + "-" + value.slice(value.length - 4);
+                  return <MenuItem value={value}>{desc}</MenuItem>;
                 })}
               </TextField>
             </Grid>
@@ -225,7 +225,7 @@ function ProcessForm() {
         </Grid>
       </Grid>
     </form>
-  )
+  );
 }
 
-export default ProcessForm
+export default ProcessForm;

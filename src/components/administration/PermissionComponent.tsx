@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { Checkbox, TableCell, TableRow } from '@mui/material'
-import { Permission } from '../../models/permissionInterface'
+import { useState } from "react";
+import { Checkbox, TableCell, TableRow } from "@mui/material";
+import { Permission } from "../../models/permissionInterface";
 
 const PermissionComponent = ({ permission }: { permission: Permission }) => {
-  const [permissionsDefaultState, setPermissionsDefaultState] = useState(permission.state)
+  const [permissionsDefaultState, setPermissionsDefaultState] = useState(permission.state);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPermissionsDefaultState(event.target.checked)
-  }
+    setPermissionsDefaultState(event.target.checked);
+  };
 
   return (
     <TableRow>
@@ -16,7 +16,7 @@ const PermissionComponent = ({ permission }: { permission: Permission }) => {
         <Checkbox checked={permissionsDefaultState} onChange={handleCheckboxChange} />
       </TableCell>
     </TableRow>
-  )
-}
+  );
+};
 
-export default PermissionComponent
+export default PermissionComponent;

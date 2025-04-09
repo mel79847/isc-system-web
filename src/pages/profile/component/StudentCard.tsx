@@ -1,12 +1,12 @@
-import { Grid } from '@mui/material'
-import ProcessCard from './ProcessCard'
+import { Grid } from "@mui/material";
+import ProcessCard from "./ProcessCard";
 
 const processCardsData = [
-  { count: 5, label: 'Horas becarias totales' },
-  { count: 5, label: 'Horas becarias trabajadas' },
-  { count: 5, label: 'Horas becarias restantes' },
-  { count: 5, label: 'Certificaciones' },
-]
+  { count: 5, label: "Horas becarias totales" },
+  { count: 5, label: "Horas becarias trabajadas" },
+  { count: 5, label: "Horas becarias restantes" },
+  { count: 5, label: "Certificaciones" },
+];
 
 const StudentCard = () => {
   return (
@@ -17,7 +17,7 @@ const StudentCard = () => {
         </Grid>
       ))}
     </Grid>
-  )
-}
+  );
+};
 
-export default StudentCard
+export default StudentCard;

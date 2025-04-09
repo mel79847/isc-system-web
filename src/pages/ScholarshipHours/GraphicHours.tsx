@@ -8,22 +8,22 @@ import {
   Legend,
   Cell,
   ResponsiveContainer,
-} from 'recharts'
-import Box from '@mui/material/Box'
-import { barData } from '../../data/graphicData'
+} from "recharts";
+import Box from "@mui/material/Box";
+import { barData } from "../../data/graphicData";
 
 export default function GraphicHours() {
   const getFillColor = (hours: number): string => {
-    return hours < 50 ? '#FF0000' : '#4CAF50'
-  }
+    return hours < 50 ? "#FF0000" : "#4CAF50";
+  };
   return (
     <Box
       sx={{
-        width: '100%',
+        width: "100%",
         flexGrow: 1,
         padding: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <ResponsiveContainer width="100%" aspect={1}>
@@ -41,5 +41,5 @@ export default function GraphicHours() {
         </BarChart>
       </ResponsiveContainer>
     </Box>
-  )
+  );
 }

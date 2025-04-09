@@ -1,14 +1,14 @@
-import { FC } from 'react'
+import { FC } from "react";
 
 interface ModalProps {
-  isVisible: boolean
-  setIsVisible: (isVisible: boolean) => void
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
 }
 
 export const Modal: FC<ModalProps> = ({ isVisible, setIsVisible }) => {
   const toggleModal = () => {
-    setIsVisible(!isVisible)
-  }
+    setIsVisible(!isVisible);
+  };
 
   return (
     <>
@@ -16,7 +16,7 @@ export const Modal: FC<ModalProps> = ({ isVisible, setIsVisible }) => {
         id="popup-modal"
         tabIndex={-1}
         className={`${
-          isVisible ? 'flex' : 'hidden'
+          isVisible ? "flex" : "hidden"
         } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}
       >
         <div className="relative p-4 w-full max-w-md max-h-full">
@@ -84,5 +84,5 @@ export const Modal: FC<ModalProps> = ({ isVisible, setIsVisible }) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

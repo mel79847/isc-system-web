@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   AreaChart,
   Area,
@@ -7,15 +7,15 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
-import { Card, CardContent, Typography } from '@mui/material'
+} from "recharts";
+import { Card, CardContent, Typography } from "@mui/material";
 
 interface AreaChartProps {
   data: {
-    period: string
-    approved: number
-  }[]
-  title: string // Prop adicional para el título del gráfico
+    period: string;
+    approved: number;
+  }[];
+  title: string; // Prop adicional para el título del gráfico
 }
 
 const AreaChartCard: React.FC<AreaChartProps> = ({ data, title }) => {
@@ -28,9 +28,9 @@ const AreaChartCard: React.FC<AreaChartProps> = ({ data, title }) => {
           component="div"
           gutterBottom
           sx={{
-            fontWeight: 'bold', // Aplica negrita
-            color: 'primary.main', // Utiliza el color primario definido en tu tema
-            textAlign: 'center', // Centra el texto
+            fontWeight: "bold", // Aplica negrita
+            color: "primary.main", // Utiliza el color primario definido en tu tema
+            textAlign: "center", // Centra el texto
           }}
         >
           {title}
@@ -46,7 +46,7 @@ const AreaChartCard: React.FC<AreaChartProps> = ({ data, title }) => {
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default AreaChartCard
+export default AreaChartCard;

@@ -1,14 +1,14 @@
-import { Card, CardContent, Grid, Typography } from '@mui/material'
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar'
-import 'react-circular-progressbar/dist/styles.css'
+import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 interface HoursCardProps {
-  backgroundColor: string
-  textColor: string
-  title: string
-  count: number
-  subtitle: string
-  percentage: number
+  backgroundColor: string;
+  textColor: string;
+  title: string;
+  count: number;
+  subtitle: string;
+  percentage: number;
 }
 
 function HoursCard({
@@ -19,7 +19,7 @@ function HoursCard({
   count,
   percentage,
 }: HoursCardProps) {
-  const roundedPercentage = Math.round(percentage)
+  const roundedPercentage = Math.round(percentage);
   return (
     <Card
       sx={{
@@ -31,7 +31,7 @@ function HoursCard({
       <CardContent>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item xs={6}>
-            <Typography variant="h5" component="div" sx={{ color: textColor, fontWeight: 'bold' }}>
+            <Typography variant="h5" component="div" sx={{ color: textColor, fontWeight: "bold" }}>
               {count} Horas
             </Typography>
             <Typography
@@ -40,7 +40,7 @@ function HoursCard({
                 fontSize: 14,
                 color: textColor,
                 mb: 1.5,
-                fontWeight: 'bold',
+                fontWeight: "bold",
               }}
               color="text.secondary"
             >
@@ -54,23 +54,23 @@ function HoursCard({
             item
             xs={6}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               height: 100,
             }}
           >
-            <div style={{ width: '70%', height: 100 }}>
+            <div style={{ width: "70%", height: 100 }}>
               <CircularProgressbar
                 value={roundedPercentage}
                 text={`${roundedPercentage}%`}
                 background
                 backgroundPadding={6}
                 styles={buildStyles({
-                  backgroundColor: '#FFFFFF',
-                  textColor: '#000',
+                  backgroundColor: "#FFFFFF",
+                  textColor: "#000",
                   pathColor: backgroundColor,
-                  trailColor: '#FFFFFF',
+                  trailColor: "#FFFFFF",
                 })}
               />
             </div>
@@ -78,7 +78,7 @@ function HoursCard({
         </Grid>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-export default HoursCard
+export default HoursCard;

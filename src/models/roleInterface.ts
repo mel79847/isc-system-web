@@ -1,6 +1,6 @@
 export interface Role {
-  id: number
-  name: string
-  disabled: boolean
-  permissions: string[]
+  id: number;
+  name: string;
+  disabled: boolean;
+  permissions: string[];
 }

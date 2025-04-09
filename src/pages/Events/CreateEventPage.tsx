@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Typography,
   Grid,
@@ -11,194 +11,194 @@ import {
   InputLabel,
   FormControl,
   Autocomplete,
-} from '@mui/material'
-import * as Yup from 'yup'
-import { useFormik } from 'formik'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-import { FormContainer } from '../../pages/CreateGraduation/components/FormContainer.tsx'
-import LoadingOverlay from '../../components/common/Loading.tsx'
-import ErrorDialog from '../../components/common/ErrorDialog.tsx'
-import SuccessDialog from '../../components/common/SucessDialog.tsx'
-import { Event } from '../../models/eventInterface.ts'
-import { createEventService } from '../../services/eventsService.ts'
-import { InternsInformation } from '../../models/internsInterface.ts'
-import { getInternList } from '../../services/internService.ts'
+} from "@mui/material";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import { FormContainer } from "../../pages/CreateGraduation/components/FormContainer.tsx";
+import LoadingOverlay from "../../components/common/Loading.tsx";
+import ErrorDialog from "../../components/common/ErrorDialog.tsx";
+import SuccessDialog from "../../components/common/SucessDialog.tsx";
+import { Event } from "../../models/eventInterface.ts";
+import { createEventService } from "../../services/eventsService.ts";
+import { InternsInformation } from "../../models/internsInterface.ts";
+import { getInternList } from "../../services/internService.ts";
 
 const validationSchema = Yup.object({
   title: Yup.string()
-    .required('El nombre del evento es obligatorio')
-    .min(5, 'El nombre del evento debe tener al menos 5 caracteres')
-    .max(20, 'El nombre del evento no puede tener más de 20 caracteres'),
+    .required("El nombre del evento es obligatorio")
+    .min(5, "El nombre del evento debe tener al menos 5 caracteres")
+    .max(20, "El nombre del evento no puede tener más de 20 caracteres"),
   description: Yup.string()
-    .required('La descripción es obligatoria')
-    .min(30, 'El nombre del evento debe tener al menos 20 caracteres')
-    .max(200, 'El nombre del evento no puede tener más de 200 caracteres'),
-  location: Yup.string().required('La ubicación es obligatoria'),
+    .required("La descripción es obligatoria")
+    .min(30, "El nombre del evento debe tener al menos 20 caracteres")
+    .max(200, "El nombre del evento no puede tener más de 200 caracteres"),
+  location: Yup.string().required("La ubicación es obligatoria"),
   start_date: Yup.date()
-    .required('La fecha de inicio es obligatoria')
+    .required("La fecha de inicio es obligatoria")
     .min(
-      dayjs().startOf('day').toDate(),
-      'La fecha de inicio debe ser igual o posterior al día actual'
+      dayjs().startOf("day").toDate(),
+      "La fecha de inicio debe ser igual o posterior al día actual"
     )
     .max(
-      dayjs().add(2, 'year').toDate(),
-      'La fecha de inicio no puede ser posterior a dos años desde la fecha actual'
+      dayjs().add(2, "year").toDate(),
+      "La fecha de inicio no puede ser posterior a dos años desde la fecha actual"
     ),
   end_date: Yup.date()
-    .required('La fecha de finalización es obligatoria')
+    .required("La fecha de finalización es obligatoria")
     .min(
-      dayjs().startOf('day').toDate(),
-      'La fecha de finalización debe ser igual o posterior al día actual'
+      dayjs().startOf("day").toDate(),
+      "La fecha de finalización debe ser igual o posterior al día actual"
     )
     .max(
-      dayjs().add(2, 'year').toDate(),
-      'La fecha de finalización no puede ser posterior a dos años desde la fecha actual'
+      dayjs().add(2, "year").toDate(),
+      "La fecha de finalización no puede ser posterior a dos años desde la fecha actual"
     )
     .test(
-      'is-after-or-same-as-start',
-      'La fecha de finalización debe ser igual o posterior a la fecha de inicio',
+      "is-after-or-same-as-start",
+      "La fecha de finalización debe ser igual o posterior a la fecha de inicio",
       function (value) {
-        const { start_date } = this.parent
+        const { start_date } = this.parent;
         return (
-          dayjs(value).isSame(dayjs(start_date), 'day') ||
-          dayjs(value).isAfter(dayjs(start_date), 'day')
-        )
+          dayjs(value).isSame(dayjs(start_date), "day") ||
+          dayjs(value).isAfter(dayjs(start_date), "day")
+        );
       }
     ),
   start_cancellation_date: Yup.date()
-    .required('La fecha de inicio de bajas es obligatoria')
+    .required("La fecha de inicio de bajas es obligatoria")
     .min(
-      dayjs().startOf('day').toDate(),
-      'La fecha de inicio de bajas debe ser igual o posterior al día actual'
+      dayjs().startOf("day").toDate(),
+      "La fecha de inicio de bajas debe ser igual o posterior al día actual"
     )
     .max(
-      dayjs().add(2, 'year').toDate(),
-      'La fecha de inicio de bajas no puede ser posterior a dos años desde la fecha actual'
+      dayjs().add(2, "year").toDate(),
+      "La fecha de inicio de bajas no puede ser posterior a dos años desde la fecha actual"
     ),
   end_cancellation_date: Yup.date()
-    .required('La fecha de fin de bajas es obligatoria')
+    .required("La fecha de fin de bajas es obligatoria")
     .min(
-      dayjs().startOf('day').toDate(),
-      'La fecha de fin de bajas debe ser igual o posterior al día actual'
+      dayjs().startOf("day").toDate(),
+      "La fecha de fin de bajas debe ser igual o posterior al día actual"
     )
     .max(
-      dayjs().add(2, 'year').toDate(),
-      'La fecha de fin de bajas no puede ser posterior a dos años desde la fecha actual'
+      dayjs().add(2, "year").toDate(),
+      "La fecha de fin de bajas no puede ser posterior a dos años desde la fecha actual"
     )
     .test(
-      'is-before-start',
-      'La fecha límite debe ser anterior a la fecha de inicio',
+      "is-before-start",
+      "La fecha límite debe ser anterior a la fecha de inicio",
       function (value) {
-        const { start_date } = this.parent
-        return dayjs(value).isBefore(dayjs(start_date))
+        const { start_date } = this.parent;
+        return dayjs(value).isBefore(dayjs(start_date));
       }
     ),
   registration_deadline: Yup.date()
-    .required('La fecha límite de inscripción es obligatoria')
+    .required("La fecha límite de inscripción es obligatoria")
     .min(
-      dayjs().startOf('day').toDate(),
-      'La fecha límite de inscripción debe ser igual o posterior al día actual'
+      dayjs().startOf("day").toDate(),
+      "La fecha límite de inscripción debe ser igual o posterior al día actual"
     )
     .max(
-      dayjs().add(2, 'year').toDate(),
-      'La fecha límite de inscripción no puede ser posterior a dos años desde la fecha actual'
+      dayjs().add(2, "year").toDate(),
+      "La fecha límite de inscripción no puede ser posterior a dos años desde la fecha actual"
     )
     .test(
-      'is-before-start',
-      'La fecha límite debe ser anterior a la fecha de inicio',
+      "is-before-start",
+      "La fecha límite debe ser anterior a la fecha de inicio",
       function (value) {
-        const { start_date } = this.parent
-        return dayjs(value).isBefore(dayjs(start_date))
+        const { start_date } = this.parent;
+        return dayjs(value).isBefore(dayjs(start_date));
       }
     ),
   duration_hours: Yup.number()
-    .required('La duración es obligatoria')
-    .min(1, 'La duración mínima es de 1 hora'),
+    .required("La duración es obligatoria")
+    .min(1, "La duración mínima es de 1 hora"),
   assigned_hours: Yup.number()
-    .required('Las horas becarias son obligatorias')
-    .min(1, 'La duración mínima es de 1 hora')
-    .max(168, 'La duración máxima es de 168 horas'),
+    .required("Las horas becarias son obligatorias")
+    .min(1, "La duración mínima es de 1 hora")
+    .max(168, "La duración máxima es de 168 horas"),
   max_interns: Yup.number()
-    .required('El número de becarios es obligatorio')
-    .min(1, 'Debe haber al menos un becario')
-    .min(Yup.ref('min_interns'), 'Debe ser mayor a Mínimo de Becarios'),
+    .required("El número de becarios es obligatorio")
+    .min(1, "Debe haber al menos un becario")
+    .min(Yup.ref("min_interns"), "Debe ser mayor a Mínimo de Becarios"),
   min_interns: Yup.number()
-    .required('La cantidad mínima de becarios es obligatoria')
-    .min(1, 'Debe haber al menos 1 becario'),
+    .required("La cantidad mínima de becarios es obligatoria")
+    .min(1, "Debe haber al menos 1 becario"),
   responsible_intern_id: Yup.number().notRequired(),
-})
+});
 
 const CreateForm = () => {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [successDialog, setSuccessDialog] = useState(false)
-  const [errorDialog, setErrorDialog] = useState(false)
-  const [interns, setInterns] = useState<InternsInformation[]>([])
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [successDialog, setSuccessDialog] = useState(false);
+  const [errorDialog, setErrorDialog] = useState(false);
+  const [interns, setInterns] = useState<InternsInformation[]>([]);
 
-  dayjs.extend(utc)
-  dayjs.extend(timezone)
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
 
   useEffect(() => {
     const fetchInterns = async () => {
       try {
-        const response = await getInternList()
-        setInterns(response.data)
+        const response = await getInternList();
+        setInterns(response.data);
       } catch (error) {
-        console.error('Error al cargar becarios', error)
+        console.error("Error al cargar becarios", error);
       }
-    }
-    fetchInterns()
-  }, [])
+    };
+    fetchInterns();
+  }, []);
 
   const sucessDialogClose = () => {
-    setSuccessDialog(false)
-    formik.resetForm()
-  }
+    setSuccessDialog(false);
+    formik.resetForm();
+  };
 
   const errorDialogClose = () => {
-    setErrorDialog(false)
-  }
+    setErrorDialog(false);
+  };
 
   const handleCancel = () => {
-    formik.resetForm()
-    navigate('/programDirector')
-  }
+    formik.resetForm();
+    navigate("/programDirector");
+  };
 
   const handleBackNavigate = () => {
-    navigate('/programDirector')
-  }
+    navigate("/programDirector");
+  };
 
   const formik = useFormik<Event>({
     initialValues: {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       assigned_hours: 0,
-      start_date: '',
-      end_date: '',
+      start_date: "",
+      end_date: "",
       duration_hours: 0,
-      location: '',
+      location: "",
       max_interns: 0,
       min_interns: 0,
       is_finished: false,
-      registration_deadline: '',
-      start_cancellation_date: '',
-      end_cancellation_date: '',
+      registration_deadline: "",
+      start_cancellation_date: "",
+      end_cancellation_date: "",
       responsible_intern_id: -1,
     },
     validationSchema,
     onSubmit: async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const formatWithTimezone = (date: string) =>
           dayjs(date)
-            .tz('America/Caracas')
-            .set('hour', 23)
-            .set('minute', 59)
-            .set('second', 59)
-            .format()
+            .tz("America/Caracas")
+            .set("hour", 23)
+            .set("minute", 59)
+            .set("second", 59)
+            .format();
 
         const valuesWithTimezone = {
           ...formik.values,
@@ -207,31 +207,31 @@ const CreateForm = () => {
           start_cancellation_date: formatWithTimezone(formik.values.start_cancellation_date!),
           end_cancellation_date: formatWithTimezone(formik.values.end_cancellation_date!),
           registration_deadline: formatWithTimezone(formik.values.registration_deadline),
-        }
+        };
 
-        const { responsible_intern_id, ...eventData } = valuesWithTimezone
+        const { responsible_intern_id, ...eventData } = valuesWithTimezone;
         const finalEventData =
-          responsible_intern_id === -1 ? eventData : { ...eventData, responsible_intern_id }
-        await createEventService(finalEventData)
-        formik.resetForm()
-        navigate('/programDirector')
-        setMessage('Evento creado con éxito')
-        setSuccessDialog(true)
+          responsible_intern_id === -1 ? eventData : { ...eventData, responsible_intern_id };
+        await createEventService(finalEventData);
+        formik.resetForm();
+        navigate("/programDirector");
+        setMessage("Evento creado con éxito");
+        setSuccessDialog(true);
       } catch (error) {
-        setMessage('Error al crear el evento')
-        setErrorDialog(true)
+        setMessage("Error al crear el evento");
+        setErrorDialog(true);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     },
-  })
+  });
   return (
     <Grid container spacing={0} alignItems="center">
-      <Grid container spacing={4} sx={{ padding: 2, position: 'relative' }}>
+      <Grid container spacing={4} sx={{ padding: 2, position: "relative" }}>
         <IconButton
           onClick={handleBackNavigate}
           aria-label="back"
-          sx={{ position: 'absolute', left: 21, top: 60 }}
+          sx={{ position: "absolute", left: 21, top: 60 }}
         >
           <ArrowBackIcon />
         </IconButton>
@@ -242,7 +242,7 @@ const CreateForm = () => {
           <Grid container spacing={2} sx={{ padding: 2 }}>
             <Grid item xs={12}>
               <Typography variant="h4">Crear Nuevo Evento</Typography>
-              <Typography margin="normal" variant="body2" sx={{ fontSize: 14, color: 'gray' }}>
+              <Typography margin="normal" variant="body2" sx={{ fontSize: 14, color: "gray" }}>
                 Ingrese los datos del evento a continuación.
               </Typography>
               <Divider flexItem sx={{ mt: 2, mb: 2 }} />
@@ -423,8 +423,8 @@ const CreateForm = () => {
                         helperText={formik.touched.duration_hours && formik.errors.duration_hours}
                         inputProps={{ min: 0 }}
                         onKeyDown={(e) => {
-                          if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                            e.preventDefault()
+                          if (e.key === "-" || e.key === "e" || e.key === "E") {
+                            e.preventDefault();
                           }
                         }}
                       />
@@ -458,8 +458,8 @@ const CreateForm = () => {
                         helperText={formik.touched.assigned_hours && formik.errors.assigned_hours}
                         inputProps={{ min: 0 }}
                         onKeyDown={(e) => {
-                          if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                            e.preventDefault()
+                          if (e.key === "-" || e.key === "e" || e.key === "E") {
+                            e.preventDefault();
                           }
                         }}
                       />
@@ -479,8 +479,8 @@ const CreateForm = () => {
                         helperText={formik.touched.min_interns && formik.errors.min_interns}
                         inputProps={{ min: 0 }}
                         onKeyDown={(e) => {
-                          if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                            e.preventDefault()
+                          if (e.key === "-" || e.key === "e" || e.key === "E") {
+                            e.preventDefault();
                           }
                         }}
                       />
@@ -500,8 +500,8 @@ const CreateForm = () => {
                         helperText={formik.touched.max_interns && formik.errors.max_interns}
                         inputProps={{ min: 0 }}
                         onKeyDown={(e) => {
-                          if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                            e.preventDefault()
+                          if (e.key === "-" || e.key === "e" || e.key === "E") {
+                            e.preventDefault();
                           }
                         }}
                       />
@@ -511,9 +511,9 @@ const CreateForm = () => {
               </Grid>
               <Divider flexItem sx={{ mt: 2, mb: 2 }} />
             </Grid>
-            <Grid container alignItems="center" style={{ marginLeft: '5%' }}>
-              <Grid item xs={4} style={{ marginLeft: '-10px' }}>
-                <Typography variant="h6" style={{ marginTop: '5px' }}>
+            <Grid container alignItems="center" style={{ marginLeft: "5%" }}>
+              <Grid item xs={4} style={{ marginLeft: "-10px" }}>
+                <Typography variant="h6" style={{ marginTop: "5px" }}>
                   Supervisor
                 </Typography>
               </Grid>
@@ -524,14 +524,14 @@ const CreateForm = () => {
                     id="responsible_intern_id"
                     options={interns || []}
                     getOptionLabel={(option) =>
-                      `${option.code + '  ' + option.name + '  ' + option.lastname}`
+                      `${option.code + "  " + option.name + "  " + option.lastname}`
                     }
                     value={
                       interns.find((intern) => intern.id === formik.values.responsible_intern_id) ||
                       null
                     }
                     onChange={(_, newValue) =>
-                      formik.setFieldValue('responsible_intern_id', newValue?.id || '')
+                      formik.setFieldValue("responsible_intern_id", newValue?.id || "")
                     }
                     renderInput={(params) => (
                       <TextField
@@ -553,7 +553,7 @@ const CreateForm = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid container spacing={2} justifyContent="flex-end" style={{ marginTop: '90px' }}>
+          <Grid container spacing={2} justifyContent="flex-end" style={{ marginTop: "90px" }}>
             <Grid item>
               <Button variant="contained" color="primary" type="submit">
                 Crear
@@ -569,18 +569,18 @@ const CreateForm = () => {
         <SuccessDialog
           open={successDialog}
           onClose={sucessDialogClose}
-          title={'Evento Creado!'}
-          subtitle={'El evento ha sido creado con éxito.'}
+          title={"Evento Creado!"}
+          subtitle={"El evento ha sido creado con éxito."}
         />
         <ErrorDialog
           open={errorDialog}
           onClose={errorDialogClose}
-          title={'¡Vaya!'}
+          title={"¡Vaya!"}
           subtitle={message}
         />
       </FormContainer>
     </Grid>
-  )
-}
+  );
+};
 
-export default CreateForm
+export default CreateForm;

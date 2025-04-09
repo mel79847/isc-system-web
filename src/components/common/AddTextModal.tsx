@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useState } from "react";
 import {
   Modal as MuiModal,
   Box,
@@ -12,13 +12,13 @@ import {
   CardContent,
   CardMedia,
   Radio,
-} from '@mui/material'
-import CancelIcon from '@mui/icons-material/Cancel'
-import WorkIcon from '@mui/icons-material/Work'
-import SchoolIcon from '@mui/icons-material/School'
-import { AddTextModalProps } from '../../models/addTextModalPropsInterface'
+} from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
+import WorkIcon from "@mui/icons-material/Work";
+import SchoolIcon from "@mui/icons-material/School";
+import { AddTextModalProps } from "../../models/addTextModalPropsInterface";
 
-import './ModalStyle.css'
+import "./ModalStyle.css";
 
 const AddTextModal: FC<AddTextModalProps> = ({
   isVisible,
@@ -26,34 +26,34 @@ const AddTextModal: FC<AddTextModalProps> = ({
   onCreate,
   existingRoles,
 }) => {
-  const [name, setName] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isTeacher, setIsTeacher] = useState(false)
+  const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isTeacher, setIsTeacher] = useState(false);
 
   const handleCreate = async () => {
-    let rolWithTheSameName = false
+    let rolWithTheSameName = false;
     existingRoles.forEach((role) => {
       if (name && role.name.toLowerCase() === name.toLowerCase()) {
-        rolWithTheSameName = true
+        rolWithTheSameName = true;
       }
-    })
+    });
     if (!name.trim()) {
-      setError('El nombre del rol no puede estar vacío')
+      setError("El nombre del rol no puede estar vacío");
     } else if (rolWithTheSameName) {
-      setError('Rol existente')
+      setError("Rol existente");
     } else {
-      onCreate(name, isTeacher ? 'professor' : 'student')
-      setIsVisible(false)
-      setName('')
-      setError(null)
+      onCreate(name, isTeacher ? "professor" : "student");
+      setIsVisible(false);
+      setName("");
+      setError(null);
     }
-  }
+  };
 
   const toggleModal = () => {
-    setIsVisible(!isVisible)
-    setName('')
-    setError(null)
-  }
+    setIsVisible(!isVisible);
+    setName("");
+    setError(null);
+  };
 
   return (
     <MuiModal
@@ -63,7 +63,7 @@ const AddTextModal: FC<AddTextModalProps> = ({
       aria-describedby="create-modal-description"
     >
       <Box className="modal-box">
-        <IconButton sx={{ position: 'absolute', top: 6, left: 450 }} onClick={toggleModal}>
+        <IconButton sx={{ position: "absolute", top: 6, left: 450 }} onClick={toggleModal}>
           <CancelIcon color="primary" />
         </IconButton>
         <Typography id="create-modal-title" variant="h5">
@@ -73,25 +73,25 @@ const AddTextModal: FC<AddTextModalProps> = ({
           fullWidth
           value={name}
           onChange={(e) => {
-            setName(e.target.value)
-            if (error) setError(null)
+            setName(e.target.value);
+            if (error) setError(null);
           }}
           label="Ingresa el nombre del nuevo rol"
           variant="outlined"
           inputProps={{ maxLength: 25 }}
-          sx={{ marginTop: '20px' }}
+          sx={{ marginTop: "20px" }}
           error={!!error}
           helperText={error}
         />
 
-        <Box sx={{ textAlign: 'center', paddingTop: 2 }}>
+        <Box sx={{ textAlign: "center", paddingTop: 2 }}>
           <Typography variant="h6">¿A quién puedo asignar este rol?</Typography>
-          <Grid container sx={{ padding: 2, justifyContent: 'center' }} spacing={2}>
+          <Grid container sx={{ padding: 2, justifyContent: "center" }} spacing={2}>
             <Grid item xs={5} md={6}>
               <Card variant="outlined">
                 <CardActionArea onClick={() => setIsTeacher(false)}>
                   <CardContent
-                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                    sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
                   >
                     <CardMedia>
                       <SchoolIcon sx={{ fontSize: 100 }} color="primary" />
@@ -106,7 +106,7 @@ const AddTextModal: FC<AddTextModalProps> = ({
               <Card variant="outlined">
                 <CardActionArea onClick={() => setIsTeacher(true)}>
                   <CardContent
-                    sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                    sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
                   >
                     <CardMedia>
                       <WorkIcon sx={{ fontSize: 100 }} color="primary" />
@@ -120,12 +120,12 @@ const AddTextModal: FC<AddTextModalProps> = ({
           </Grid>
         </Box>
 
-        <Box display="flex" justifyContent="flex-end" mt={2} sx={{ marginTop: '20px' }}>
+        <Box display="flex" justifyContent="flex-end" mt={2} sx={{ marginTop: "20px" }}>
           <Button
             variant="outlined"
             color="secondary"
             onClick={toggleModal}
-            sx={{ marginRight: '10px' }}
+            sx={{ marginRight: "10px" }}
           >
             Cancelar
           </Button>
@@ -135,7 +135,7 @@ const AddTextModal: FC<AddTextModalProps> = ({
         </Box>
       </Box>
     </MuiModal>
-  )
-}
+  );
+};
 
-export default AddTextModal
+export default AddTextModal;

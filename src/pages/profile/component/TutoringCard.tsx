@@ -1,12 +1,12 @@
-import { Grid } from '@mui/material'
-import ProcessCard from './ProcessCard'
+import { Grid } from "@mui/material";
+import ProcessCard from "./ProcessCard";
 
 const tutoringCardData = [
-  { count: 5, percentage: 35.67, label: 'Tutorias Finalizadas' },
-  { count: 5, percentage: 35.67, label: 'Tutorias En Progreso' },
-  { count: 5, percentage: 35.67, label: 'Revisiones Finalizadas' },
-  { count: 5, percentage: 35.67, label: 'Revisiones Progreso' },
-]
+  { count: 5, percentage: 35.67, label: "Tutorias Finalizadas" },
+  { count: 5, percentage: 35.67, label: "Tutorias En Progreso" },
+  { count: 5, percentage: 35.67, label: "Revisiones Finalizadas" },
+  { count: 5, percentage: 35.67, label: "Revisiones Progreso" },
+];
 
 const TutoringCard = () => {
   return (
@@ -17,7 +17,7 @@ const TutoringCard = () => {
         </Grid>
       ))}
     </Grid>
-  )
-}
+  );
+};
 
-export default TutoringCard
+export default TutoringCard;

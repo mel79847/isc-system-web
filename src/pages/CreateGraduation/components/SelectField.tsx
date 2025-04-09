@@ -1,22 +1,22 @@
-import { FormikProps } from 'formik'
+import { FormikProps } from "formik";
 
 interface GraduationProcessFormValues {
-  student_id: string
-  modality_id: string
-  period: string
-  project_name: string
+  student_id: string;
+  modality_id: string;
+  period: string;
+  project_name: string;
 }
 
 interface SelectFieldProps {
-  label: string
-  name: keyof GraduationProcessFormValues
+  label: string;
+  name: keyof GraduationProcessFormValues;
   options: Array<{
-    id: number
-    name?: string
-    student_name?: string
-    value?: string
-  }>
-  formik: FormikProps<GraduationProcessFormValues>
+    id: number;
+    name?: string;
+    student_name?: string;
+    value?: string;
+  }>;
+  formik: FormikProps<GraduationProcessFormValues>;
 }
 
 export const SelectField: React.FC<SelectFieldProps> = ({ label, name, options, formik }) => (
@@ -28,7 +28,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({ label, name, options, 
       onChange={formik.handleChange}
       value={formik.values[name]}
       className={`select-2 ${
-        formik.touched[name] && formik.errors[name] ? 'border-red-1' : 'border-gray-300'
+        formik.touched[name] && formik.errors[name] ? "border-red-1" : "border-gray-300"
       }`}
     >
       <option value="">Seleccione una opción</option>
@@ -44,4 +44,4 @@ export const SelectField: React.FC<SelectFieldProps> = ({ label, name, options, 
       <div className="h-5" />
     )}
   </div>
-)
+);

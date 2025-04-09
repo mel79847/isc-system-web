@@ -29,7 +29,7 @@ const FormCard = () => {
         />
       </label>
     </div>
-  )
-}
+  );
+};
 
-export default FormCard
+export default FormCard;

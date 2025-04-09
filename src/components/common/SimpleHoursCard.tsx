@@ -1,11 +1,11 @@
-import { Card, CardContent, Grid, Typography, Box } from '@mui/material'
+import { Card, CardContent, Grid, Typography, Box } from "@mui/material";
 
 interface SimpleHoursCardProps {
-  backgroundColor: string
-  textColor: string
-  title: string
-  count: number
-  subtitle: string
+  backgroundColor: string;
+  textColor: string;
+  title: string;
+  count: number;
+  subtitle: string;
 }
 function SimpleHoursCard({
   backgroundColor,
@@ -25,16 +25,16 @@ function SimpleHoursCard({
       <CardContent>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item xs={12}>
-            <Typography variant="h5" component="div" sx={{ color: textColor, fontWeight: 'bold' }}>
+            <Typography variant="h5" component="div" sx={{ color: textColor, fontWeight: "bold" }}>
               {count} Horas
             </Typography>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Typography
                 sx={{
                   fontSize: 16,
                   color: textColor,
-                  fontWeight: 'bold',
+                  fontWeight: "bold",
                 }}
               >
                 {title}
@@ -43,8 +43,8 @@ function SimpleHoursCard({
                 sx={{
                   fontSize: 18,
                   color: textColor,
-                  fontWeight: 'bold',
-                  marginTop: '-16px',
+                  fontWeight: "bold",
+                  marginTop: "-16px",
                 }}
               >
                 {subtitle}
@@ -54,7 +54,7 @@ function SimpleHoursCard({
         </Grid>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-export default SimpleHoursCard
+export default SimpleHoursCard;

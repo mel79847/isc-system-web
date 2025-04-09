@@ -1,20 +1,20 @@
-import { Color, PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib'
+import { Color, PDFDocument, PDFFont, rgb, StandardFonts } from "pdf-lib";
 
 export interface PDFInsertData {
-  x: number
-  y: number
-  size: number
-  text: string
-  font?: PDFFont
-  color?: Color
+  x: number;
+  y: number;
+  size: number;
+  text: string;
+  font?: PDFFont;
+  color?: Color;
 }
 
 export interface PDFDrawRectangle {
-  x: number
-  y: number
-  width: number
-  height: number
-  color: Color
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: Color;
 }
 
 export async function modifyPdf(
@@ -22,12 +22,12 @@ export async function modifyPdf(
   data: PDFInsertData[],
   draw?: PDFDrawRectangle[]
 ): Promise<ArrayBuffer> {
-  const pdfDoc = await PDFDocument.load(inputPdf)
-  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+  const pdfDoc = await PDFDocument.load(inputPdf);
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  const pages = pdfDoc.getPages()
-  const firstPage = pages[0]
-  const { height } = firstPage.getSize()
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[0];
+  const { height } = firstPage.getSize();
 
   draw?.forEach((item) => {
     firstPage.drawRectangle({
@@ -36,8 +36,8 @@ export async function modifyPdf(
       width: item.width,
       height: item.height,
       color: item.color,
-    })
-  })
+    });
+  });
 
   data.forEach((item) => {
     firstPage.drawText(item.text, {
@@ -46,9 +46,9 @@ export async function modifyPdf(
       size: item.size,
       font: item.font || helveticaFont,
       color: item.color || rgb(0, 0, 0),
-    })
-  })
+    });
+  });
 
-  const pdfBytes = await pdfDoc.save()
-  return pdfBytes
+  const pdfBytes = await pdfDoc.save();
+  return pdfBytes;
 }

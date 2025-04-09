@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import { useNavigate } from 'react-router-dom'
+import { ChangeEvent, useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -16,198 +16,198 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@mui/material'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import AddIcon from '@mui/icons-material/Add'
+} from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 
-import { deleteUser, getUsers } from '../../services/usersService'
-import ContainerPage from '../../components/common/ContainerPage'
-import { getRoles } from '../../services/roleService'
-import { Role } from '../../models/roleInterface'
-import { User } from '../../models/userInterface'
-import CreateUserPage from '../../components/users/CreateUserPage'
-import { RolePermissions } from '../../models/rolePermissionInterface'
-import { Permission } from '../../models/permissionInterface'
-import { getPermissionById } from '../../services/permissionsService'
-import { HasPermission } from '../../helper/permissions'
-import dataGridLocaleText from '../../locales/datagridLocaleEs'
+import { deleteUser, getUsers } from "../../services/usersService";
+import ContainerPage from "../../components/common/ContainerPage";
+import { getRoles } from "../../services/roleService";
+import { Role } from "../../models/roleInterface";
+import { User } from "../../models/userInterface";
+import CreateUserPage from "../../components/users/CreateUserPage";
+import { RolePermissions } from "../../models/rolePermissionInterface";
+import { Permission } from "../../models/permissionInterface";
+import { getPermissionById } from "../../services/permissionsService";
+import { HasPermission } from "../../helper/permissions";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const UsersPage = () => {
-  const navigate = useNavigate()
-  const [users, setUsers] = useState<User[]>([])
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(users)
-  const [isOpenDelete, setOpenDelete] = useState(false)
-  const [isOpenCreate, setOpenCreate] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<number | null>(null)
-  const [roles, setRoles] = useState<Role[]>([])
-  const [filterRoles, setFilterRoles] = useState('')
-  const [search, setSearch] = useState('')
-  const [user, setUser] = useState<User | null>(null)
-  const [viewUserReport, setViewUserReport] = useState<Permission>()
-  const [deleteUserPermission, setDeleteUserPermission] = useState<Permission>()
-  const [editUserPermission, setEditUserPermission] = useState<Permission>()
-  const [addUserPermission, setAddUserPermission] = useState<Permission>()
+  const navigate = useNavigate();
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
+  const [isOpenDelete, setOpenDelete] = useState(false);
+  const [isOpenCreate, setOpenCreate] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [filterRoles, setFilterRoles] = useState("");
+  const [search, setSearch] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [viewUserReport, setViewUserReport] = useState<Permission>();
+  const [deleteUserPermission, setDeleteUserPermission] = useState<Permission>();
+  const [editUserPermission, setEditUserPermission] = useState<Permission>();
+  const [addUserPermission, setAddUserPermission] = useState<Permission>();
   useEffect(() => {
     const fetchPermissions = async () => {
-      const viewReportResponse = await getPermissionById(19)
-      setViewUserReport(viewReportResponse.data[0])
-      const deleteUserResponse = await getPermissionById(20)
-      setDeleteUserPermission(deleteUserResponse.data[0])
-      const editUserResponse = await getPermissionById(21)
-      setEditUserPermission(editUserResponse.data[0])
-      const addUserResponse = await getPermissionById(22)
-      setAddUserPermission(addUserResponse.data[0])
-      console.log('permissos:', addUserPermission)
-    }
+      const viewReportResponse = await getPermissionById(19);
+      setViewUserReport(viewReportResponse.data[0]);
+      const deleteUserResponse = await getPermissionById(20);
+      setDeleteUserPermission(deleteUserResponse.data[0]);
+      const editUserResponse = await getPermissionById(21);
+      setEditUserPermission(editUserResponse.data[0]);
+      const addUserResponse = await getPermissionById(22);
+      setAddUserPermission(addUserResponse.data[0]);
+      console.log("permissos:", addUserPermission);
+    };
 
-    fetchPermissions()
-  }, [])
+    fetchPermissions();
+  }, []);
 
   const handleCreateUser = () => {
-    setUser(null)
-    setOpenCreate(true)
-  }
+    setUser(null);
+    setOpenCreate(true);
+  };
 
   const handleView = (id: number) => {
-    navigate(`/profile/${id}`)
-  }
+    navigate(`/profile/${id}`);
+  };
 
   const handleEdit = (id: number) => {
-    const editUser = users.find((user) => user.id == id) || null
-    setUser(editUser)
-    setOpenCreate(true)
-  }
+    const editUser = users.find((user) => user.id == id) || null;
+    setUser(editUser);
+    setOpenCreate(true);
+  };
 
   const handleClickDelete = (id: number) => {
-    setSelectedUser(id)
-    setOpenDelete(true)
-  }
+    setSelectedUser(id);
+    setOpenDelete(true);
+  };
 
   const handleCloseDelete = () => {
-    setOpenDelete(false)
-    setSelectedUser(null)
-  }
+    setOpenDelete(false);
+    setSelectedUser(null);
+  };
 
   const handleDelete = async () => {
     if (selectedUser !== null) {
       try {
-        await deleteUser(selectedUser)
-        fetchUsers()
+        await deleteUser(selectedUser);
+        fetchUsers();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-      handleCloseDelete()
+      handleCloseDelete();
     }
-  }
+  };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value
-    setSearch(searchValue)
-  }
+    const searchValue = e.target.value;
+    setSearch(searchValue);
+  };
 
   const handleSelectRoleChange = (event: { target: { value: string } }) => {
-    const selectedRole = event.target.value
-    if (selectedRole === 'reset') {
-      setFilterRoles('')
-      setSearch('')
+    const selectedRole = event.target.value;
+    if (selectedRole === "reset") {
+      setFilterRoles("");
+      setSearch("");
     } else {
-      setFilterRoles(selectedRole)
+      setFilterRoles(selectedRole);
     }
-  }
+  };
 
   useEffect(() => {
-    applyFilters()
-  }, [search, filterRoles])
+    applyFilters();
+  }, [search, filterRoles]);
 
   const applyFilters = () => {
-    let filteredData = users
+    let filteredData = users;
 
     if (search) {
-      const lowercasedFilter = search.toLowerCase()
+      const lowercasedFilter = search.toLowerCase();
       filteredData = filteredData.filter((user: User) => {
-        const codeName = `${user.code} ${user.name} ${user.lastname} ${user.mothername}`
+        const codeName = `${user.code} ${user.name} ${user.lastname} ${user.mothername}`;
 
         return (
           user.name?.toLowerCase().includes(lowercasedFilter) ||
           user.lastname?.toLowerCase().includes(lowercasedFilter) ||
           user.code?.toString().includes(lowercasedFilter) ||
           codeName.toLowerCase().includes(lowercasedFilter)
-        )
-      })
+        );
+      });
     }
 
     if (filterRoles) {
       filteredData = filteredData.filter((user: User) => {
-        return user.roles.includes(Number(filterRoles))
-      })
+        return user.roles.includes(Number(filterRoles));
+      });
     }
 
-    setFilteredUsers(filteredData)
-  }
+    setFilteredUsers(filteredData);
+  };
 
   const columns: GridColDef[] = [
     {
-      field: 'code',
-      headerName: 'Código',
-      headerAlign: 'center',
-      align: 'center',
+      field: "code",
+      headerName: "Código",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       width: 200,
     },
     {
-      field: 'fullName',
-      headerName: 'Nombre Completo',
-      headerAlign: 'center',
-      align: 'center',
+      field: "fullName",
+      headerName: "Nombre Completo",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       width: 200,
     },
     {
-      field: 'email',
-      headerName: 'Correo',
-      headerAlign: 'center',
-      align: 'center',
+      field: "email",
+      headerName: "Correo",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       width: 200,
     },
     {
-      field: 'phone',
-      headerName: 'Teléfono',
-      headerAlign: 'center',
-      align: 'center',
+      field: "phone",
+      headerName: "Teléfono",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       width: 200,
     },
     {
-      field: 'rol',
-      headerName: 'Rol',
-      headerAlign: 'center',
-      align: 'center',
+      field: "rol",
+      headerName: "Rol",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       width: 200,
       renderCell: ({ row }) =>
         row.roles.map((rol: string) => (
-          <Chip key={rol} label={rol} style={{ color: '#ffffff', backgroundColor: '#337DD0' }} />
+          <Chip key={rol} label={rol} style={{ color: "#ffffff", backgroundColor: "#337DD0" }} />
         )),
     },
     {
-      field: 'actions',
-      headerName: 'Acciones',
-      headerAlign: 'center',
-      align: 'center',
+      field: "actions",
+      headerName: "Acciones",
+      headerAlign: "center",
+      align: "center",
       flex: 1,
       width: 200,
       renderCell: (params) => (
         <div>
-          {HasPermission(viewUserReport?.name || '') && (
+          {HasPermission(viewUserReport?.name || "") && (
             <IconButton color="primary" aria-label="ver" onClick={() => handleView(params.row.id)}>
               <VisibilityIcon />
             </IconButton>
           )}
-          {HasPermission(editUserPermission?.name || '') && (
+          {HasPermission(editUserPermission?.name || "") && (
             <IconButton
               color="primary"
               aria-label="editar"
@@ -216,7 +216,7 @@ const UsersPage = () => {
               <EditIcon />
             </IconButton>
           )}
-          {HasPermission(deleteUserPermission?.name || '') && (
+          {HasPermission(deleteUserPermission?.name || "") && (
             <IconButton
               color="secondary"
               aria-label="eliminar"
@@ -228,52 +228,52 @@ const UsersPage = () => {
         </div>
       ),
     },
-  ]
+  ];
 
   const fetchUsers = async () => {
-    const dataResponse = await getUsers()
-    const usersResponse = dataResponse.data
+    const dataResponse = await getUsers();
+    const usersResponse = dataResponse.data;
     for (const user of usersResponse) {
-      user.fullName = `${user.name} ${user.lastname} ${user.mothername}`
-      user.roles = []
+      user.fullName = `${user.name} ${user.lastname} ${user.mothername}`;
+      user.roles = [];
       for (const key in user.rolesAndPermissions)
-        user.roles.push(user.rolesAndPermissions[key].role_name)
+        user.roles.push(user.rolesAndPermissions[key].role_name);
     }
-    setUsers(usersResponse)
-    setFilteredUsers(usersResponse)
-  }
+    setUsers(usersResponse);
+    setFilteredUsers(usersResponse);
+  };
 
   const fetchRoles = async () => {
-    const rolesResponse = await getRoles()
-    const rolesPermissions: RolePermissions = rolesResponse.data
-    const roles: Role[] = []
+    const rolesResponse = await getRoles();
+    const rolesPermissions: RolePermissions = rolesResponse.data;
+    const roles: Role[] = [];
     Object.keys(rolesPermissions).forEach((roleName: string) => {
-      const rolePermissions = rolesPermissions[roleName]
+      const rolePermissions = rolesPermissions[roleName];
       roles.push({
         id: rolePermissions.id,
         name: roleName,
         disabled: rolePermissions.disabled,
         permissions: rolePermissions.permissions,
-      })
-    })
-    setRoles(roles)
-  }
+      });
+    });
+    setRoles(roles);
+  };
 
   useEffect(() => {
-    fetchUsers()
-    fetchRoles()
-  }, [])
+    fetchUsers();
+    fetchRoles();
+  }, []);
 
   const countStudentsWithRole = (role: string) => {
-    return users.filter((user) => user.roles.includes(Number(role))).length
-  }
+    return users.filter((user) => user.roles.includes(Number(role))).length;
+  };
 
   return (
     <ContainerPage
       title={`Usuarios (${users.length})`}
-      subtitle={'Lista de usuarios'}
+      subtitle={"Lista de usuarios"}
       actions={
-        HasPermission(addUserPermission?.name || 'Agregar usuario') && (
+        HasPermission(addUserPermission?.name || "Agregar usuario") && (
           <Button
             variant="contained"
             color="secondary"
@@ -285,7 +285,7 @@ const UsersPage = () => {
         )
       }
       children={
-        <div style={{ height: 400, width: '100%' }}>
+        <div style={{ height: 400, width: "100%" }}>
           <Grid container spacing={1} style={{ paddingBottom: 20 }}>
             <Grid item xs={9} md={8}>
               <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between m-5 mb-8 overflow-hidden">
@@ -327,7 +327,7 @@ const UsersPage = () => {
               </FormControl>
             </Grid>
           </Grid>
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: "100%" }}>
             <DataGrid
               rows={filteredUsers}
               columns={columns}
@@ -338,11 +338,11 @@ const UsersPage = () => {
                 },
               }}
               classes={{
-                root: 'bg-white dark:bg-gray-800',
-                columnHeader: 'bg-gray-200 dark:bg-gray-800 ',
-                cell: 'bg-white dark:bg-gray-800',
-                row: 'bg-white dark:bg-gray-800',
-                columnHeaderTitle: '!font-bold text-center',
+                root: "bg-white dark:bg-gray-800",
+                columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+                cell: "bg-white dark:bg-gray-800",
+                row: "bg-white dark:bg-gray-800",
+                columnHeaderTitle: "!font-bold text-center",
               }}
               pageSizeOptions={[5, 10]}
             />
@@ -377,8 +377,8 @@ const UsersPage = () => {
             <CreateUserPage
               openCreate={isOpenCreate}
               handleClose={() => {
-                fetchUsers()
-                setOpenCreate(false)
+                fetchUsers();
+                setOpenCreate(false);
               }}
               user={user}
             />
@@ -386,7 +386,7 @@ const UsersPage = () => {
         </div>
       }
     />
-  )
-}
+  );
+};
 
-export default UsersPage
+export default UsersPage;

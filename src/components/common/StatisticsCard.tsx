@@ -1,11 +1,11 @@
-import React, { FC } from 'react'
+import React, { FC } from "react";
 
 interface StatisticsCardProps {
-  color: string
-  icon: React.ReactNode
-  title: React.ReactNode
-  value: React.ReactNode
-  footer?: React.ReactNode | null
+  color: string;
+  icon: React.ReactNode;
+  title: React.ReactNode;
+  value: React.ReactNode;
+  footer?: React.ReactNode | null;
 }
 
 const StatisticsCard: FC<StatisticsCardProps> = ({ color, icon, title, value, footer }) => {
@@ -20,12 +20,12 @@ const StatisticsCard: FC<StatisticsCardProps> = ({ color, icon, title, value, fo
       </div>
       {footer && <div className="border-t border-blue-gray-50 p-4">{footer}</div>}
     </div>
-  )
-}
+  );
+};
 
 StatisticsCard.defaultProps = {
-  color: 'blue',
+  color: "blue",
   footer: null,
-}
+};
 
-export default StatisticsCard
+export default StatisticsCard;

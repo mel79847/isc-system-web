@@ -1,8 +1,8 @@
 export interface ProfessorInterface {
-  name: string
-  lastName: string
-  motherName: string
-  email: string
-  fullName: string
-  id: number
+  name: string;
+  lastName: string;
+  motherName: string;
+  email: string;
+  fullName: string;
+  id: number;
 }

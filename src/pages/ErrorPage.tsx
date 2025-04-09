@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const ErrorPage = () => {
   return (
@@ -12,7 +12,7 @@ const ErrorPage = () => {
         Volver al inicio
       </Link>
     </div>
-  )
-}
+  );
+};
 
-export default ErrorPage
+export default ErrorPage;

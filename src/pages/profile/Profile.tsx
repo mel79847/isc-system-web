@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { Grid, Paper, Box, Tab, Tabs } from '@mui/material'
-import UserProfileCard from './component/UserProfileCard'
-import { useParams } from 'react-router-dom'
-import { getUserById } from '../../services/usersService'
-import TaskList from './component/TaskList'
-import SpinModal from '../../components/common/SpinModal'
-import TutoringCard from './component/TutoringCard'
-import StudentCard from './component/StudentCard'
+import React, { useEffect, useState } from "react";
+import { Grid, Paper, Box, Tab, Tabs } from "@mui/material";
+import UserProfileCard from "./component/UserProfileCard";
+import { useParams } from "react-router-dom";
+import { getUserById } from "../../services/usersService";
+import TaskList from "./component/TaskList";
+import SpinModal from "../../components/common/SpinModal";
+import TutoringCard from "./component/TutoringCard";
+import StudentCard from "./component/StudentCard";
 
 interface TabPanelProps {
-  children?: React.ReactNode
-  index: number
-  value: number
+  children?: React.ReactNode;
+  index: number;
+  value: number;
 }
 
 function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props
+  const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -27,36 +27,36 @@ function CustomTabPanel(props: TabPanelProps) {
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
-  )
+  );
 }
 
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  }
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
 }
 
 const Profile = () => {
-  const { id } = useParams()
+  const { id } = useParams();
   // @ts-ignore
-  const [userProfile, setUserProfile] = useState<User | null>(null)
+  const [userProfile, setUserProfile] = useState<User | null>(null);
 
   const fetchUserProfile = async (id: string) => {
-    const response = await getUserById(Number(id))
-    setUserProfile(response)
-  }
+    const response = await getUserById(Number(id));
+    setUserProfile(response);
+  };
   useEffect(() => {
     if (id) {
-      fetchUserProfile(id)
+      fetchUserProfile(id);
     }
-  }, [id])
+  }, [id]);
 
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
-  }
+    setValue(newValue);
+  };
 
   return (
     <Box sx={{ flexGrow: 1, p: 2 }}>
@@ -68,14 +68,14 @@ const Profile = () => {
           <Grid container spacing={2}>
             {userProfile &&
               Array.isArray(userProfile.roles) &&
-              userProfile.roles.includes('professor') && (
+              userProfile.roles.includes("professor") && (
                 <Grid item xs={12}>
                   <TutoringCard />
                 </Grid>
               )}
             {userProfile &&
               Array.isArray(userProfile.roles) &&
-              userProfile.roles.includes('student') && (
+              userProfile.roles.includes("student") && (
                 <Grid item xs={12}>
                   <StudentCard />
                 </Grid>
@@ -85,14 +85,14 @@ const Profile = () => {
                 <Box
                   sx={{
                     borderBottom: 1,
-                    borderColor: 'divider',
-                    overflowX: 'auto',
+                    borderColor: "divider",
+                    overflowX: "auto",
                     px: { xs: 1, sm: 2 },
                   }}
                 >
                   {userProfile &&
                     Array.isArray(userProfile.roles) &&
-                    userProfile.roles.includes('professor') && (
+                    userProfile.roles.includes("professor") && (
                       <Tabs
                         value={value}
                         onChange={handleChange}
@@ -106,7 +106,7 @@ const Profile = () => {
 
                   {userProfile &&
                     Array.isArray(userProfile.roles) &&
-                    userProfile.roles.includes('student') && (
+                    userProfile.roles.includes("student") && (
                       <Tabs
                         value={value}
                         onChange={handleChange}
@@ -131,7 +131,7 @@ const Profile = () => {
         </Grid>
       </Grid>
     </Box>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

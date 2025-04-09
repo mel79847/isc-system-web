@@ -1,8 +1,8 @@
-import { Container } from '@mui/material'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
+import { Container } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 interface FormContainerProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export const FormContainer: React.FC<FormContainerProps> = ({ children }) => (
@@ -11,4 +11,4 @@ export const FormContainer: React.FC<FormContainerProps> = ({ children }) => (
       <CardContent>{children}</CardContent>
     </Card>
   </Container>
-)
+);

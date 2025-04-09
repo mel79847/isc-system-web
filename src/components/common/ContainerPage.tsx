@@ -1,12 +1,12 @@
-import { ReactNode } from 'react'
-import { Container, Grid, Typography } from '@mui/material'
-import PersonIcon from '@mui/icons-material/Person'
+import { ReactNode } from "react";
+import { Container, Grid, Typography } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
 
 interface ContainerPageProps {
-  title: string
-  subtitle: string
-  actions: ReactNode
-  children: ReactNode
+  title: string;
+  subtitle: string;
+  actions: ReactNode;
+  children: ReactNode;
 }
 
 const ContainerPage: React.FC<ContainerPageProps> = ({ title, subtitle, actions, children }) => {
@@ -19,8 +19,8 @@ const ContainerPage: React.FC<ContainerPageProps> = ({ title, subtitle, actions,
               <Typography
                 variant="h5"
                 component="div"
-                color={'primary'}
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                color={"primary"}
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <PersonIcon color="primary" />
                 {title}
@@ -30,7 +30,7 @@ const ContainerPage: React.FC<ContainerPageProps> = ({ title, subtitle, actions,
               </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" component="div" sx={{ textAlign: 'right' }}>
+              <Typography variant="h6" component="div" sx={{ textAlign: "right" }}>
                 {actions}
               </Typography>
             </Grid>
@@ -41,7 +41,7 @@ const ContainerPage: React.FC<ContainerPageProps> = ({ title, subtitle, actions,
         </Grid>
       </Grid>
     </Container>
-  )
-}
+  );
+};
 
-export default ContainerPage
+export default ContainerPage;

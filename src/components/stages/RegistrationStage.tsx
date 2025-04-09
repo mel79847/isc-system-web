@@ -1,15 +1,15 @@
-import { FC, useEffect, useState } from 'react'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { Modes } from '../../models/modeInterface'
-import { getModes } from '../../services/modesService'
-import { Modal } from '../common/Modal'
-import ConfirmModal from '../common/ConfirmModal'
-import { steps } from '../../data/steps'
-import { periods, currentPeriod } from '../../data/periods'
-import { useProcessStore } from '../../store/store'
-import { updateProcess } from '../../services/processServicer'
-import ModeEditIcon from '@mui/icons-material/ModeEdit'
+import { FC, useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Modes } from "../../models/modeInterface";
+import { getModes } from "../../services/modesService";
+import { Modal } from "../common/Modal";
+import ConfirmModal from "../common/ConfirmModal";
+import { steps } from "../../data/steps";
+import { periods, currentPeriod } from "../../data/periods";
+import { useProcessStore } from "../../store/store";
+import { updateProcess } from "../../services/processServicer";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   FormControl,
   FormControlLabel,
@@ -21,63 +21,63 @@ import {
   InputLabel,
   Button,
   Grid,
-} from '@mui/material'
+} from "@mui/material";
 
 const validationSchema = Yup.object({
-  mode: Yup.string().required('* La modalidad es obligatoria'),
-  period: Yup.date().required('* El periodo es obligatorio'),
-})
+  mode: Yup.string().required("* La modalidad es obligatoria"),
+  period: Yup.date().required("* El periodo es obligatorio"),
+});
 
 interface RegistrationStageProps {
-  onNext: () => void
+  onNext: () => void;
 }
 
 const getIdFromValue = (value: string) => {
-  const period = periods.find((period) => period.value === value)
-  return period ? period.id : ''
-}
+  const period = periods.find((period) => period.value === value);
+  return period ? period.id : "";
+};
 
 const getValueFromId = (id: number) => {
-  const period = periods.find((period) => period.id === id)
-  return period ? period.value : ''
-}
+  const period = periods.find((period) => period.id === id);
+  return period ? period.value : "";
+};
 
 export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
-  const studentProcess = useProcessStore((state) => state.process)
-  const setProcess = useProcessStore((state) => state.setProcess)
-  const [modes, setModes] = useState<Modes[]>([])
-  const [readOnly, setReadOnly] = useState<boolean>(true)
-  const [isVisible, setIsVisible] = useState<boolean>(false)
+  const studentProcess = useProcessStore((state) => state.process);
+  const setProcess = useProcessStore((state) => state.setProcess);
+  const [modes, setModes] = useState<Modes[]>([]);
+  const [readOnly, setReadOnly] = useState<boolean>(true);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [, setError] = useState<any | null>(null)
-  const [showModal, setShowModal] = useState<boolean>(false)
+  const [, setError] = useState<any | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getModes()
-        setModes(response.data)
+        const response = await getModes();
+        setModes(response.data);
       } catch (error) {
-        setError(error)
+        setError(error);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   const saveStage = async (mode: number, period: string) => {
     if (studentProcess) {
-      studentProcess.modality_id = mode
-      studentProcess.period = period
-      setProcess(studentProcess)
-      await updateProcess(studentProcess)
-      onNext()
+      studentProcess.modality_id = mode;
+      studentProcess.period = period;
+      setProcess(studentProcess);
+      await updateProcess(studentProcess);
+      onNext();
     }
-  }
+  };
 
   const handleModalAction = () => {
-    saveStage(formik.values.mode, getValueFromId(Number(formik.values.period)))
-    setIsVisible(false)
-  }
+    saveStage(formik.values.mode, getValueFromId(Number(formik.values.period)));
+    setIsVisible(false);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -86,13 +86,13 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
     },
     validationSchema,
     onSubmit: () => {
-      setShowModal(true)
+      setShowModal(true);
     },
-  })
+  });
 
   const editForm = () => {
-    setReadOnly(false)
-  }
+    setReadOnly(false);
+  };
 
   return (
     <>
@@ -168,5 +168,5 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
       )}
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} />
     </>
-  )
-}
+  );
+};

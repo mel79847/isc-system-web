@@ -1,91 +1,91 @@
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { FormContainer } from '../CreateGraduation/components/FormContainer'
-import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { getUserById, updateStudent } from '../../services/studentService'
-import { useParams } from 'react-router-dom'
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { FormContainer } from "../CreateGraduation/components/FormContainer";
+import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getUserById, updateStudent } from "../../services/studentService";
+import { useParams } from "react-router-dom";
 
 const validationSchema = Yup.object({
-  name: Yup.string().required('El nombre completo es obligatorio'),
-  lastname: Yup.string().required('El apellido es obligatorio'),
-  mothername: Yup.string().required('El apellido materno es obligatorio'),
+  name: Yup.string().required("El nombre completo es obligatorio"),
+  lastname: Yup.string().required("El apellido es obligatorio"),
+  mothername: Yup.string().required("El apellido materno es obligatorio"),
   email: Yup.string()
-    .email('Ingrese un correo electrónico válido')
-    .required('El correo electrónico es obligatorio'),
+    .email("Ingrese un correo electrónico válido")
+    .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(/^[0-9]{8}$/, 'Ingrese un número de teléfono válido')
+    .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
     .optional(),
   code: Yup.number().optional(),
-})
+});
 
 const EditStudentPage = () => {
-  const [open, setOpen] = useState(false)
-  const [message, setMessage] = useState('')
-  const [severity, setSeverity] = useState<'success' | 'error'>('success')
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState<"success" | "error">("success");
   // @ts-ignore
-  const [student, setStudent] = useState<any>()
-  const { id } = useParams()
+  const [student, setStudent] = useState<any>();
+  const { id } = useParams();
 
   const fetchStudent = async () => {
     try {
-      const response = await getUserById(Number(id))
-      formik.setValues(response)
-      setStudent(response)
+      const response = await getUserById(Number(id));
+      formik.setValues(response);
+      setStudent(response);
     } catch (error) {
-      console.error('Error al obtener el estudiante:', error)
+      console.error("Error al obtener el estudiante:", error);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchStudent()
-  }, [id])
+    fetchStudent();
+  }, [id]);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      lastname: '',
-      email: '',
-      phone: '',
-      code: '',
-      mothername: '',
+      name: "",
+      lastname: "",
+      email: "",
+      phone: "",
+      code: "",
+      mothername: "",
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
         // @ts-ignore
-        await updateStudent(values)
-        setMessage('Estudiante actualizado con éxito')
-        setSeverity('success')
-        setOpen(true)
+        await updateStudent(values);
+        setMessage("Estudiante actualizado con éxito");
+        setSeverity("success");
+        setOpen(true);
       } catch (error) {
-        setMessage('Error al crear el estudiante')
-        setSeverity('error')
-        setOpen(true)
+        setMessage("Error al crear el estudiante");
+        setSeverity("error");
+        setOpen(true);
       }
     },
-  })
+  });
 
   const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return
+    if (reason === "clickaway") {
+      return;
     }
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
+    const value = event.target.value;
     if (/^[0-9]*$/.test(value)) {
-      formik.setFieldValue('phone', value)
+      formik.setFieldValue("phone", value);
     }
-  }
+  };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
+    const value = event.target.value;
     if (/^[0-9]*$/.test(value)) {
-      formik.setFieldValue('code', value)
+      formik.setFieldValue("code", value);
     }
-  }
+  };
 
   return (
     <FormContainer>
@@ -93,7 +93,7 @@ const EditStudentPage = () => {
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
             <Typography variant="h4">Crear Nuevo Estudiante</Typography>
-            <Typography variant="body2" sx={{ fontSize: 14, color: 'gray' }}>
+            <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
               Ingrese los datos del estudiante a continuación.
             </Typography>
             <Divider flexItem sx={{ mt: 2, mb: 2 }} />
@@ -221,14 +221,14 @@ const EditStudentPage = () => {
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
+        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
           {message}
         </Alert>
       </Snackbar>
     </FormContainer>
-  )
-}
+  );
+};
 
-export default EditStudentPage
+export default EditStudentPage;

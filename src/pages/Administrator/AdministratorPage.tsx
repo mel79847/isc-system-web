@@ -1,79 +1,79 @@
-import { useEffect, useState } from 'react'
-import { Grid, Typography, useMediaQuery } from '@mui/material'
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import { useEffect, useState } from "react";
+import { Grid, Typography, useMediaQuery } from "@mui/material";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
-import '../../components/administration/AdministratorPageComponents.css'
-import RoleTable from '../../components/administration/RoleTable'
-import PermissionTable from '../../components/administration/PermissionTable'
-import AddTextModal from '../../components/common/AddTextModal'
-import { getRoles, addRole } from '../../services/roleService'
-import { Role } from '../../models/roleInterface'
-import { RolePermissions } from '../../models/rolePermissionInterface'
+import "../../components/administration/AdministratorPageComponents.css";
+import RoleTable from "../../components/administration/RoleTable";
+import PermissionTable from "../../components/administration/PermissionTable";
+import AddTextModal from "../../components/common/AddTextModal";
+import { getRoles, addRole } from "../../services/roleService";
+import { Role } from "../../models/roleInterface";
+import { RolePermissions } from "../../models/rolePermissionInterface";
 
 const AdministratorPage = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [roles, setRoles] = useState<Role[]>([])
-  const [title, setTitle] = useState('')
-  const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down('md'))
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [title, setTitle] = useState("");
+  const isSmall = useMediaQuery((theme: any) => theme.breakpoints.down("md"));
   const [currentRole, setCurrentRole] = useState<Role>({
-    name: '',
+    name: "",
     id: 0,
     disabled: false,
     permissions: [],
-  })
+  });
 
   const extractRoles = (rolesData: RolePermissions) => {
-    const rolesPermissions: RolePermissions = rolesData
-    const rolesFetched: Role[] = []
+    const rolesPermissions: RolePermissions = rolesData;
+    const rolesFetched: Role[] = [];
     Object.keys(rolesPermissions).forEach((roleName: string) => {
-      const rolePermissions = rolesPermissions[roleName]
+      const rolePermissions = rolesPermissions[roleName];
       rolesFetched.push({
         id: rolePermissions.id,
         name: roleName,
         disabled: rolePermissions.disabled,
         permissions: rolePermissions.permissions,
-      })
-    })
-    return rolesFetched
-  }
+      });
+    });
+    return rolesFetched;
+  };
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const rolesData = await getRoles()
-        const rolesFetched = extractRoles(rolesData.data)
-        setRoles(rolesFetched)
-        setTitle(rolesFetched[0].name)
-        setCurrentRole(rolesFetched[0])
+        const rolesData = await getRoles();
+        const rolesFetched = extractRoles(rolesData.data);
+        setRoles(rolesFetched);
+        setTitle(rolesFetched[0].name);
+        setCurrentRole(rolesFetched[0]);
       } catch (error) {
-        console.error('Error fetching roles:', error)
+        console.error("Error fetching roles:", error);
       }
-    }
-    fetchRoles()
-  }, [])
+    };
+    fetchRoles();
+  }, []);
 
   const handleCreate = async (roleName: string, category: string) => {
     try {
-      await addRole({ name: roleName, category })
-      const updateRoles = await getRoles()
-      const rolesFetched = extractRoles(updateRoles.data)
-      setRoles(rolesFetched)
+      await addRole({ name: roleName, category });
+      const updateRoles = await getRoles();
+      const rolesFetched = extractRoles(updateRoles.data);
+      setRoles(rolesFetched);
     } catch (error) {
-      console.error('Error creating role:', error)
+      console.error("Error creating role:", error);
     }
-  }
+  };
 
   const handleRoleSelect = (roleName: string) => {
-    setTitle(roleName)
+    setTitle(roleName);
     roles.forEach((role: Role) => {
       if (role.name === roleName) {
-        setCurrentRole(role)
+        setCurrentRole(role);
       }
-    })
-  }
+    });
+  };
 
   return (
-    <Grid container spacing={3} sx={{ justifyContent: isSmall ? 'center' : 'flex-start' }}>
+    <Grid container spacing={3} sx={{ justifyContent: isSmall ? "center" : "flex-start" }}>
       <Grid item xs={12}>
         <Typography variant="h5" align="left" sx={{ marginBottom: 2 }}>
           <ManageAccountsIcon color="primary" fontSize="large" sx={{ marginRight: 2 }} />
@@ -98,7 +98,7 @@ const AdministratorPage = () => {
         existingRoles={roles}
       />
     </Grid>
-  )
-}
+  );
+};
 
-export default AdministratorPage
+export default AdministratorPage;

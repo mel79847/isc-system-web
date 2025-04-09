@@ -1,8 +1,8 @@
-import { Backdrop, CircularProgress, Typography, Box } from '@mui/material'
+import { Backdrop, CircularProgress, Typography, Box } from "@mui/material";
 
 const LoadingOverlay = ({ message }: { message: string }) => {
   return (
-    <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+    <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
       <Box textAlign="center">
         <CircularProgress color="inherit" />
         <Typography variant="h6" sx={{ mt: 2 }}>
@@ -10,7 +10,7 @@ const LoadingOverlay = ({ message }: { message: string }) => {
         </Typography>
       </Box>
     </Backdrop>
-  )
-}
+  );
+};
 
-export default LoadingOverlay
+export default LoadingOverlay;

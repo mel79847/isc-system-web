@@ -1,7 +1,7 @@
-import * as React from 'react'
-import Alert from '@mui/material/Alert'
-import { Snackbar } from '@mui/material'
-import { AlertSnackbarsProps } from '../../models/alertSnackbarProps'
+import * as React from "react";
+import Alert from "@mui/material/Alert";
+import { Snackbar } from "@mui/material";
+import { AlertSnackbarsProps } from "../../models/alertSnackbarProps";
 
 const AlertSnackbar: React.FC<AlertSnackbarsProps> = ({ open, message, onClose }) => {
   return (
@@ -9,17 +9,17 @@ const AlertSnackbar: React.FC<AlertSnackbarsProps> = ({ open, message, onClose }
       open={open}
       autoHideDuration={4000}
       onClose={onClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
       <Alert
-        severity={message.includes('falló') ? 'error' : 'success'}
+        severity={message.includes("falló") ? "error" : "success"}
         variant="filled"
-        sx={{ width: '100%' }}
+        sx={{ width: "100%" }}
       >
         {message}
       </Alert>
     </Snackbar>
-  )
-}
+  );
+};
 
-export default AlertSnackbar
+export default AlertSnackbar;

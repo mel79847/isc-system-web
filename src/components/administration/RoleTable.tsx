@@ -9,16 +9,16 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@mui/material'
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
-import SearchIcon from '@mui/icons-material/Search'
+} from "@mui/material";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import SearchIcon from "@mui/icons-material/Search";
 
-import RoleComponent from './RoleComponent'
-import { RoleTableProps } from '../../models/roleTablePropsInterface'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { Role } from '../../models/roleInterface'
-import { deleteRole, editRole } from '../../services/roleService'
-import AlertSnackbar from '../common/AlertSnackbar'
+import RoleComponent from "./RoleComponent";
+import { RoleTableProps } from "../../models/roleTablePropsInterface";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Role } from "../../models/roleInterface";
+import { deleteRole, editRole } from "../../services/roleService";
+import AlertSnackbar from "../common/AlertSnackbar";
 
 const RoleTable: React.FC<RoleTableProps> = ({
   roles,
@@ -26,67 +26,67 @@ const RoleTable: React.FC<RoleTableProps> = ({
   selectedRole,
   setIsModalVisible,
 }) => {
-  const [search, setSearch] = useState('')
-  const [filteredRoles, setFilteredRoles] = useState(roles)
-  const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [search, setSearch] = useState("");
+  const [filteredRoles, setFilteredRoles] = useState(roles);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleRoleClick = (roleName: string) => {
-    onRoleSelect(roleName)
-  }
+    onRoleSelect(roleName);
+  };
 
   const handleRoleDelete = async (id: number) => {
     try {
-      await deleteRole(id)
-      setFilteredRoles((prevRoles) => prevRoles.filter((r) => r.id !== id))
-      setOpenSnackbar(true)
-      setSnackbarMessage('El rol fue eliminado de manera exitosa')
+      await deleteRole(id);
+      setFilteredRoles((prevRoles) => prevRoles.filter((r) => r.id !== id));
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol fue eliminado de manera exitosa");
     } catch (error) {
-      console.error('Failed to delete the role:', error)
-      setOpenSnackbar(true)
-      setSnackbarMessage('El rol falló al ser eliminado')
+      console.error("Failed to delete the role:", error);
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol falló al ser eliminado");
     }
-  }
+  };
 
   const handleRoleEdit = async (id: number, role: { name: string }) => {
     try {
-      await editRole(id, role)
+      await editRole(id, role);
       setFilteredRoles((prevRoles) =>
         prevRoles.map((r) => (r.id === id ? { ...r, name: role.name } : r))
-      )
-      onRoleSelect(role.name)
-      setOpenSnackbar(true)
-      setSnackbarMessage('El rol fue editado de manera exitosa')
+      );
+      onRoleSelect(role.name);
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol fue editado de manera exitosa");
     } catch (error) {
-      console.error('Failed to update the role:', error)
-      setOpenSnackbar(true)
-      setSnackbarMessage('El rol falló al ser editado')
+      console.error("Failed to update the role:", error);
+      setOpenSnackbar(true);
+      setSnackbarMessage("El rol falló al ser editado");
     }
-  }
+  };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
-    filterRoles(search)
-  }
+    setSearch(e.target.value);
+    filterRoles(search);
+  };
 
   const handleCloseSnackbar = () => {
-    setOpenSnackbar(false)
-  }
+    setOpenSnackbar(false);
+  };
 
   const filterRoles = (searchValue: string) => {
-    if (searchValue.trim() === '') {
-      setFilteredRoles(roles)
+    if (searchValue.trim() === "") {
+      setFilteredRoles(roles);
     } else {
       const filtered = roles.filter((role: Role) =>
         role.name.toLowerCase().includes(searchValue.toLowerCase())
-      )
-      setFilteredRoles(filtered)
+      );
+      setFilteredRoles(filtered);
     }
-  }
+  };
 
   useEffect(() => {
-    filterRoles(search)
-  }, [search, roles])
+    filterRoles(search);
+  }, [search, roles]);
 
   return (
     <>
@@ -95,11 +95,11 @@ const RoleTable: React.FC<RoleTableProps> = ({
           <TableRow>
             <TableCell className="flex justify-center items-center w-full">
               <div
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
               >
                 <Typography variant="h6">Roles</Typography>
                 <IconButton aria-label="add" onClick={() => setIsModalVisible(true)}>
-                  <PersonAddAlt1Icon fontSize="medium" style={{ color: 'white' }} />
+                  <PersonAddAlt1Icon fontSize="medium" style={{ color: "white" }} />
                 </IconButton>
               </div>
             </TableCell>
@@ -118,8 +118,8 @@ const RoleTable: React.FC<RoleTableProps> = ({
             }
           />
         </TableHead>
-        <Box sx={{ overflow: 'auto', height: '300px' }}>
-          <TableBody sx={{ overflowY: 'auto' }}>
+        <Box sx={{ overflow: "auto", height: "300px" }}>
+          <TableBody sx={{ overflowY: "auto" }}>
             {filteredRoles &&
               filteredRoles.map((role, index) => (
                 <TableRow key={index}>
@@ -137,7 +137,7 @@ const RoleTable: React.FC<RoleTableProps> = ({
       </Table>
       <AlertSnackbar open={openSnackbar} message={snackbarMessage} onClose={handleCloseSnackbar} />
     </>
-  )
-}
+  );
+};
 
-export default RoleTable
+export default RoleTable;

@@ -1,59 +1,59 @@
-import { useState } from 'react'
-import LogoUPB from '../../assets/upb_logo.png'
-import { useNavigate } from 'react-router-dom'
-import { authenticateUser } from '../../services/authService'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import { ErrorMessage } from '../../components/common/ErrorMessage'
-import SpinModal from '../../components/common/SpinModal'
-import { useUserStore } from '../../store/store'
-import { roles } from '../../constants/roles'
+import { useState } from "react";
+import LogoUPB from "../../assets/upb_logo.png";
+import { useNavigate } from "react-router-dom";
+import { authenticateUser } from "../../services/authService";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { ErrorMessage } from "../../components/common/ErrorMessage";
+import SpinModal from "../../components/common/SpinModal";
+import { useUserStore } from "../../store/store";
+import { roles } from "../../constants/roles";
 
 const LoginPage = () => {
-  const navigate = useNavigate()
-  const { setUser } = useUserStore()
-  const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } = roles
+  const navigate = useNavigate();
+  const { setUser } = useUserStore();
+  const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } = roles;
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email('Correo electrónico inválido').required('El correo es requerido'),
+      email: Yup.string().email("Correo electrónico inválido").required("El correo es requerido"),
       password: Yup.string()
-        .min(6, 'Debe tener al menos 6 caracteres')
-        .required('El password es requerido'),
+        .min(6, "Debe tener al menos 6 caracteres")
+        .required("El password es requerido"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
-      setError('')
-      setIsLoading(true)
+      setError("");
+      setIsLoading(true);
       try {
-        const isAuthenticated = await authenticateUser(values.email, values.password)
+        const isAuthenticated = await authenticateUser(values.email, values.password);
         if (isAuthenticated) {
-          const dashboardInterns = [INTERN, SUPERVISOR]
-          const dashboardProcess = [ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR]
-          localStorage.setItem('token', isAuthenticated.token)
-          setUser(isAuthenticated)
+          const dashboardInterns = [INTERN, SUPERVISOR];
+          const dashboardProcess = [ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR];
+          localStorage.setItem("token", isAuthenticated.token);
+          setUser(isAuthenticated);
           if (isAuthenticated.roles.some((role) => dashboardProcess.includes(role))) {
-            navigate('/dashboard')
+            navigate("/dashboard");
           }
           if (isAuthenticated.roles.some((role) => dashboardInterns.includes(role))) {
-            navigate('/scholarshipHours')
+            navigate("/scholarshipHours");
           }
         } else {
-          setError('Credenciales incorrectas')
+          setError("Credenciales incorrectas");
         }
       } catch (e) {
-        setError('Credenciales incorrectas')
+        setError("Credenciales incorrectas");
       } finally {
-        setIsLoading(false)
-        setSubmitting(false)
+        setIsLoading(false);
+        setSubmitting(false);
       }
     },
-  })
+  });
 
   return isLoading ? (
     <SpinModal />
@@ -102,13 +102,13 @@ const LoginPage = () => {
               type="submit"
               disabled={formik.isSubmitting || isLoading}
             >
-              {isLoading ? 'Cargando...' : 'Login'}
+              {isLoading ? "Cargando..." : "Login"}
             </button>
           </div>
         </form>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;
