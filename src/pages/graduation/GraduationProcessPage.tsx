@@ -6,9 +6,9 @@ import { Student } from "../../models/studentInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { Permission } from "../../models/permissionInterface";
 import { HasPermission } from "../../helper/permissions";
-import { Box, Button, IconButton, Paper } from "@mui/material"
+import { Box, Button, IconButton, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const GraduationProcessPage = () => {
@@ -120,10 +120,11 @@ const GraduationProcessPage = () => {
             variant="contained"
             color="secondary"
             onClick={goToCreateProcessPage}
-            startIcon={<AddIcon/>}
-            style={{display: "inline-flex"}}>
-              Crear Proceso de Graduación
-            </Button>
+            startIcon={<AddIcon />}
+            style={{ display: "inline-flex" }}
+          >
+            Crear Proceso de Graduación
+          </Button>
         )}
       </div>
 
