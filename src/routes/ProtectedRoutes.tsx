@@ -109,7 +109,7 @@ const protectedRoutes = [
         path: "/create-professor",
         loader: loader,
         element: (
-          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
+          <RoleGuard allowedRoles={[ADMIN]}>
             <CreateProfessorPage />
           </RoleGuard>
         ),
@@ -127,7 +127,7 @@ const protectedRoutes = [
         path: "/studentProfile/:id",
         loader: getStudentProcess,
         element: (
-          <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
+          <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR, PROFESSOR]}>
             <ProcessInfoPage />
           </RoleGuard>
         ),
