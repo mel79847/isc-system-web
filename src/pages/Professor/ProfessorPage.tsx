@@ -362,6 +362,27 @@ const ProfessorPage = () => {
                 }
                 setColumnVisibilityModel(updatedModel);
               }}
+              slotProps={{
+               columnsManagement: {
+                 autoFocusSearchField: false,
+                 searchInputProps: {
+                   sx: {
+                     '& .MuiOutlinedInput-root': {
+                       '&:hover fieldset': {
+                         borderColor: 'secondary.main',
+                       },
+                       '&.Mui-focused fieldset': {
+                         borderColor: 'secondary.main',
+                       },
+                     },
+                     '& input': {
+                       outline: 'none !important',
+                       boxShadow: 'none !important',
+                     },
+                   },
+                 },
+               },
+              }}
               classes={{
                 root: "bg-white dark:bg-gray-800",
                 columnHeader: "bg-gray-200 dark:bg-gray-800",
