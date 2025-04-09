@@ -1,31 +1,17 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { HasPermission } from "../../../helper/permissions";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Permission } from "../../../models/permissionInterface";
-import { getPermissionById } from "../../../services/permissionsService";
-import { useUserStore } from "../../../store/store";
 import { UserResponse } from "../../../services/models/LoginResponse";
 
 interface UserProfileCardProps {
   user: UserResponse;
 }
 
-const UserProfileCard: React.FC<UserProfileCardProps> = () => {
-  const [scheduleAppointmentPermissionStudent, setScheduleAppointmentPermissionStudent] =
-    useState<Permission>();
-  const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] =
-    useState<Permission>();
-  const user = useUserStore((state) => state.user);
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      const scheduleAppointmentStudentResponse = await getPermissionById(17);
-      setScheduleAppointmentPermissionStudent(scheduleAppointmentStudentResponse.data[0]);
-      const scheduleAppointmentProfessorResponse = await getPermissionById(9);
-      setScheduleAppointmentPermissionProfessor(scheduleAppointmentProfessorResponse.data[0]);
-    };
-    fetchPermissions();
-  }, []);
+const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
+  const [scheduleAppointmentPermissionStudent] = useState<Permission>();
+  const [scheduleAppointmentPermissionProffesor] = useState<Permission>();
 
   return (
     <Paper
@@ -45,8 +31,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
     >
       <Box sx={{ position: "relative", mb: 2 }}>
         <Avatar
-          alt="Profile picture"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYuwSeW_wPuwldJSnYf2ibAvVG2zmARUwSBw&s" // Reemplaza con la URL de la imagen
+          alt={user?.name}
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYuwSeW_wPuwldJSnYf2ibAvVG2zmARUwSBw&s" 
           sx={{ width: { xs: 80, sm: 100 }, height: { xs: 80, sm: 100 } }}
         />
         <Button
@@ -58,8 +44,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
             minWidth: 0,
             padding: 0.5,
             backgroundColor: "#fff",
-            "&:hover": {
-              backgroundColor: "#f5f5f5",
+            "&:hover": { 
+              backgroundColor: "#f5f5f5", 
             },
             borderRadius: "50%",
             boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
@@ -74,6 +60,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
       <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2, textAlign: "center" }}>
         {user?.roles}
       </Typography>
+<<<<<<< HEAD
       {(HasPermission(scheduleAppointmentPermissionProffesor?.name || "") ||
         HasPermission(scheduleAppointmentPermissionStudent?.name || "")) && (
         <Button variant="contained" color="primary" sx={{ mb: 3 }}>
@@ -81,8 +68,19 @@ const UserProfileCard: React.FC<UserProfileCardProps> = () => {
         </Button>
       )}
       <Paper
+=======
+      {
+        (HasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || HasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
+        (
+          <Button variant="contained" color="primary" sx={{ mb: 3 }}>
+            Agendar una reunión
+          </Button>
+        )
+      }
+      <Paper 
+>>>>>>> 8236a8b1386c3e71d5c86977e546f64168ab93bf
         elevation={0}
-        sx={{
+        sx={{ 
           width: "100%",
           padding: 2,
           marginBottom: 2,
