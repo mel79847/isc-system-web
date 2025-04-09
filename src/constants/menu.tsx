@@ -14,15 +14,14 @@ import HistoryIcon from "@mui/icons-material/History";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
 
 import { roles } from "./roles";
-const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } =
-  roles;
+const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } = roles;
 export const menu = [
   // TODO: check roles on sidebar
   {
     key: "users",
     path: "/users",
     text: "Usuarios",
-    icon: <SwitchAccountIcon color="primary"/>,
+    icon: <SwitchAccountIcon color="primary" />,
     roles: [ADMIN],
   },
   {
@@ -44,7 +43,7 @@ export const menu = [
     path: "/process",
     text: "Procesos",
     icon: <ChecklistOutlinedIcon color="primary" />,
-    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR,STUDENT],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR, STUDENT],
   },
   {
     key: "events",
@@ -58,7 +57,7 @@ export const menu = [
     path: "/scholarshipHours",
     text: "Horas",
     icon: <AccessTimeIcon color="primary" />,
-    roles: [STUDENT,INTERN, SUPERVISOR],
+    roles: [STUDENT, INTERN, SUPERVISOR],
   },
   {
     key: "programDirector",
@@ -88,12 +87,12 @@ export const menu = [
     icon: <ManageAccountsIcon color="primary" />,
     roles: [ADMIN],
   },
-  
+
   {
-    key: "viewInterns", 
-    path: "/eventsByInterns", 
+    key: "viewInterns",
+    path: "/eventsByInterns",
     text: "Inscritos",
-    icon: <ViewListIcon color="primary" />, 
+    icon: <ViewListIcon color="primary" />,
     roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR],
   },
   {
@@ -101,7 +100,7 @@ export const menu = [
     path: "/dashboard",
     text: "Dashboard",
     icon: <HomeIcon color="primary" />,
-    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR,STUDENT],
+    roles: [ADMIN, PROGRAM_DIRECTOR, PROFESSOR, STUDENT],
   },
   {
     key: "eventHistory",
@@ -123,5 +122,5 @@ export const menu = [
     text: "Crear Becario",
     icon: <InsertInvitationIcon color="primary" />,
     roles: [ADMIN, PROGRAM_DIRECTOR],
-  }
+  },
 ];

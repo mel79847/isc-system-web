@@ -80,13 +80,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
     navigate(path);
   };
 
-  for(const key in user?.roles_permissions){
-    if(!user.roles.some(role => role == user?.roles_permissions[key].role_name))
-      user.roles.push(user?.roles_permissions[key].role_name)
+  for (const key in user?.roles_permissions) {
+    if (!user.roles.some((role) => role == user?.roles_permissions[key].role_name))
+      user.roles.push(user?.roles_permissions[key].role_name);
   }
 
   const filteredMenu = menu.filter((item) =>
-    item.roles?.some(role => user?.roles?.includes(role))
+    item.roles?.some((role) => user?.roles?.includes(role))
   );
 
   return (
@@ -99,11 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
           className="h-10 ms-6 me-1"
         />
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === "rtl" ? (
-            <ChevronRightIcon />
-          ) : (
-            <ChevronLeftIcon />
-          )}
+          {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
       </DrawerHeader>
       <Divider />

@@ -31,9 +31,7 @@ const ReviewerSelect: FC<ReviewerSelectProps> = ({
 
   return (
     <FormControl fullWidth variant="outlined" margin="normal" error={error}>
-      <InputLabel id={`${name}-label`}>
-        {label || "Seleccione docente"}
-      </InputLabel>
+      <InputLabel id={`${name}-label`}>{label || "Seleccione docente"}</InputLabel>
       <Select
         labelId={`${name}-label`}
         id={name}

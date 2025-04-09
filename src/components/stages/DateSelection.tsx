@@ -12,11 +12,7 @@ interface DateSelectionProps {
   renderFieldError: (fieldName: string) => JSX.Element | null;
 }
 
-const DateSelection: FC<DateSelectionProps> = ({
-  disabled,
-  formik,
-  renderFieldError,
-}) => {
+const DateSelection: FC<DateSelectionProps> = ({ disabled, formik, renderFieldError }) => {
   return (
     <Grid item xs={6} mt={5}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -24,9 +20,7 @@ const DateSelection: FC<DateSelectionProps> = ({
           disabled={disabled}
           label="Fecha de Asignación"
           value={formik.values.date_tutor_assignament}
-          onChange={(value) =>
-            formik.setFieldValue("date_tutor_assignament", value)
-          }
+          onChange={(value) => formik.setFieldValue("date_tutor_assignament", value)}
           format="DD/MM/YYYY"
         />
       </LocalizationProvider>

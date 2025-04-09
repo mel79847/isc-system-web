@@ -108,31 +108,27 @@ const StudentPage = () => {
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="ver"
-            onClick={() => handleView(params.row.id)}
-          >
-            <VisibilityIcon />
-          </IconButton>
+            <IconButton color="primary" aria-label="ver" onClick={() => handleView(params.row.id)}>
+              <VisibilityIcon />
+            </IconButton>
           )}
           {HasPermission(editStudentPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="editar"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
+            <IconButton
+              color="primary"
+              aria-label="editar"
+              onClick={() => handleEdit(params.row.id)}
+            >
+              <EditIcon />
+            </IconButton>
           )}
           {HasPermission(deleteStudentPermission?.name || "") && (
-          <IconButton
-            color="secondary"
-            aria-label="eliminar"
-            onClick={() => handleClickOpen(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
+            <IconButton
+              color="secondary"
+              aria-label="eliminar"
+              onClick={() => handleClickOpen(params.row.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
           )}
         </div>
       ),
@@ -195,6 +191,17 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
+<<<<<<< HEAD
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreateTeacher}
+            startIcon={<AddIcon />}
+            disabled={!addStudentPermission}
+          >
+            Agregar Estudiante
+          </Button>
+=======
         <Button
           variant="contained"
           color="secondary"
@@ -204,6 +211,7 @@ const StudentPage = () => {
         >
           Agregar Estudiante
         </Button>
+>>>>>>> 4aeb040c714a1c22879459031a406c6e090fa4e8
         )
       }
       children={
@@ -244,12 +252,11 @@ const StudentPage = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirmar eliminación"}
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede deshacer.
+                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede
+                deshacer.
               </DialogContentText>
             </DialogContent>
             <DialogActions>

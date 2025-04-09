@@ -6,15 +6,9 @@ interface LoadingBackdropProps {
   canApproveStage: boolean;
 }
 
-const LoadingBackdrop: FC<LoadingBackdropProps> = ({
-  loading,
-  canApproveStage,
-}) => {
+const LoadingBackdrop: FC<LoadingBackdropProps> = ({ loading, canApproveStage }) => {
   return (
-    <Backdrop
-      sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={loading}
-    >
+    <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
       <Box display="flex" flexDirection="column" alignItems="center">
         <CircularProgress color="inherit" />
         <Typography variant="h6" mt={2}>

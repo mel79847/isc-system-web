@@ -23,16 +23,10 @@ import "dayjs/locale/es";
 import "../../style.css";
 import { EventCardProps } from "../../models/eventCardProps";
 import EventSubheader from "./EventSubheader";
-import {
-  getEventsInformations,
-  registerInternEventService,
-} from "../../services/eventsService";
+import { getEventsInformations, registerInternEventService } from "../../services/eventsService";
 import { useUserStore } from "../../store/store";
 import { InternsInformation } from "../../models/internsInterface";
-import {
-  getInternByUserIdService,
-  getInternData,
-} from "../../services/internService";
+import { getInternByUserIdService, getInternData } from "../../services/internService";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -53,10 +47,8 @@ const EventCard = ({ event }: EventCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [internInfomation, setInternInfomation] =
-    useState<InternsInformation>();
-  const [internEventInfomation, setInternEventInfomation] =
-    useState<InternsInformation>();
+  const [internInfomation, setInternInfomation] = useState<InternsInformation>();
+  const [internEventInfomation, setInternEventInfomation] = useState<InternsInformation>();
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [responsible, setResponsible] = useState<String>("Ninguno");
   const [isRegister, setisRegister] = useState(false);
@@ -103,16 +95,11 @@ const EventCard = ({ event }: EventCardProps) => {
   const fetchInternEventInformation = async () => {
     try {
       if (id_event && internInfomation) {
-        const res = await getEventsInformations(
-          id_event,
-          internInfomation.id_intern
-        );
+        const res = await getEventsInformations(id_event, internInfomation.id_intern);
         if (res.data) {
           setisRegister(true);
         } else {
-          setisRegister(
-            dayjs().isAfter(dayjs(registration_deadline)) || is_finished
-          );
+          setisRegister(dayjs().isAfter(dayjs(registration_deadline)) || is_finished);
         }
       }
     } catch (error) {
@@ -126,9 +113,7 @@ const EventCard = ({ event }: EventCardProps) => {
 
   useEffect(() => {
     if (internEventInfomation) {
-      setResponsible(
-        internEventInfomation.name + " " + internEventInfomation.lastname
-      );
+      setResponsible(internEventInfomation.name + " " + internEventInfomation.lastname);
     }
   }, [internEventInfomation]);
 
@@ -155,10 +140,7 @@ const EventCard = ({ event }: EventCardProps) => {
   };
 
   const handleConfirm = async () => {
-    const res = await registerInternEventService(
-      Number(id_event),
-      Number(internInfomation?.id)
-    );
+    const res = await registerInternEventService(Number(id_event), Number(internInfomation?.id));
     if (res.success) {
       setisRegister(true);
       setAlert({
@@ -228,11 +210,7 @@ const EventCard = ({ event }: EventCardProps) => {
       <CardActions disableSpacing>
         <Tooltip title={isRegister ? "Registro cerrado" : "Registrarse"}>
           <span>
-            <IconButton
-              aria-label="registrarse"
-              onClick={handleDialogOpen}
-              disabled={isRegister}
-            >
+            <IconButton aria-label="registrarse" onClick={handleDialogOpen} disabled={isRegister}>
               <AddIcon />
             </IconButton>
           </span>
@@ -252,18 +230,11 @@ const EventCard = ({ event }: EventCardProps) => {
           <Typography align="center" fontSize={17} color="primary">
             <strong>Detalles del evento</strong>
           </Typography>
-          <Typography
-            fontSize={15}
-            color="text.primary"
-            marginLeft={2}
-            marginTop={2}
-          >
-            <strong>Fecha inicial: </strong>{" "}
-            {dayjs(start_date).format("DD/MM/YYYY")}
+          <Typography fontSize={15} color="text.primary" marginLeft={2} marginTop={2}>
+            <strong>Fecha inicial: </strong> {dayjs(start_date).format("DD/MM/YYYY")}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
-            <strong>Fecha final: </strong>{" "}
-            {dayjs(end_date).format("DD/MM/YYYY")}
+            <strong>Fecha final: </strong> {dayjs(end_date).format("DD/MM/YYYY")}
           </Typography>
           <Typography fontSize={15} color="text.primary" marginLeft={2}>
             <strong>Supervisor: </strong> {responsible}
@@ -315,9 +286,7 @@ const EventCard = ({ event }: EventCardProps) => {
             ¿Estás seguro de inscribirte al evento "{title}"?
           </Typography>
         </DialogContent>
-        <DialogActions
-          sx={{ justifyContent: "center", padding: "29px", marginTop: "-10px" }}
-        >
+        <DialogActions sx={{ justifyContent: "center", padding: "29px", marginTop: "-10px" }}>
           <Button
             onClick={handleDialogClose}
             variant="contained"
@@ -347,16 +316,8 @@ const EventCard = ({ event }: EventCardProps) => {
       </Dialog>
 
       {alert && (
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity={alert.severity}
-            sx={{ width: "100%" }}
-          >
+        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+          <Alert onClose={handleSnackbarClose} severity={alert.severity} sx={{ width: "100%" }}>
             {alert.message}
           </Alert>
         </Snackbar>

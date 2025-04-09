@@ -1,9 +1,4 @@
-import {
-  LoaderFunction,
-  LoaderFunctionArgs,
-  Navigate,
-  Params,
-} from "react-router-dom";
+import { LoaderFunction, LoaderFunctionArgs, Navigate, Params } from "react-router-dom";
 import Layout from "../layout/Layout";
 import { DashboardPage } from "../pages/dashboard/Dashboard";
 import RoleGuard from "./RoleGuard";
@@ -42,14 +37,11 @@ interface StudentParams extends Params {
   id: string;
 }
 
-const getStudentProcess: LoaderFunction = async ({
-  params,
-}: LoaderFunctionArgs<StudentParams>) => {
+const getStudentProcess: LoaderFunction = async ({ params }: LoaderFunctionArgs<StudentParams>) => {
   const studentId = Number(params.id);
   return getStudentById(studentId);
 };
-const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } =
-  roles;
+const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } = roles;
 
 //TODO: check proper roles on routes
 const protectedRoutes = [
@@ -64,9 +56,7 @@ const protectedRoutes = [
       {
         path: "/dashboard",
         element: (
-          <RoleGuard
-            allowedRoles={[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR]}
-          >
+          <RoleGuard allowedRoles={[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR]}>
             <DashboardPage />
           </RoleGuard>
         ),
@@ -153,14 +143,7 @@ const protectedRoutes = [
         path: "/profile/:id",
         element: (
           <RoleGuard
-            allowedRoles={[
-              ADMIN,
-              STUDENT,
-              PROFESSOR,
-              PROGRAM_DIRECTOR,
-              INTERN,
-              SUPERVISOR,
-            ]}
+            allowedRoles={[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR, INTERN, SUPERVISOR]}
           >
             <Profile />
           </RoleGuard>

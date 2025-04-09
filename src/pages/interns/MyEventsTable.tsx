@@ -15,10 +15,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import ContainerPage from "../../components/common/ContainerPage";
 import { useUserStore } from "../../store/store";
-import {
-  getInternByUserIdService,
-  getInternEvents,
-} from "../../services/internService";
+import { getInternByUserIdService, getInternEvents } from "../../services/internService";
 import { deleteInternFromEventService } from "../../services/eventsService";
 import { EventInternsType } from "../../models/eventInterface";
 import { InternsInformation } from "../../models/internsInterface";
@@ -57,8 +54,7 @@ const MyEventsTable = () => {
     };
     return statusMap[status.toLowerCase()] || status;
   };
-  const [internInfomation, setInternInfomation] =
-    useState<InternsInformation>();
+  const [internInfomation, setInternInfomation] = useState<InternsInformation>();
   const user = useUserStore((state) => state.user);
   const [events, setEvents] = useState<EventInternsType[]>();
   const [rows, setRows] = useState<RowData[]>([]);
@@ -89,9 +85,9 @@ const MyEventsTable = () => {
         events.map((event) => ({
           id: event.id,
           name: event.title,
-          startDate: `${dayjs(event.start_date).format("DD/MM")} -${dayjs(
-            event.end_date
-          ).format("DD/MM")}`,
+          startDate: `${dayjs(event.start_date).format("DD/MM")} -${dayjs(event.end_date).format(
+            "DD/MM"
+          )}`,
           inscriptionPeriod: dayjs(event.registration_deadline).format("DD/MM"),
           cancelPeriod: `${
             dayjs(event.start_cancellation_date)?.format("DD/MM") ?? "N/A"
@@ -156,12 +152,8 @@ const MyEventsTable = () => {
             backgroundColor: "#191970",
             color: "#FFFFFF",
           }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "#99c2ff")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "#191970")
-          }
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#99c2ff")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#191970")}
         >
           Cancelar
         </Button>
@@ -211,10 +203,7 @@ const MyEventsTable = () => {
   const handleConfirmDelete = async () => {
     if (!selectedEventId) return;
     if (internInfomation?.id_intern) {
-      const res = await deleteInternFromEventService(
-        selectedEventId,
-        internInfomation.id_intern
-      );
+      const res = await deleteInternFromEventService(selectedEventId, internInfomation.id_intern);
       if (res.success) {
         setAlert({
           severity: "success",
@@ -243,9 +232,7 @@ const MyEventsTable = () => {
   };
   return (
     <>
-      <div
-        style={{ position: "relative", height: "100vh", paddingTop: "19px" }}
-      >
+      <div style={{ position: "relative", height: "100vh", paddingTop: "19px" }}>
         <ContainerPage
           title="Eventos actuales"
           subtitle="Administra y visualiza tus eventos"
@@ -337,16 +324,8 @@ const MyEventsTable = () => {
       </Dialog>
 
       {alert && (
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-        >
-          <Alert
-            onClose={handleSnackbarClose}
-            severity={alert.severity}
-            sx={{ width: "100%" }}
-          >
+        <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+          <Alert onClose={handleSnackbarClose} severity={alert.severity} sx={{ width: "100%" }}>
             {alert.message}
           </Alert>
         </Snackbar>

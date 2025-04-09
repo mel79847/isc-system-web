@@ -25,11 +25,7 @@ function NumberCard({
       <CardContent>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item xs={6}>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ color: textColor, fontWeight: "bold" }}
-            >
+            <Typography variant="h5" component="div" sx={{ color: textColor, fontWeight: "bold" }}>
               {count}
             </Typography>
             <Typography
@@ -43,10 +39,7 @@ function NumberCard({
             >
               {title}
             </Typography>
-            <Typography
-              sx={{ fontSize: 12, color: textColor, mb: 1.5 }}
-              color="text.secondary"
-            >
+            <Typography sx={{ fontSize: 12, color: textColor, mb: 1.5 }} color="text.secondary">
               {subtitle}
             </Typography>
           </Grid>

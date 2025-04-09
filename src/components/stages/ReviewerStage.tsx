@@ -34,18 +34,13 @@ const program = "Ingeniería de Sistemas Computacionales";
 const headOfDepartment = "Alexis Marechal Marin PhD";
 const CURRENT_STAGE = 2;
 
-export const ReviewerStage: FC<ReviewerStageProps> = ({
-  onPrevious,
-  onNext,
-}) => {
+export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
   const process = useProcessStore((state) => state.process);
   const carrer = useCarrerStore((state) => state.carrer);
   const setProcess = useProcessStore((state) => state.setProcess);
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(
-    CURRENT_STAGE < (process?.stage_id || 0),
-  );
+  const [editMode, setEditMode] = useState<boolean>(CURRENT_STAGE < (process?.stage_id || 0));
 
   const formik = useFormik({
     initialValues: {
@@ -87,10 +82,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({
     setShowModal(false);
   };
 
-  const handleMentorChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handleMentorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("reviewer", value?.id || "");
     if (process) {
       process.reviewer_fullname = value?.fullname || "";
@@ -105,7 +97,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({
     return Boolean(
       formik.values.reviewer &&
         formik.values.reviewerDesignationLetterSubmitted &&
-        formik.values.date_reviewer_assignament,
+        formik.values.date_reviewer_assignament
     );
   };
 
@@ -132,9 +124,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({
               label={"Seleccionar Revisor"}
             />
             {formik.touched.reviewer && formik.errors.reviewer ? (
-              <div className="text-red-1 text-xs mt-1">
-                {formik.errors.reviewer}
-              </div>
+              <div className="text-red-1 text-xs mt-1">{formik.errors.reviewer}</div>
             ) : null}
           </Grid>
           <Grid item xs={6}>
@@ -219,21 +209,14 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({
               mes: dayjs().format("MMMM"),
               ano: dayjs().format("YYYY"),
               title_project: process?.project_name || "",
-              date: dayjs(formik.values.date_reviewer_assignament).format(
-                "DD/MM/YYYY",
-              ),
+              date: dayjs(formik.values.date_reviewer_assignament).format("DD/MM/YYYY"),
             }}
             filename={`${TUTOR_APPROBAL.filename}_${formik.values.reviewer}.${TUTOR_APPROBAL.extention}`}
           />
         </Box>
 
         <Box display="flex" justifyContent="space-between" mt={4}>
-          <Button
-            type="button"
-            variant="contained"
-            color="secondary"
-            onClick={onPrevious}
-          >
+          <Button type="button" variant="contained" color="secondary" onClick={onPrevious}>
             Anterior
           </Button>
           <Button type="submit" variant="contained" color="primary">

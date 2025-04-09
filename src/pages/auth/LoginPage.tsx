@@ -12,8 +12,7 @@ import { roles } from "../../constants/roles";
 const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useUserStore();
-  const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } =
-    roles;
+  const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } = roles;
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,9 +22,7 @@ const LoginPage = () => {
       password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Correo electrónico inválido")
-        .required("El correo es requerido"),
+      email: Yup.string().email("Correo electrónico inválido").required("El correo es requerido"),
       password: Yup.string()
         .min(6, "Debe tener al menos 6 caracteres")
         .required("El password es requerido"),
@@ -34,32 +31,16 @@ const LoginPage = () => {
       setError("");
       setIsLoading(true);
       try {
-        const isAuthenticated = await authenticateUser(
-          values.email,
-          values.password
-        );
+        const isAuthenticated = await authenticateUser(values.email, values.password);
         if (isAuthenticated) {
           const dashboardInterns = [INTERN, SUPERVISOR];
-          const dashboardProcess = [
-            ADMIN,
-            STUDENT,
-            PROFESSOR,
-            PROGRAM_DIRECTOR,
-          ];
+          const dashboardProcess = [ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR];
           localStorage.setItem("token", isAuthenticated.token);
           setUser(isAuthenticated);
-          if (
-            isAuthenticated.roles.some((role) =>
-              dashboardProcess.includes(role)
-            )
-          ) {
+          if (isAuthenticated.roles.some((role) => dashboardProcess.includes(role))) {
             navigate("/dashboard");
           }
-          if (
-            isAuthenticated.roles.some((role) =>
-              dashboardInterns.includes(role)
-            )
-          ) {
+          if (isAuthenticated.roles.some((role) => dashboardInterns.includes(role))) {
             navigate("/scholarshipHours");
           }
         } else {
@@ -94,10 +75,7 @@ const LoginPage = () => {
             value={formik.values.email}
           />
           {formik.touched.email && formik.errors.email ? (
-            <ErrorMessage
-              dataTestId="error-message-email" 
-              message={formik.errors.email}
-            />
+            <ErrorMessage dataTestId="error-message-email" message={formik.errors.email} />
           ) : null}
           <input
             data-test-id="password-login"
@@ -110,15 +88,13 @@ const LoginPage = () => {
             value={formik.values.password}
           />
           {formik.touched.password && formik.errors.password ? (
-            <ErrorMessage
-              dataTestId="error-message-password" 
-              message={formik.errors.password} 
-            />
+            <ErrorMessage dataTestId="error-message-password" message={formik.errors.password} />
           ) : null}
-          {error && <div
-                      data-test-id="error-message-credentials"
-                      className="text-red-500">{error}
-                    </div>}
+          {error && (
+            <div data-test-id="error-message-credentials" className="text-red-500">
+              {error}
+            </div>
+          )}
           <div className="text-center md:text-center">
             <button
               data-test-id="login-button"

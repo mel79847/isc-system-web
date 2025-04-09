@@ -17,12 +17,7 @@ interface DocumentCheckboxProps {
   process: Seminar | null;
 }
 
-const DocumentCheckbox: FC<DocumentCheckboxProps> = ({
-  disabled,
-  formik,
-  carrer,
-  process,
-}) => {
+const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer, process }) => {
   return (
     <>
       <Box mt={3}>
@@ -77,9 +72,7 @@ const DocumentCheckbox: FC<DocumentCheckboxProps> = ({
             mes: dayjs().format("MMMM"),
             ano: dayjs().format("YYYY"),
             title_project: process?.project_name || "",
-            date: dayjs(formik.values.date_tutor_assignament).format(
-              "DD/MM/YYYY",
-            ),
+            date: dayjs(formik.values.date_tutor_assignament).format("DD/MM/YYYY"),
           }}
           filename={`${TUTOR_APPROBAL.filename}_${formik.values.mentorName}.${TUTOR_APPROBAL.extention}`}
         />

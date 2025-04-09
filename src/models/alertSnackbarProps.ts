@@ -1,4 +1,5 @@
 export interface AlertSnackbarsProps {
-    open: boolean;
-    message: string;onClose: () => void;
-  }
+  open: boolean;
+  message: string;
+  onClose: () => void;
+}

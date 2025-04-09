@@ -19,12 +19,7 @@ interface SelectFieldProps {
   formik: FormikProps<GraduationProcessFormValues>;
 }
 
-export const SelectField: React.FC<SelectFieldProps> = ({
-  label,
-  name,
-  options,
-  formik,
-}) => (
+export const SelectField: React.FC<SelectFieldProps> = ({ label, name, options, formik }) => (
   <div className="flex-1">
     <label className="txt2">{label}</label>
     <select
@@ -33,9 +28,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
       onChange={formik.handleChange}
       value={formik.values[name]}
       className={`select-2 ${
-        formik.touched[name] && formik.errors[name]
-          ? "border-red-1"
-          : "border-gray-300"
+        formik.touched[name] && formik.errors[name] ? "border-red-1" : "border-gray-300"
       }`}
     >
       <option value="">Seleccione una opción</option>

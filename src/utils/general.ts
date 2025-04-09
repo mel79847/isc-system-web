@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 export const getCurrentSemester = () => {
   const today = dayjs();
-  const year = today.year(); 
+  const year = today.year();
 
   const semester1Start = dayjs(`${year}-01-01`);
   const semester1End = dayjs(`${year}-06-30`);

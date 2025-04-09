@@ -12,11 +12,7 @@ interface TextFieldProps {
   name: keyof GraduationProcessFormValues;
   formik: FormikProps<GraduationProcessFormValues>;
 }
-export const TextField: React.FC<TextFieldProps> = ({
-  label,
-  name,
-  formik,
-}) => (
+export const TextField: React.FC<TextFieldProps> = ({ label, name, formik }) => (
   <div className="flex-1">
     <label className="txt2">{label}</label>
     <input
@@ -27,9 +23,7 @@ export const TextField: React.FC<TextFieldProps> = ({
       value={formik.values[name]}
       placeholder={`Ingrese ${label.toLowerCase()}`}
       className={`select-2 ${
-        formik.touched[name] && formik.errors[name]
-          ? "border-red-1"
-          : "border-gray-300"
+        formik.touched[name] && formik.errors[name] ? "border-red-1" : "border-gray-300"
       }`}
     />
     {formik.touched[name] && formik.errors[name] ? (

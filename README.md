@@ -1,7 +1,6 @@
+# ISC System Web
 
-#  ISC System Web 
-
-##  Prerequisites
+## Prerequisites
 
 - **Node.js 20.x.x**: You can download it from the [Node.js Official Website](https://nodejs.org/).
 - **Docker**: You can download it from the [Docker Official Website](https://www.docker.com/).
@@ -12,7 +11,7 @@
 
 ### 1. Clone the repository
 
-Open **Git Bash** and run: 
+Open **Git Bash** and run:
 
 ```bash
 git clone https://github.com/PaulLandaeta/isc-system-web.git
@@ -30,6 +29,7 @@ Inside the project directory, run:
 This script will start the development server, usually accessible at `http://localhost:5173`.
 
 > If you get a permission error, run:
+>
 > ```bash
 > chmod +x start-dev.sh
 > ```
@@ -53,5 +53,3 @@ docker run -p 80:80 react-app
 ```
 
 The app will be available for production at `http://localhost`.
-
-

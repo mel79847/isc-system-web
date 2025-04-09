@@ -10,11 +10,7 @@ function ProjectCard() {
       <CardContent>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item xs={6}>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ color: "#ffffff", fontWeight: "bold" }}
-            >
+            <Typography variant="h5" component="div" sx={{ color: "#ffffff", fontWeight: "bold" }}>
               125
             </Typography>
             <Typography
@@ -28,10 +24,7 @@ function ProjectCard() {
             >
               Procesos finalizados
             </Typography>
-            <Typography
-              sx={{ fontSize: 12, color: "#ffffff", mb: 1.5 }}
-              color="text.secondary"
-            >
+            <Typography sx={{ fontSize: 12, color: "#ffffff", mb: 1.5 }} color="text.secondary">
               2 en curso
             </Typography>
           </Grid>

@@ -56,13 +56,11 @@ export const DashboardPage = () => {
                     textColor="#ffffff"
                     title="Procesos Finalizados"
                     subtitle={`${
-                      (stats?.total_procesos || 0) -
-                      (stats?.num_procesos_finalizados || 0)
+                      (stats?.total_procesos || 0) - (stats?.num_procesos_finalizados || 0)
                     } en curso`}
                     count={stats?.num_procesos_finalizados || 0}
                     percentage={
-                      ((stats?.num_procesos_finalizados || 0) * 100) /
-                      (stats?.total_procesos || 1)
+                      ((stats?.num_procesos_finalizados || 0) * 100) / (stats?.total_procesos || 1)
                     }
                   />
                 </Grid>
@@ -74,8 +72,7 @@ export const DashboardPage = () => {
                     subtitle={`${stats?.num_tutorias_progreso || 0} en curso`}
                     count={stats?.num_tutorias_aprobadas || 0}
                     percentage={
-                      ((stats?.num_tutorias_aprobadas || 0) * 100) /
-                      (stats?.total_procesos || 1)
+                      ((stats?.num_tutorias_aprobadas || 0) * 100) / (stats?.total_procesos || 1)
                     }
                   />
                 </Grid>
@@ -87,8 +84,7 @@ export const DashboardPage = () => {
                     subtitle={`${stats?.num_reviewers_progreso || 0} en curso`}
                     count={stats?.num_reviewers_aprobados || 0}
                     percentage={
-                      ((stats?.num_reviewers_aprobados || 0) * 100) /
-                      (stats?.total_procesos || 1)
+                      ((stats?.num_reviewers_aprobados || 0) * 100) / (stats?.total_procesos || 1)
                     }
                   />
                 </Grid>
@@ -100,10 +96,7 @@ export const DashboardPage = () => {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <AreaChartCard
-            title="Estudiantes Aprobados por Período"
-            data={data}
-          />
+          <AreaChartCard title="Estudiantes Aprobados por Período" data={data} />
         </Grid>
       </Grid>
     </Container>

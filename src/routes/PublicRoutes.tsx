@@ -16,13 +16,13 @@ const publicRoutes = [
     element: <LoginPage />,
   },
   {
-    path: '*',
+    path: "*",
     element: <ErrorPage />,
   },
   {
-    path: '/',
+    path: "/",
     element: <Navigate to="/login" replace />,
-  }
+  },
 ];
 
 export default publicRoutes;

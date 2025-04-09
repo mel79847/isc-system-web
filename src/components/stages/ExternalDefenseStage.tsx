@@ -35,9 +35,7 @@ interface ExternalDefenseStageProps {
   onPrevious: () => void;
 }
 
-export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({
-  onPrevious,
-}) => {
+export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const process = useProcessStore((state) => state.process);
   const [editMode] = useState<boolean>(false);
@@ -93,24 +91,15 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({
     }
   };
 
-  const handlePresidentChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handlePresidentChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("president", value?.id || "");
   };
 
-  const handleFirstJurorChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handleFirstJurorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("firstJuror", value?.id || "");
   };
 
-  const handleSecondJurorChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handleSecondJurorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("secondJuror", value?.id || "");
   };
 
@@ -134,9 +123,7 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({
                 label={"Seleccionar Presidente"}
               />
               {formik.touched.president && formik.errors.president ? (
-                <div className="text-red-1 text-xs mt-1">
-                  {String(formik.errors.president)}
-                </div>
+                <div className="text-red-1 text-xs mt-1">{String(formik.errors.president)}</div>
               ) : null}
             </Grid>
 
@@ -149,9 +136,7 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({
                 label={"Seleccionar Primer Jurado"}
               />
               {formik.touched.firstJuror && formik.errors.firstJuror ? (
-                <div className="text-red-1 text-xs mt-1">
-                  {String(formik.errors.firstJuror)}
-                </div>
+                <div className="text-red-1 text-xs mt-1">{String(formik.errors.firstJuror)}</div>
               ) : null}
             </Grid>
 
@@ -164,9 +149,7 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({
                 label={"Seleccionar Segundo Jurado"}
               />
               {formik.touched.secondJuror && formik.errors.secondJuror ? (
-                <div className="text-red-1 text-xs mt-1">
-                  {String(formik.errors.secondJuror)}
-                </div>
+                <div className="text-red-1 text-xs mt-1">{String(formik.errors.secondJuror)}</div>
               ) : null}
             </Grid>
 
@@ -183,12 +166,7 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({
           </Grid>
         </Box>
         <Box display="flex" justifyContent="space-between" pt={5}>
-          <Button
-            type="button"
-            onClick={onPrevious}
-            variant="contained"
-            color="secondary"
-          >
+          <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
             Anterior
           </Button>
           <Button type="submit" variant="contained" color="primary">

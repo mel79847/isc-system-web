@@ -13,8 +13,7 @@ interface TablePageProps {
 }
 
 const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
-  const [internEventInfomation, setInternEventInfomation] =
-    useState<InternsInformation>();
+  const [internEventInfomation, setInternEventInfomation] = useState<InternsInformation>();
   const [responsible, setResponsible] = useState<String>("Ninguno");
 
   const fetchInternEvent = async () => {
@@ -30,15 +29,13 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
 
   useEffect(() => {
     if (internEventInfomation) {
-      setResponsible(
-        internEventInfomation.name + " " + internEventInfomation.lastname
-      );
+      setResponsible(internEventInfomation.name + " " + internEventInfomation.lastname);
     }
   }, [internEventInfomation]);
   useEffect(() => {
     fetchInternEvent();
   }, [event]);
-  
+
   const { PENDING } = internRegisterStates;
   return event ? (
     <Container fixed>
@@ -56,12 +53,10 @@ const TablePage: React.FC<TablePageProps> = ({ event, children }) => {
           <Grid container spacing={-30} sx={{ marginTop: 2 }}>
             <Grid item xs={6}>
               <Typography variant="body1" color="textSecondary">
-                <strong>Fecha Inicial:</strong>{" "}
-                {dayjs(event.start_date).format("DD/MM/YYYY")}
+                <strong>Fecha Inicial:</strong> {dayjs(event.start_date).format("DD/MM/YYYY")}
               </Typography>
               <Typography variant="body1" color="textSecondary">
-                <strong>Fecha Final:</strong>{" "}
-                {dayjs(event.end_date).format("DD/MM/YYYY")}
+                <strong>Fecha Final:</strong> {dayjs(event.end_date).format("DD/MM/YYYY")}
               </Typography>
               <Typography variant="body1" color="textSecondary">
                 <strong>Encargado:</strong> {responsible}

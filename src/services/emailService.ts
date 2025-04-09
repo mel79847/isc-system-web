@@ -1,4 +1,4 @@
-import apiClient from "./apiInstance";
+import apiClient from './apiInstance';
 
 interface EmailInterface {
   email: string;
@@ -11,7 +11,7 @@ const sendEmail = async (email: EmailInterface) => {
     const response = await apiClient.post(`email`, email);
     return response.data;
   } catch (error) {
-    console.error("Error al enviar el correo:", error);
+    console.error('Error al enviar el correo:', error);
     throw error;
   }
 };
