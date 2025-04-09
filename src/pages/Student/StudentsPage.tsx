@@ -20,6 +20,7 @@ import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
 import { Permission } from "../../models/permissionInterface";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import CreateStudentForm from "./CreateStudentForm";
 
 const StudentPage = () => {
   const navigate = useNavigate();
@@ -29,8 +30,8 @@ const StudentPage = () => {
   const [addStudentPermission, setAddStudentPermission] = useState<Permission>();
   const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
+  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission | null>();
-
   const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
     code: true,
     name: true,
@@ -138,8 +139,11 @@ const StudentPage = () => {
     },
   ];
 
-  const handleCreateTeacher = () => {
-    navigate("/create-student");
+  const handleCreateStudent = () => setOpenCreateModal(true);
+
+  const handleStudentCreated = () => {
+    setOpenCreateModal(false);
+    fetchStudents();
   };
 
   const fetchStudents = async () => {
@@ -194,7 +198,7 @@ const StudentPage = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleCreateTeacher}
+          onClick={handleCreateStudent}
           startIcon={<AddIcon />}
           disabled={!addStudentPermission}
         >
@@ -256,6 +260,21 @@ const StudentPage = () => {
                 Eliminar
               </Button>
             </DialogActions>
+          </Dialog>
+          <Dialog
+            open={openCreateModal}
+            onClose={() => setOpenCreateModal(false)}
+            maxWidth="md"
+            PaperProps={{
+              sx: {
+                borderRadius: 3,
+                p: 0,
+                maxHeight: '100vh',
+              },
+            }}>
+            <DialogContent sx={{ p: 2, m: 0 }}>
+              <CreateStudentForm onSuccess={handleStudentCreated} />
+            </DialogContent>
           </Dialog>
         </div>
       }
