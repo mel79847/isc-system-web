@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../store/store";
 
@@ -38,28 +38,16 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles, children }) => {
 
   const hasRole = allowedRoles.some((role) => userRoles.includes(role));
 
-  if (!hasRole) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h2 style={{ color: "red" }}>Acceso denegado</h2>
-        <p>No tienes permiso para acceder a esta página.</p>
-        <button
-          onClick={() => navigate("/login")}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Volver al login
-        </button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!hasRole) {
+      navigate("/error", { 
+        replace: true,
+        state: { fromRoleGuard: true }
+      });
+    }
+  }, [hasRole]);
+
+  if (!hasRole) return null;
 
   return <>{children}</>;
 };
