@@ -60,15 +60,6 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
       <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2, textAlign: "center" }}>
         {user?.roles}
       </Typography>
-<<<<<<< HEAD
-      {(HasPermission(scheduleAppointmentPermissionProffesor?.name || "") ||
-        HasPermission(scheduleAppointmentPermissionStudent?.name || "")) && (
-        <Button variant="contained" color="primary" sx={{ mb: 3 }}>
-          Agendar una reunión
-        </Button>
-      )}
-      <Paper
-=======
       {
         (HasPermission(scheduleAppointmentPermissionProffesor?.name||"")  || HasPermission(scheduleAppointmentPermissionStudent?.name || "")) &&
         (
@@ -78,7 +69,6 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         )
       }
       <Paper 
->>>>>>> 8236a8b1386c3e71d5c86977e546f64168ab93bf
         elevation={0}
         sx={{ 
           width: "100%",

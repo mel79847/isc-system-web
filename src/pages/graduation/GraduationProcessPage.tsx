@@ -116,12 +116,6 @@ const GraduationProcessPage = () => {
           />
         </div>
         {HasPermission(createProcess?.name || "") && (
-<<<<<<< HEAD
-          <button className="btn z-50 relative" onClick={goToCreateProcessPage}>
-            {" "}
-            Crear Proceso de Graduación
-          </button>
-=======
           <Button
             variant="contained"
             color="secondary"
@@ -130,16 +124,11 @@ const GraduationProcessPage = () => {
             style={{display: "inline-flex"}}>
               Crear Proceso de Graduación
             </Button>
->>>>>>> 8236a8b1386c3e71d5c86977e546f64168ab93bf
         )}
       </div>
 
       {/* Tabla de Datos */}
-<<<<<<< HEAD
-      <Box sx={{ width: "95%", mb: 2 }}>
-=======
       <Box sx={{ mb: 2 }}>
->>>>>>> 8236a8b1386c3e71d5c86977e546f64168ab93bf
         <Paper>
           <DataGrid
             rows={filteredData}
