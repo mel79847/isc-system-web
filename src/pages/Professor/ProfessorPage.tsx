@@ -44,8 +44,8 @@ const ProfessorPage = () => {
   const [deleteProfessorPermission, setDeleteProfessorPermission] = useState<Permission>();
   const [editProfessorPermission, setEditProfessorPermission] = useState<Permission>();
 
-  const permissionsReady = viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
-
+  const permissionsReady =
+    viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -214,8 +214,7 @@ const ProfessorPage = () => {
         if (!permissionsReady) {
           return <span>Cargando acciones...</span>;
         }
-        const hasActions =
-          hasViewPermission || hasEditPermission || hasDeletePermission;
+        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
 
         return hasActions ? (
           <div>

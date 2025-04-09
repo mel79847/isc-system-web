@@ -82,32 +82,57 @@ const Profile = () => {
         </Grid>
         <Grid item xs={12} md={9}>
           <Grid container spacing={2}>
-            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("professor") && (
-              <Grid item xs={12}>
-                <TutoringCard />
-              </Grid>
-            )}
-            {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("student") && (
-              <Grid item xs={12}>
-                <StudentCard />
-              </Grid>
-            )}
+            {userProfile &&
+              Array.isArray(userProfile.roles) &&
+              userProfile.roles.includes("professor") && (
+                <Grid item xs={12}>
+                  <TutoringCard />
+                </Grid>
+              )}
+            {userProfile &&
+              Array.isArray(userProfile.roles) &&
+              userProfile.roles.includes("student") && (
+                <Grid item xs={12}>
+                  <StudentCard />
+                </Grid>
+              )}
             <Grid item xs={12}>
               <Paper elevation={3} sx={{ p: 2 }}>
-                <Box sx={{ borderBottom: 1, borderColor: "divider", overflowX: "auto", px: { xs: 1, sm: 2 } }}>
-                  {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("professor") && (
-                    <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
-                      <Tab label="Tutorias" {...a11yProps(0)} />
-                      <Tab label="Revisiones" {...a11yProps(1)} />
-                    </Tabs>
-                  )}
-                  {userProfile && Array.isArray(userProfile.roles) && userProfile.roles.includes("student") && (
-                    <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
-                      <Tab label="Horas becarias" {...a11yProps(0)} />
-                      <Tab label="Certificaciones" {...a11yProps(1)} />
-                      <Tab label="Procesos de graduación" {...a11yProps(2)} />
-                    </Tabs>
-                  )}
+                <Box
+                  sx={{
+                    borderBottom: 1,
+                    borderColor: "divider",
+                    overflowX: "auto",
+                    px: { xs: 1, sm: 2 },
+                  }}
+                >
+                  {userProfile &&
+                    Array.isArray(userProfile.roles) &&
+                    userProfile.roles.includes("professor") && (
+                      <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                      >
+                        <Tab label="Tutorias" {...a11yProps(0)} />
+                        <Tab label="Revisiones" {...a11yProps(1)} />
+                      </Tabs>
+                    )}
+                  {userProfile &&
+                    Array.isArray(userProfile.roles) &&
+                    userProfile.roles.includes("student") && (
+                      <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                      >
+                        <Tab label="Horas becarias" {...a11yProps(0)} />
+                        <Tab label="Certificaciones" {...a11yProps(1)} />
+                        <Tab label="Procesos de graduación" {...a11yProps(2)} />
+                      </Tabs>
+                    )}
                 </Box>
                 <CustomTabPanel value={value} index={0}>
                   <TaskList />

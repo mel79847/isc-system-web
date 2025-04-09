@@ -9,14 +9,14 @@ const dataGridLocaleText = {
     count > 1
       ? `${count.toLocaleString()} filas seleccionadas`
       : `${count.toLocaleString()} fila seleccionada`,
-  columnMenuSortAsc: "Ordenar ascendente",
-  columnMenuSortDesc: "Ordenar descendente",
-  columnMenuFilter: "Filtrar",
-  columnMenuHideColumn: "Ocultar columna",
-  columnMenuShowColumns: "Mostrar columnas",
-  columnMenuUnsort: "Quitar orden",
-  columnMenuManageColumns: "Administrar columnas",
-  columnHeaderSortIconLabel: "Ordenar",
+  columnMenuSortAsc: 'Ordenar ascendente',
+  columnMenuSortDesc: 'Ordenar descendente',
+  columnMenuFilter: 'Filtrar',
+  columnMenuHideColumn: 'Ocultar columna',
+  columnMenuShowColumns: 'Mostrar columnas',
+  columnMenuUnsort: 'Quitar orden',
+  columnMenuManageColumns: 'Administrar columnas',
+  columnHeaderSortIconLabel: 'Ordenar',
 
   filterPanelTitle: 'Filtros',
   filterPanelColumns: 'Columna',
