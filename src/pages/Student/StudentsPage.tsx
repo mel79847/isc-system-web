@@ -31,7 +31,6 @@ const StudentPage = () => {
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
   const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission | null>();
   
-  const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission>();
 
   const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
     code: true,
