@@ -191,17 +191,6 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
-<<<<<<< HEAD
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleCreateTeacher}
-            startIcon={<AddIcon />}
-            disabled={!addStudentPermission}
-          >
-            Agregar Estudiante
-          </Button>
-=======
         <Button
           variant="contained"
           color="secondary"
@@ -211,7 +200,6 @@ const StudentPage = () => {
         >
           Agregar Estudiante
         </Button>
->>>>>>> 4aeb040c714a1c22879459031a406c6e090fa4e8
         )
       }
       children={
