@@ -8,7 +8,7 @@ const setPeriods = () => {
 
   for (let i = 0; i < numberPeriods; i++) {
     let strPeriod = firstSemester ? 'Primero' : 'Segundo'; 
-    let str = strPeriod + ' ' + currentYear; 
+    let str = strPeriod + '-' + currentYear; 
     listPeriods.push({
       id: i + 1, 
       value: str
