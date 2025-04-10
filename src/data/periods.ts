@@ -1,20 +1,26 @@
-export const periods = [
-  {
-    id: 1,
-    value: 'Primero2023',
-  },
-  {
-    id: 2,
-    value: 'Segundo2023',
-  },
-  {
-    id: 3,
-    value: 'Primero2024',
-  },
-  {
-    id: 4,
-    value: 'Segundo2024',
-  },
-];
+const actualDate = new Date();
+const numberPeriods = 3;
 
-export const currentPeriod = 'Primero2024';
+const setPeriods = () => {
+  let firstSemester = actualDate.getMonth() <= 5; 
+  let currentYear = actualDate.getFullYear(); 
+  const listPeriods = [];
+
+  for (let i = 0; i < numberPeriods; i++) {
+    let strPeriod = firstSemester ? 'Primero' : 'Segundo'; 
+    let str = strPeriod + ' ' + currentYear; 
+    listPeriods.push({
+      id: i + 1, 
+      value: str
+    });
+
+    if (!firstSemester) currentYear++; 
+    firstSemester = !firstSemester; 
+  }
+  
+  return listPeriods; 
+};
+
+export const periods = setPeriods();
+
+export const currentPeriod = periods[0].value; 
