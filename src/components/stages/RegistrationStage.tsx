@@ -10,6 +10,7 @@ import { periods, currentPeriod } from "../../data/periods";
 import { useProcessStore } from "../../store/store";
 import { updateProcess } from "../../services/processServicer";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import {Typography } from "@mui/material";
 import {
   FormControl,
   FormControlLabel,
@@ -96,9 +97,9 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
 
   return (
     <>
-      <div className="txt1">
-        Etapa 1: Seminario de Grado <ModeEditIcon onClick={editForm} />
-      </div>
+      <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>
+        Etapa 1: Seminario de Grado <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
+      </Typography>
 
       <form onSubmit={formik.handleSubmit} className="mt-5 mx-16">
         <Grid container spacing={3}>
