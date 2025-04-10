@@ -28,7 +28,7 @@ const dataGridLocaleText = {
   filterPanelLogicOperatorAnd: 'Y',
   filterPanelLogicOperatorOr: 'O',
   filterPanelInputLabel: 'Valor del filtro',
-  filterPanelOperator: 'Operado',
+  filterPanelOperator: 'Operador',
 
   filterOperatorContains: 'Contiene',
   filterOperatorDoesNotContain: 'No contiene',
