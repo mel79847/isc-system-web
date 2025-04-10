@@ -97,15 +97,9 @@ const TaskList = () => {
           </Grid>
           <Grid item xs={3}>
             {task.status === "Cancelled" ? (
-              <Chip
-                label="Cancelled"
-                sx={{ backgroundColor: "#ffe0b2", color: "#f57c00" }}
-              />
+              <Chip label="Cancelled" sx={{ backgroundColor: "#ffe0b2", color: "#f57c00" }} />
             ) : task.status === "Booked" ? (
-              <Chip
-                label="Booked"
-                sx={{ backgroundColor: "#e3f2fd", color: "#2196f3" }}
-              />
+              <Chip label="Booked" sx={{ backgroundColor: "#e3f2fd", color: "#2196f3" }} />
             ) : (
               <Chip
                 icon={<CheckCircleIcon style={{ color: "#4caf50" }} />}

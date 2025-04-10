@@ -104,9 +104,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={7} lg={8}>
             <FormControl component="fieldset">
-              <FormLabel component="legend">
-                1. Seleccione la Modalidad
-              </FormLabel>
+              <FormLabel component="legend">1. Seleccione la Modalidad</FormLabel>
               <RadioGroup
                 aria-label="mode"
                 name="mode"
@@ -127,9 +125,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
           </Grid>
           <Grid item xs={12} sm={12} md={5} lg={4}>
             <FormControl fullWidth variant="outlined" margin="normal">
-              <InputLabel id="period-label">
-                2. Seleccione periodo de inscripción
-              </InputLabel>
+              <InputLabel id="period-label">2. Seleccione periodo de inscripción</InputLabel>
               <Select
                 labelId="period-label"
                 id="period"
@@ -150,9 +146,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
                 ))}
               </Select>
               {formik.touched.period && formik.errors.period && (
-                <div className="text-red-1 text-xs font-medium mt-1">
-                  {formik.errors.period}
-                </div>
+                <div className="text-red-1 text-xs font-medium mt-1">{formik.errors.period}</div>
               )}
             </FormControl>
           </Grid>

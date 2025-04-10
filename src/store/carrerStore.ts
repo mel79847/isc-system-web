@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export interface Carrer {
   id: number;
@@ -15,9 +15,9 @@ interface ICarrer {
 export const useCarrerStore = create<ICarrer>((set) => ({
   carrer: {
     id: 1,
-    fullName: "Ingeniería de Sistemas Computacionales",
-    shortName: "ISC",
-    headOfDepartment: "Alexis Marechal Marin PhD",
+    fullName: 'Ingeniería de Sistemas Computacionales',
+    shortName: 'ISC',
+    headOfDepartment: 'Alexis Marechal Marin PhD',
   },
   setCarrer: (newCarrer: Carrer) => set({ carrer: newCarrer }),
 }));

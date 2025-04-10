@@ -17,10 +17,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Event, EventDetails } from "../../models/eventInterface";
 import EventDetailsPage from "../../components/common/EventDetailsPage";
-import {
-  getFullEventInformationService,
-  updateInternType,
-} from "../../services/eventsService";
+import { getFullEventInformationService, updateInternType } from "../../services/eventsService";
 import { internRegisterStates } from "../../constants/internRegisterStates";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
@@ -284,14 +281,10 @@ const InternsListPage = () => {
                         </MenuItem>
                       ))
                     ) : (
-                      <Typography>
-                        No hay becarios disponibles para agregar.
-                      </Typography>
+                      <Typography>No hay becarios disponibles para agregar.</Typography>
                     )}
                   </DialogContent>
-                  <DialogActions
-                    style={{ marginRight: "15px", marginTop: "-1%" }}
-                  >
+                  <DialogActions style={{ marginRight: "15px", marginTop: "-1%" }}>
                     <Button
                       onClick={handleAddStudentClose}
                       style={{

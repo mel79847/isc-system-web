@@ -30,7 +30,6 @@ const TranslateRole = (rol: string) => {
   return translatedRoles[rol] || rol;
 };
 
-
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
@@ -78,9 +77,7 @@ const Layout = () => {
     },
   ];
 
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -122,18 +119,12 @@ const Layout = () => {
             >
               {user?.name}
             </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              textAlign={"right"}
-            >
+            <Typography variant="subtitle2" color="textSecondary" textAlign={"right"}>
               {TranslateRole(user?.roles)}
             </Typography>
           </Box>
 
-          <Tooltip
-            data-test-id="user_icon"
-            title="Open settings">
+          <Tooltip data-test-id="user_icon" title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar alt={user?.name} src="/static/images/avatar/2.jpg" />
             </IconButton>
@@ -158,7 +149,8 @@ const Layout = () => {
               <MenuItem
                 key={setting.title}
                 data-test-id={setting.title === "Logout" ? "logout_button" : undefined}
-                onClick={setting.onClick}>
+                onClick={setting.onClick}
+              >
                 <Typography textAlign="center">{setting.title}</Typography>
               </MenuItem>
             ))}
@@ -166,7 +158,7 @@ const Layout = () => {
         </Toolbar>
       </AppBar>
       <Sidebar open={open} setOpen={setOpen} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3, overflowX: 'auto', width: '100%' }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, overflowX: "auto", width: "100%" }}>
         <DrawerHeader />
         <Outlet />
       </Box>

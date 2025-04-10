@@ -23,19 +23,14 @@ interface InternalDefenseStageProps {
   onNext: () => void;
 }
 
-export const MentorStage: FC<InternalDefenseStageProps> = ({
-  onPrevious,
-  onNext,
-}) => {
+export const MentorStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext }) => {
   const process = useProcessStore((state) => state.process);
   const carrer = useCarrerStore((state) => state.carrer);
   const setProcess = useProcessStore((state) => state.setProcess);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(
-    CURRENT_STAGE < (process?.stage_id || 0),
-  );
+  const [editMode, setEditMode] = useState<boolean>(CURRENT_STAGE < (process?.stage_id || 0));
 
   const { formik, canApproveStage } = useMentorFormik(process, () => {
     if (canApproveStage) {
@@ -50,21 +45,15 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({
 
     setLoading(true);
 
-    const {
-      mentor,
-      mentorName,
-      tutorDesignationLetterSubmitted,
-      date_tutor_assignament,
-    } = formik.values;
+    const { mentor, mentorName, tutorDesignationLetterSubmitted, date_tutor_assignament } =
+      formik.values;
 
     const updatedProcess = {
       ...process,
       tutor_letter: tutorDesignationLetterSubmitted,
       tutor_id: Number(mentor),
       tutor_name: mentorName,
-      date_tutor_assignament: date_tutor_assignament
-        ? dayjs(date_tutor_assignament)
-        : null,
+      date_tutor_assignament: date_tutor_assignament ? dayjs(date_tutor_assignament) : null,
       ...(canApproveStage && {
         stage_id: 2,
         tutor_approval: true,
@@ -106,8 +95,7 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({
   return (
     <>
       <Typography variant="h6" gutterBottom>
-        Etapa 2: Seleccionar Tutor{" "}
-        <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
+        Etapa 2: Seleccionar Tutor <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
       </Typography>
 
       <form onSubmit={formik.handleSubmit} className="mx-16">
@@ -118,25 +106,11 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({
             process={process}
             renderFieldError={renderFieldError}
           />
-          <DateSelection
-            disabled={editMode}
-            formik={formik}
-            renderFieldError={renderFieldError}
-          />
+          <DateSelection disabled={editMode} formik={formik} renderFieldError={renderFieldError} />
         </Grid>
-        <DocumentCheckbox
-          disabled={editMode}
-          formik={formik}
-          carrer={carrer}
-          process={process}
-        />
+        <DocumentCheckbox disabled={editMode} formik={formik} carrer={carrer} process={process} />
         <Box display="flex" justifyContent="space-between" mt={4}>
-          <Button
-            type="button"
-            onClick={onPrevious}
-            variant="contained"
-            color="secondary"
-          >
+          <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
             Anterior
           </Button>
           <Button type="submit" variant="contained" color="primary">

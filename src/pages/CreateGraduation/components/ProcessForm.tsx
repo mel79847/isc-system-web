@@ -1,12 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  MenuItem,
-  Autocomplete,
-} from "@mui/material";
+import { TextField, Button, Grid, Typography, MenuItem, Autocomplete } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useFormik } from "formik";
 
@@ -33,22 +26,18 @@ function ProcessForm() {
       .number()
       .typeError("El ID del estudiante debe ser un número")
       .required("Campo requerido"),
-  
+
     studentCode: yup
       .number()
       .typeError("El código del estudiante debe ser un número")
       .integer("El código debe ser un número entero")
       .positive("El código debe ser positivo")
       .required("Campo requerido"),
-  
-    modeId: yup
-      .number()
-      .required("Campo requerido"),
-  
-    period: yup
-      .string()
-      .required("Campo requerido"),
-  
+
+    modeId: yup.number().required("Campo requerido"),
+
+    period: yup.string().required("Campo requerido"),
+
     titleProject: yup
       .string()
       .min(5, "El título debe tener al menos 5 caracteres")
@@ -56,7 +45,7 @@ function ProcessForm() {
       .matches(/^[a-zA-Z0-9\s]+$/, "El título solo debe contener letras y números")
       .required("Campo requerido"),
   });
-  
+
   const fetchData = useCallback(async () => {
     try {
       const responseStudents = await getStudents();
@@ -75,16 +64,16 @@ function ProcessForm() {
 
   const setPeriods = (option: number) => {
     let firstSemester = actualDate.getMonth() <= 5;
-    let currentYear = actualDate.getFullYear()
+    let currentYear = actualDate.getFullYear();
     const listPeriods = [];
     for (let i = 0; i < option; i++) {
-      let strPeriod = firstSemester ? "Primero" : "Segundo"
-      listPeriods.push(strPeriod + currentYear)
+      let strPeriod = firstSemester ? "Primero" : "Segundo";
+      listPeriods.push(strPeriod + currentYear);
       if (!firstSemester) currentYear++;
-      firstSemester = !firstSemester
+      firstSemester = !firstSemester;
     }
     return listPeriods;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -105,10 +94,7 @@ function ProcessForm() {
     },
   });
 
-  const handleStudentChange = (
-    _event: React.ChangeEvent<object | null>,
-    value: Student | null,
-  ) => {
+  const handleStudentChange = (_event: React.ChangeEvent<object | null>, value: Student | null) => {
     formik.setFieldValue("studentId", value ? value.id : "");
     formik.setFieldValue("studentCode", value ? value.code : "");
   };
@@ -119,8 +105,8 @@ function ProcessForm() {
         <Grid item xs={12}>
           <Typography variant="h4">Crear Proceso de Graduación</Typography>
           <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
-            Completa los siguientes campos para definir los criterios y
-            requisitos del proceso de graduación.
+            Completa los siguientes campos para definir los criterios y requisitos del proceso de
+            graduación.
           </Typography>
           <Divider flexItem sx={{ my: 2 }} />
         </Grid>
@@ -143,13 +129,8 @@ function ProcessForm() {
                     label="Nombre Estudiante"
                     variant="outlined"
                     margin="normal"
-                    error={
-                      formik.touched.studentId &&
-                      Boolean(formik.errors.studentId)
-                    }
-                    helperText={
-                      formik.touched.studentId && formik.errors.studentId
-                    }
+                    error={formik.touched.studentId && Boolean(formik.errors.studentId)}
+                    helperText={formik.touched.studentId && formik.errors.studentId}
                   />
                 )}
               />
@@ -160,13 +141,8 @@ function ProcessForm() {
                 value={formik.values.studentCode}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={
-                  formik.touched.studentCode &&
-                  Boolean(formik.errors.studentCode)
-                }
-                helperText={
-                  formik.touched.studentCode && formik.errors.studentCode
-                }
+                error={formik.touched.studentCode && Boolean(formik.errors.studentCode)}
+                helperText={formik.touched.studentCode && formik.errors.studentCode}
                 label="Código Estudiante"
                 variant="outlined"
                 margin="normal"
@@ -209,13 +185,8 @@ function ProcessForm() {
                 value={formik.values.titleProject}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={
-                  formik.touched.titleProject &&
-                  Boolean(formik.errors.titleProject)
-                }
-                helperText={
-                  formik.touched.titleProject && formik.errors.titleProject
-                }
+                error={formik.touched.titleProject && Boolean(formik.errors.titleProject)}
+                helperText={formik.touched.titleProject && formik.errors.titleProject}
                 inputProps={{ maxLength: 80 }}
                 variant="outlined"
                 margin="normal"
@@ -234,10 +205,9 @@ function ProcessForm() {
                 helperText={formik.touched.period && formik.errors.period}
               >
                 {setPeriods(numberPeriods).map((value) => {
-                  const desc = value.slice(0, value.length - 4) + "-" + value.slice(value.length-4)
-                  return (
-                    <MenuItem value={value}>{desc}</MenuItem>
-                  );
+                  const desc =
+                    value.slice(0, value.length - 4) + "-" + value.slice(value.length - 4);
+                  return <MenuItem value={value}>{desc}</MenuItem>;
                 })}
               </TextField>
             </Grid>

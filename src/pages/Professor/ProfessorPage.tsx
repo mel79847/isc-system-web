@@ -1,8 +1,4 @@
-import {
-  DataGrid,
-  GridColDef,
-  GridColumnVisibilityModel,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
 import SpinModal from "../../components/common/SpinModal";
@@ -32,26 +28,24 @@ const ProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [columnVisibilityModel, setColumnVisibilityModel] =
-    useState<GridColumnVisibilityModel>({
-      code: true,
-      degree: true,
-      name: true,
-      lastName: true,
-      phone: true,
-      tutorias: true,
-      revisiones: true,
-      actions: true,
-    });
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
+    code: true,
+    degree: true,
+    name: true,
+    lastName: true,
+    phone: true,
+    tutorias: true,
+    revisiones: true,
+    actions: true,
+  });
 
-  const [addProfessorPermission, setAddProfessorPermission] =
-    useState<Permission>();
-  const [viewProfessorReportPermission, setViewProfessorReportPermission] =
-    useState<Permission>();
-  const [deleteProfessorPermission, setDeleteProfessorPermission] =
-    useState<Permission>();
-  const [editProfessorPermission, setEditProfessorPermission] =
-    useState<Permission>();
+  const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
+  const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
+  const [deleteProfessorPermission, setDeleteProfessorPermission] = useState<Permission>();
+  const [editProfessorPermission, setEditProfessorPermission] = useState<Permission>();
+
+  const permissionsReady =
+    viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -66,16 +60,12 @@ const ProfessorPage = () => {
       setIsLoading(false);
     };
 
-    fetchPermissions(); 
+    fetchPermissions();
   }, []);
 
-  const hasViewPermission = HasPermission(
-    viewProfessorReportPermission?.name || ""
-  );
+  const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
   const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
-  const hasDeletePermission = HasPermission(
-    deleteProfessorPermission?.name || ""
-  );
+  const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
 
   const columns: GridColDef[] = [
     {
@@ -217,35 +207,29 @@ const ProfessorPage = () => {
       headerName: "Acciones",
       headerAlign: "center",
       align: "center",
-      resizable:false,
+      resizable: false,
       minWidth: 150,
       maxWidth: 200,
       renderCell: (params) => {
-        const hasActions =
-          hasViewPermission || hasEditPermission || hasDeletePermission;
+        if (!permissionsReady) {
+          return <span>Cargando acciones...</span>;
+        }
+        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
+
         return hasActions ? (
           <div>
             {hasViewPermission && (
-              <IconButton
-                color="primary"
-                onClick={() => handleView(params.row.id)}
-              >
+              <IconButton color="primary" onClick={() => handleView(params.row.id)}>
                 <VisibilityIcon />
               </IconButton>
             )}
             {hasEditPermission && (
-              <IconButton
-                color="primary"
-                onClick={() => handleEdit(params.row.id)}
-              >
+              <IconButton color="primary" onClick={() => handleEdit(params.row.id)}>
                 <EditIcon />
               </IconButton>
             )}
             {hasDeletePermission && (
-              <IconButton
-                color="secondary"
-                onClick={() => handleClickOpen(params.row.id)}
-              >
+              <IconButton color="secondary" onClick={() => handleClickOpen(params.row.id)}>
                 <DeleteIcon />
               </IconButton>
             )}
@@ -345,7 +329,6 @@ const ProfessorPage = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection={false}
               disableRowSelectionOnClick
-              disableColumnSorting
               autoHeight
               columnVisibilityModel={columnVisibilityModel}
               onColumnVisibilityModelChange={(newModel) => {
@@ -365,6 +348,7 @@ const ProfessorPage = () => {
                 cell: "bg-white dark:bg-gray-800",
                 row: "bg-white dark:bg-gray-800",
                 columnHeaderTitle: "!font-bold text-center",
+                sortIcon: "bg-gray-200 dark:bg-gray-800",
               }}
               sx={{
                 "& .MuiDataGrid-cell:focus": {
@@ -394,9 +378,7 @@ const ProfessorPage = () => {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
-                {"Confirmar eliminación"}
-              </DialogTitle>
+              <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   ¿Estás seguro de que quieres eliminar este docente?

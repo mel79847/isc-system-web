@@ -3,9 +3,7 @@ import { useState, useEffect } from "react";
 import GraphicHours from "./GraphicHours";
 import HoursCard from "../../components/common/HoursCard";
 import { Interns } from "../../models/internsInterface";
-import {
-  getInternByUserIdService,
-} from "../../services/internService";
+import { getInternByUserIdService } from "../../services/internService";
 import { useUserStore } from "../../store/store";
 import SimpleHoursCard from "../../components/common/SimpleHoursCard";
 import { getCurrentSemester } from "../../utils/general";
@@ -46,11 +44,7 @@ function HoursPage() {
                 title="Horas Realizadas"
                 subtitle=""
                 count={intern?.completed_hours || 0}
-                percentage={
-                  ((intern?.completed_hours || 0) /
-                    (intern?.total_hours || 1)) *
-                  100
-                }
+                percentage={((intern?.completed_hours || 0) / (intern?.total_hours || 1)) * 100}
               />
             </Grid>
             <Grid item xs={12}>
@@ -60,10 +54,7 @@ function HoursPage() {
                 title="Horas Faltantes"
                 subtitle=""
                 count={intern?.pending_hours || 0}
-                percentage={
-                  ((intern?.pending_hours || 0) / (intern?.total_hours || 1)) *
-                  100
-                }
+                percentage={((intern?.pending_hours || 0) / (intern?.total_hours || 1)) * 100}
               />
             </Grid>
           </Grid>

@@ -21,6 +21,7 @@ import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
 import { Permission } from "../../models/permissionInterface";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import CreateStudentForm from "./CreateStudentForm";
 
 const StudentPage = () => {
   const navigate = useNavigate();
@@ -30,18 +31,8 @@ const StudentPage = () => {
   const [addStudentPermission, setAddStudentPermission] = useState<Permission>();
   const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
+  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission | null>();
-
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
-    code: true,
-    name: true,
-    email: true,
-    phone: true,
-    actions: true,
-  });
-
-  
-
   const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
     code: true,
     name: true,
@@ -135,39 +126,38 @@ const StudentPage = () => {
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="ver"
-            onClick={() => handleView(params.row.id)}
-          >
-            <VisibilityIcon />
-          </IconButton>
+            <IconButton color="primary" aria-label="ver" onClick={() => handleView(params.row.id)}>
+              <VisibilityIcon />
+            </IconButton>
           )}
           {HasPermission(editStudentPermission?.name || "") && (
-          <IconButton
-            color="primary"
-            aria-label="editar"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
+            <IconButton
+              color="primary"
+              aria-label="editar"
+              onClick={() => handleEdit(params.row.id)}
+            >
+              <EditIcon />
+            </IconButton>
           )}
           {HasPermission(deleteStudentPermission?.name || "") && (
-          <IconButton
-            color="secondary"
-            aria-label="eliminar"
-            onClick={() => handleClickOpen(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
+            <IconButton
+              color="secondary"
+              aria-label="eliminar"
+              onClick={() => handleClickOpen(params.row.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
           )}
         </div>
       ),
     },
   ];
 
-  const handleCreateTeacher = () => {
-    navigate("/create-student");
+  const handleCreateStudent = () => setOpenCreateModal(true);
+
+  const handleStudentCreated = () => {
+    setOpenCreateModal(false);
+    fetchStudents();
   };
 
   const fetchStudents = async () => {
@@ -222,7 +212,7 @@ const StudentPage = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleCreateTeacher}
+          onClick={handleCreateStudent}
           startIcon={<AddIcon />}
           disabled={!addStudentPermission}
         >
@@ -281,13 +271,11 @@ const StudentPage = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirmar eliminación"}
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede deshacer.
-                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede deshacer.
+                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede
+                deshacer.
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -298,6 +286,21 @@ const StudentPage = () => {
                 Eliminar
               </Button>
             </DialogActions>
+          </Dialog>
+          <Dialog
+            open={openCreateModal}
+            onClose={() => setOpenCreateModal(false)}
+            maxWidth="md"
+            PaperProps={{
+              sx: {
+                borderRadius: 3,
+                p: 0,
+                maxHeight: '100vh',
+              },
+            }}>
+            <DialogContent sx={{ p: 2, m: 0 }}>
+              <CreateStudentForm onSuccess={handleStudentCreated} />
+            </DialogContent>
           </Dialog>
         </div>
       }

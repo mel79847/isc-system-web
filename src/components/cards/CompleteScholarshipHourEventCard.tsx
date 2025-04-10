@@ -7,10 +7,7 @@ import dayjs from "dayjs";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Event } from "../../models/eventInterface";
-import {
-  finishEventService,
-  getFullEventInformationService,
-} from "../../services/eventsService";
+import { finishEventService, getFullEventInformationService } from "../../services/eventsService";
 import ConfirmDialog from "../common/ConfirmDialog";
 
 interface CSHCardProps {
@@ -85,11 +82,7 @@ const CompleteScholarshipHourEventCard: FC<CSHCardProps> = ({ event }) => {
       <CardContent>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Typography
-              fontSize={20}
-              color="text.primary"
-              sx={{ fontWeight: "bold" }}
-            >
+            <Typography fontSize={20} color="text.primary" sx={{ fontWeight: "bold" }}>
               {title}
             </Typography>
           </Grid>

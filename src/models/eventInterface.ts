@@ -1,9 +1,9 @@
-import { Dayjs } from "dayjs";
-import { InternsInformation } from "./internsInterface";
+import { Dayjs } from 'dayjs';
+import { InternsInformation } from './internsInterface';
 
 // TODO: refactor EventDetails ocurrences to use Event
 
-export type EventStatus = "PENDIENTE" | "ACEPTADO" | "RECHAZADO";
+export type EventStatus = 'PENDIENTE' | 'ACEPTADO' | 'RECHAZADO';
 export interface EventDetails {
   title: string;
   date: Dayjs;
@@ -38,7 +38,7 @@ export interface Event {
   updated_at?: string;
 }
 
-export interface EventNameSupervisor extends Event{
+export interface EventNameSupervisor extends Event {
   name_supervisor: string;
 }
 

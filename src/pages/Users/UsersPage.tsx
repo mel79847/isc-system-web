@@ -1,8 +1,23 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, IconButton, InputLabel, MenuItem, Select } from "@mui/material"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import {
+  Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,17 +36,17 @@ import { HasPermission } from "../../helper/permissions";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const UsersPage = () => {
-  const navigate = useNavigate()
-  const [users, setUsers] = useState<User[]>([])
+  const navigate = useNavigate();
+  const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
-  const [isOpenDelete, setOpenDelete] = useState(false)
-  const [isOpenCreate, setOpenCreate] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<number | null>(null)
-  const [roles, setRoles] = useState<Role[]>([])
-  const [filterRoles, setFilterRoles] = useState("")
+  const [isOpenDelete, setOpenDelete] = useState(false);
+  const [isOpenCreate, setOpenCreate] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [filterRoles, setFilterRoles] = useState("");
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState<User | null>(null)
-  const [viewUserReport, setViewUserReport] = useState<Permission>()
+  const [user, setUser] = useState<User | null>(null);
+  const [viewUserReport, setViewUserReport] = useState<Permission>();
   const [deleteUserPermission, setDeleteUserPermission] = useState<Permission>();
   const [editUserPermission, setEditUserPermission] = useState<Permission>();
   const [addUserPermission, setAddUserPermission] = useState<Permission>();
@@ -52,8 +67,8 @@ const UsersPage = () => {
   }, []);
 
   const handleCreateUser = () => {
-    setUser(null)
-    setOpenCreate(true)
+    setUser(null);
+    setOpenCreate(true);
   };
 
   const handleView = (id: number) => {
@@ -61,15 +76,15 @@ const UsersPage = () => {
   };
 
   const handleEdit = (id: number) => {
-    const editUser = users.find(user => user.id == id) || null
-    setUser(editUser)
-    setOpenCreate(true)
+    const editUser = users.find((user) => user.id == id) || null;
+    setUser(editUser);
+    setOpenCreate(true);
   };
 
   const handleClickDelete = (id: number) => {
-    setSelectedUser(id)
-    setOpenDelete(true)
-  }
+    setSelectedUser(id);
+    setOpenDelete(true);
+  };
 
   const handleCloseDelete = () => {
     setOpenDelete(false);
@@ -86,7 +101,7 @@ const UsersPage = () => {
       }
       handleCloseDelete();
     }
-  }
+  };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value;
@@ -95,14 +110,13 @@ const UsersPage = () => {
 
   const handleSelectRoleChange = (event: { target: { value: string } }) => {
     const selectedRole = event.target.value;
-    if (selectedRole === 'reset') {
+    if (selectedRole === "reset") {
       setFilterRoles("");
       setSearch("");
     } else {
       setFilterRoles(selectedRole);
     }
   };
-
 
   useEffect(() => {
     applyFilters();
@@ -174,11 +188,10 @@ const UsersPage = () => {
       align: "center",
       flex: 1,
       width: 200,
-      renderCell: ({ row }) => (
+      renderCell: ({ row }) =>
         row.roles.map((rol: string) => (
           <Chip key={rol} label={rol} style={{ color: "#ffffff", backgroundColor: "#337DD0" }} />
-        ))
-      )
+        )),
     },
     {
       field: "actions",
@@ -190,13 +203,10 @@ const UsersPage = () => {
       renderCell: (params) => (
         <div>
           {HasPermission(viewUserReport?.name || "") && (
-            <IconButton
-              color="primary"
-              aria-label="ver"
-              onClick={() => handleView(params.row.id)}
-            >
+            <IconButton color="primary" aria-label="ver" onClick={() => handleView(params.row.id)}>
               <VisibilityIcon />
-            </IconButton>)}
+            </IconButton>
+          )}
           {HasPermission(editUserPermission?.name || "") && (
             <IconButton
               color="primary"
@@ -217,54 +227,53 @@ const UsersPage = () => {
           )}
         </div>
       ),
-    }
-  ]
+    },
+  ];
 
   const fetchUsers = async () => {
-
-    const dataResponse = await getUsers()
+    const dataResponse = await getUsers();
     const usersResponse = dataResponse.data;
     for (const user of usersResponse) {
-      user.fullName = `${user.name} ${user.lastname} ${user.mothername}`
-      user.roles = []
+      user.fullName = `${user.name} ${user.lastname} ${user.mothername}`;
+      user.roles = [];
       for (const key in user.rolesAndPermissions)
-        user.roles.push(user.rolesAndPermissions[key].role_name)
+        user.roles.push(user.rolesAndPermissions[key].role_name);
     }
-    setUsers(usersResponse)
-    setFilteredUsers(usersResponse)
-  }
+    setUsers(usersResponse);
+    setFilteredUsers(usersResponse);
+  };
 
   const fetchRoles = async () => {
     const rolesResponse = await getRoles();
     const rolesPermissions: RolePermissions = rolesResponse.data;
-    const roles: Role[] = []
+    const roles: Role[] = [];
     Object.keys(rolesPermissions).forEach((roleName: string) => {
       const rolePermissions = rolesPermissions[roleName];
       roles.push({
         id: rolePermissions.id,
         name: roleName,
         disabled: rolePermissions.disabled,
-        permissions: rolePermissions.permissions
-      })
-    })
+        permissions: rolePermissions.permissions,
+      });
+    });
     setRoles(roles);
-  }
+  };
 
   useEffect(() => {
-    fetchUsers()
-    fetchRoles()
-  }, [])
+    fetchUsers();
+    fetchRoles();
+  }, []);
 
   const countStudentsWithRole = (role: string) => {
-    return users.filter(user => user.roles.includes(Number(role))).length
-  }
+    return users.filter((user) => user.roles.includes(Number(role))).length;
+  };
 
   return (
     <ContainerPage
       title={`Usuarios (${users.length})`}
       subtitle={"Lista de usuarios"}
-      actions={HasPermission(addUserPermission?.name || "Agregar usuario") &&
-        (
+      actions={
+        HasPermission(addUserPermission?.name || "Agregar usuario") && (
           <Button
             variant="contained"
             color="secondary"
@@ -276,7 +285,7 @@ const UsersPage = () => {
         )
       }
       children={
-        (<div style={{ height: 400, width: "100%" }}>
+        <div style={{ height: 400, width: "100%" }}>
           <Grid container spacing={1} style={{ paddingBottom: 20 }}>
             <Grid item xs={9} md={8}>
               <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between m-5 mb-8 overflow-hidden">
@@ -308,17 +317,17 @@ const UsersPage = () => {
                   onChange={handleSelectRoleChange}
                   value={filterRoles}
                 >
-                  <MenuItem value="reset">
-                    Borrar búsqueda
-                  </MenuItem>
+                  <MenuItem value="reset">Borrar búsqueda</MenuItem>
                   {roles.map((rol: Role) => (
-                    <MenuItem value={rol.name}>{rol.name} ({countStudentsWithRole(rol.name)})</MenuItem>
+                    <MenuItem value={rol.name}>
+                      {rol.name} ({countStudentsWithRole(rol.name)})
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
           </Grid>
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: "100%" }}>
             <DataGrid
               rows={filteredUsers}
               columns={columns}
@@ -345,46 +354,39 @@ const UsersPage = () => {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-
-            <DialogTitle id="alert-dialog-title">
-              Confirmar eliminación
-            </DialogTitle>
+            <DialogTitle id="alert-dialog-title">Confirmar eliminación</DialogTitle>
 
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este usuario? Esta
-                acción no se puede deshacer.
+                ¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.
               </DialogContentText>
             </DialogContent>
 
             <DialogActions>
-              <Button
-                onClick={handleCloseDelete}
-                color="primary">
+              <Button onClick={handleCloseDelete} color="primary">
                 Cancelar
               </Button>
 
-              <Button
-                onClick={handleDelete}
-                color="secondary" autoFocus>
+              <Button onClick={handleDelete} color="secondary" autoFocus>
                 Eliminar
               </Button>
             </DialogActions>
           </Dialog>
 
-          {isOpenCreate && <CreateUserPage
-            openCreate={isOpenCreate}
-            handleClose={() => {
-              fetchUsers()
-              setOpenCreate(false)
-            }}
-            user={user}
-          />}
-
+          {isOpenCreate && (
+            <CreateUserPage
+              openCreate={isOpenCreate}
+              handleClose={() => {
+                fetchUsers();
+                setOpenCreate(false);
+              }}
+              user={user}
+            />
+          )}
         </div>
-        )}
+      }
     />
-  )
-}
+  );
+};
 
 export default UsersPage;

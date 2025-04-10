@@ -1,6 +1,6 @@
-import { Box, Card, CardContent, Typography, IconButton } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import { Box, Card, CardContent, Typography, IconButton } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 // @ts-ignore
 interface ProcessCardProps {

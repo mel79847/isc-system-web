@@ -8,14 +8,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import dayjs from "dayjs";
 import ContainerPage from "../../components/common/ContainerPage";
-import {
-  deleteEventService,
-  getEventsInformationsService,
-} from "../../services/eventsService";
-import {
-  EventInformations,
-  EventNameSupervisor,
-} from "../../models/eventInterface";
+import { deleteEventService, getEventsInformationsService } from "../../services/eventsService";
+import { EventInformations, EventNameSupervisor } from "../../models/eventInterface";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import { getInternData } from "../../services/internService";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
@@ -24,9 +18,7 @@ const EventTable = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState<EventInformations[]>();
-  const [eventsSupervisor, setEventsSupervisor] = useState<
-    EventNameSupervisor[]
-  >([]);
+  const [eventsSupervisor, setEventsSupervisor] = useState<EventNameSupervisor[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [alert, setAlert] = useState<{
@@ -45,17 +37,13 @@ const EventTable = () => {
     try {
       if (events) {
         const promises = events.map(async (event: EventInformations) => {
-          const formattedStartDate = dayjs(event.start_date).format(
-            "DD/MM/YYYY"
-          );
+          const formattedStartDate = dayjs(event.start_date).format("DD/MM/YYYY");
           if (event.responsible_intern_id) {
             const res = await getInternData(event.responsible_intern_id);
             const eventNew: EventNameSupervisor = {
               ...event,
               start_date: formattedStartDate,
-              name_supervisor: res.data
-                ? `${res.data.name} ${res.data.lastname}`
-                : "Ninguno",
+              name_supervisor: res.data ? `${res.data.name} ${res.data.lastname}` : "Ninguno",
             };
             return eventNew;
           } else {
@@ -155,10 +143,7 @@ const EventTable = () => {
       renderCell: (params) => (
         <div>
           <Tooltip title="Ver detalles">
-            <IconButton
-              color="primary"
-              onClick={() => handleView(params.row.id)}
-            >
+            <IconButton color="primary" onClick={() => handleView(params.row.id)}>
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
@@ -291,16 +276,8 @@ const EventTable = () => {
             description="¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer."
           />
           {alert && (
-            <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={6000}
-              onClose={handleSnackbarClose}
-            >
-              <Alert
-                onClose={handleSnackbarClose}
-                severity={alert.severity}
-                sx={{ width: "100%" }}
-              >
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+              <Alert onClose={handleSnackbarClose} severity={alert.severity} sx={{ width: "100%" }}>
                 {alert.message}
               </Alert>
             </Snackbar>

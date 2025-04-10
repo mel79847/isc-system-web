@@ -17,10 +17,7 @@ import { useParams } from "react-router-dom";
 import { Chip, TextField } from "@mui/material";
 import { FullEvent } from "../../models/eventInterface";
 import EventDetailsPage from "../../components/common/EventDetailsPage";
-import {
-  getFullEventInformationService,
-  updateInternType,
-} from "../../services/eventsService";
+import { getFullEventInformationService, updateInternType } from "../../services/eventsService";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
@@ -124,13 +121,7 @@ const EventRegisterPage = () => {
 
         const status = statusMap[params.value];
 
-        return (
-          <Chip
-            label={status.label}
-            color={status.color}
-            sx={{ fontWeight: 600 }}
-          />
-        );
+        return <Chip label={status.label} color={status.color} sx={{ fontWeight: 600 }} />;
       },
     },
     {
@@ -235,8 +226,7 @@ const EventRegisterPage = () => {
                   columnHeader: "bg-gray-200 dark:bg-gray-800",
                   cell: "bg-white dark:bg-gray-800",
                   row: "bg-white dark:bg-gray-800",
-                  columnHeaderTitle:
-                    "!font-bold text-center whitespace-normal p-2",
+                  columnHeaderTitle: "!font-bold text-center whitespace-normal p-2",
                 }}
               />
               <Dialog
@@ -280,16 +270,11 @@ const EventRegisterPage = () => {
                         }}
                       >
                         <Typography>{student.name}</Typography>
-                        <Checkbox
-                          checked={selectedStudents.includes(student.id)}
-                          color="primary"
-                        />
+                        <Checkbox checked={selectedStudents.includes(student.id)} color="primary" />
                       </MenuItem>
                     ))
                   ) : (
-                    <Typography>
-                      No hay becarios disponibles para agregar.
-                    </Typography>
+                    <Typography>No hay becarios disponibles para agregar.</Typography>
                   )}
                 </DialogContent>
                 <DialogActions>
@@ -332,7 +317,7 @@ const EventRegisterPage = () => {
                   label="Horas Becarias"
                   margin="normal"
                   sx={{ marginRight: 2, marginLeft: 2 }}
-                  inputProps={{ min: 0 , inputMode:"numeric"}}
+                  inputProps={{ min: 0, inputMode: "numeric" }}
                 />
               </ConfirmDialog>
             </div>

@@ -1,6 +1,6 @@
-import apiClient from "./apiInstance";
+import apiClient from './apiInstance';
 
 export const getStats = async () => {
-  const response = await apiClient.get("/stats");
+  const response = await apiClient.get('/stats');
   return response.data;
 };

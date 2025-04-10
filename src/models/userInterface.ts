@@ -1,4 +1,4 @@
-import { Role } from "./roleInterface";
+import { Role } from './roleInterface';
 
 export interface User {
   id: number;
@@ -11,8 +11,8 @@ export interface User {
   code: string;
   phone: string;
   degree: string;
-  roles: number[]; 
-  rolesAndPermissions?: { [id: number]: Role }
+  roles: number[];
+  rolesAndPermissions?: { [id: number]: Role };
 }
 
 export interface UserRequest {
@@ -26,6 +26,6 @@ export interface UserRequest {
   degree: string;
   roles: number[];
   role_id: number;
-  isStudent: boolean,
-  is_scholarship: boolean
+  isStudent: boolean;
+  is_scholarship: boolean;
 }

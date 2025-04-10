@@ -15,13 +15,7 @@ interface TableProps {
   tableHeaders: tableHeader[];
 }
 
-const Table: FC<TableProps> = ({
-  data,
-  pageSize,
-  currentPage,
-  onPageChange,
-  tableHeaders,
-}) => {
+const Table: FC<TableProps> = ({ data, pageSize, currentPage, onPageChange, tableHeaders }) => {
   const startIndex = (currentPage - 1) * pageSize;
   const paginatedData = data.slice(startIndex, startIndex + pageSize);
   const navigate = useNavigate();
@@ -68,10 +62,7 @@ const Table: FC<TableProps> = ({
         </tbody>
       </table>
       {/* Paginación */}
-      <nav
-        className="flex items-center justify-end p-5"
-        aria-label="Table navigation"
-      >
+      <nav className="flex items-center justify-end p-5" aria-label="Table navigation">
         <ul className="inline-flex -space-x-px">
           {/* Botón Anterior */}
           <li>
@@ -88,9 +79,7 @@ const Table: FC<TableProps> = ({
             <li key={i}>
               <button
                 onClick={() => onPageChange(i + 1)}
-                className={`px-3 py-1 border ${
-                  currentPage === i + 1 ? "bg-blue-200" : ""
-                }`}
+                className={`px-3 py-1 border ${currentPage === i + 1 ? "bg-blue-200" : ""}`}
               >
                 {i + 1}
               </button>

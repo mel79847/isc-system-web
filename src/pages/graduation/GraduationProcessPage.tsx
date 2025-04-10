@@ -6,13 +6,9 @@ import { Student } from "../../models/studentInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { Permission } from "../../models/permissionInterface";
 import { HasPermission } from "../../helper/permissions";
-<<<<<<< HEAD
-import { Box, IconButton, Paper } from "@mui/material"
-=======
-import { Box, Button, IconButton, Paper } from "@mui/material"
+import { Box, Button, IconButton, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
->>>>>>> 8236a8b1386c3e71d5c86977e546f64168ab93bf
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const GraduationProcessPage = () => {
@@ -37,7 +33,7 @@ const GraduationProcessPage = () => {
 
   useEffect(() => {
     const results = students.filter((item: Student) =>
-      item.student_name.toLowerCase().includes(search.toLowerCase()),
+      item.student_name.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredData(results);
   }, [search, students]);
@@ -87,17 +83,18 @@ const GraduationProcessPage = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
-          {(
+          {
             <IconButton
               color="primary"
               aria-label="ver"
               onClick={() => navigate(`/studentProfile/${params.row.id}`)}
             >
               <VisibilityIcon />
-            </IconButton>)}
+            </IconButton>
+          }
         </div>
       ),
-    }
+    },
   ];
 
   const tableHeaders: GridColDef[] = [
@@ -137,17 +134,18 @@ const GraduationProcessPage = () => {
       flex: 1,
       renderCell: (params) => (
         <div>
-          {(
+          {
             <IconButton
               color="primary"
               aria-label="ver"
               onClick={() => navigate(`/studentProfile/${params.row.id}`)}
             >
               <VisibilityIcon />
-            </IconButton>)}
+            </IconButton>
+          }
         </div>
       ),
-    }
+    },
   ];
 
   return (
@@ -174,19 +172,16 @@ const GraduationProcessPage = () => {
             variant="contained"
             color="secondary"
             onClick={goToCreateProcessPage}
-            startIcon={<AddIcon/>}
-            style={{display: "inline-flex"}}>
-              Crear Proceso de Graduación
-            </Button>
+            startIcon={<AddIcon />}
+            style={{ display: "inline-flex" }}
+          >
+            Crear Proceso de Graduación
+          </Button>
         )}
       </div>
 
       {/* Tabla de Datos */}
-<<<<<<< HEAD
-      <Box sx={{ width: '95%', mb: 2 }}>
-=======
       <Box sx={{ mb: 2 }}>
->>>>>>> 8236a8b1386c3e71d5c86977e546f64168ab93bf
         <Paper>
           <DataGrid
             rows={filteredData}

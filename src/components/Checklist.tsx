@@ -86,8 +86,7 @@ const Checklist = () => {
             <FaUserSecret className="text-blue-800" />
           </span>
           <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Revisor: {process?.reviewer_degree}.{" "}
-            {process?.reviewer_fullname || " "}
+            Revisor: {process?.reviewer_degree}. {process?.reviewer_fullname || " "}
           </h3>
           {process?.reviewer_approval ? (
             <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">

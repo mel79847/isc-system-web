@@ -9,12 +9,7 @@ interface ContainerPageProps {
   children: ReactNode;
 }
 
-const ContainerPage: React.FC<ContainerPageProps> = ({
-  title,
-  subtitle,
-  actions,
-  children,
-}) => {
+const ContainerPage: React.FC<ContainerPageProps> = ({ title, subtitle, actions, children }) => {
   return (
     <Container fixed>
       <Grid container spacing={3}>
@@ -30,20 +25,12 @@ const ContainerPage: React.FC<ContainerPageProps> = ({
                 <PersonIcon color="primary" />
                 {title}
               </Typography>
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                component="div"
-              >
+              <Typography variant="subtitle2" color="textSecondary" component="div">
                 {subtitle}
               </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography
-                variant="h6"
-                component="div"
-                sx={{ textAlign: "right" }}
-              >
+              <Typography variant="h6" component="div" sx={{ textAlign: "right" }}>
                 {actions}
               </Typography>
             </Grid>

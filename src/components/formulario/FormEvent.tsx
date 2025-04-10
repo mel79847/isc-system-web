@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import { EventFormState } from "../../models/formEventInterface.ts";
 
 interface EventFormProps {
@@ -17,7 +17,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel }) => {
     maxParticipants: 0,
     maxSubstitutes: 0,
     description: "",
-    endDate: dayjs(), 
+    endDate: dayjs(),
     responsiblePerson: "",
   });
 
@@ -41,12 +41,22 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel }) => {
       maxSubstitutes: 0,
       description: "",
       endDate: dayjs(),
-        responsiblePerson: "", 
+      responsiblePerson: "",
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%", maxWidth: "600px", margin: "0 auto" }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        width: "100%",
+        maxWidth: "600px",
+        margin: "0 auto",
+      }}
+    >
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         <label>
           Título del evento:
@@ -64,7 +74,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel }) => {
           <input
             type="date"
             name="date"
-            value={eventDetails.date.format('DD/MM/YYYY')}
+            value={eventDetails.date.format("DD/MM/YYYY")}
             onChange={handleInputChange}
             style={{ width: "100%", padding: "8px", boxSizing: "border-box" }}
           />
@@ -138,10 +148,28 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel }) => {
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-        <button type="button" onClick={onCancel} style={{ padding: "8px 16px", backgroundColor: "#ccc", border: "none", borderRadius: "4px" }}>
+        <button
+          type="button"
+          onClick={onCancel}
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#ccc",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
           Cancelar
         </button>
-        <button type="submit" style={{ padding: "8px 16px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "4px" }}>
+        <button
+          type="submit"
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
           Agregar Evento
         </button>
       </div>

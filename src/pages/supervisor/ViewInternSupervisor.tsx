@@ -51,9 +51,7 @@ const ViewInternSupervisor = () => {
 
   const handleCheckboxChange = (id: number, checked: boolean) => {
     const updatedStudents = students.map((student) => {
-      return student.id_intern === id
-        ? { ...student, attendance: checked }
-        : student;
+      return student.id_intern === id ? { ...student, attendance: checked } : student;
     });
     setStudents(updatedStudents);
   };
@@ -102,24 +100,14 @@ const ViewInternSupervisor = () => {
                     <TableCell>
                       <TextField
                         value={student.notes}
-                        onChange={(e) =>
-                          handleObservationChange(
-                            student.id_intern,
-                            e.target.value
-                          )
-                        }
+                        onChange={(e) => handleObservationChange(student.id_intern, e.target.value)}
                         fullWidth
                       />
                     </TableCell>
                     <TableCell>
                       <Checkbox
                         checked={student.attendance}
-                        onChange={(e) =>
-                          handleCheckboxChange(
-                            student.id_intern,
-                            e.target.checked
-                          )
-                        }
+                        onChange={(e) => handleCheckboxChange(student.id_intern, e.target.checked)}
                       />
                     </TableCell>
                   </TableRow>
@@ -129,11 +117,7 @@ const ViewInternSupervisor = () => {
           </Table>
         </TableContainer>
         <Grid container justifyContent="center" sx={{ mt: 4 }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleExportToExcel}
-          >
+          <Button variant="contained" color="secondary" onClick={handleExportToExcel}>
             Cerrar Registro
           </Button>
         </Grid>
