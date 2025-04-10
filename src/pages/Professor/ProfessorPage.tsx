@@ -24,9 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Permission } from "../../models/permissionInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
-import dataGridLocaleText from "../../locales/datagridLocaleEs";
-import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "../../theme/theme";
+import dataGridLocaleText from "../../locales/datagridLocaleEs"
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
@@ -307,7 +305,6 @@ const ProfessorPage = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
     <ContainerPage
       title={"Docentes"}
       subtitle={"Lista de docentes"}
@@ -439,7 +436,6 @@ const ProfessorPage = () => {
         )
       }
     />
-    </ThemeProvider>
   );
 };
 
