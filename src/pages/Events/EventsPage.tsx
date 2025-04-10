@@ -40,15 +40,9 @@ const EventsPage: React.FC = () => {
           eventEndDate.isAfter(today, "day")
         );
       } else if (tabValue === 1) {
-        return (
-          eventStartDate.isAfter(today, "day") &&
-          eventEndDate.isAfter(today, "day")
-        );
+        return eventStartDate.isAfter(today, "day") && eventEndDate.isAfter(today, "day");
       } else if (tabValue === 2) {
-        return (
-          eventEndDate.isBefore(today, "day") ||
-          eventEndDate.isSame(today, "day")
-        );
+        return eventEndDate.isBefore(today, "day") || eventEndDate.isSame(today, "day");
       }
 
       return true;
@@ -57,14 +51,8 @@ const EventsPage: React.FC = () => {
 
   return (
     <>
-      <Box
-        sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "20px" }}
-      >
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label="event tabs"
-        >
+      <Box sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "20px" }}>
+        <Tabs value={tabValue} onChange={handleTabChange} aria-label="event tabs">
           <Tab label="Eventos del mes" />
           <Tab label="Eventos próximos" />
           <Tab label="Eventos pasados" />

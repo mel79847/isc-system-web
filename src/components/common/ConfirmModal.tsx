@@ -14,9 +14,7 @@ const ConfirmModal = (props: confirmModal) => {
         <label className="txt2-modal ">
           ¿Está seguro de continuar a la siguiente etapa de {props.nextStep}?
         </label>
-        <label className="txt3-modal">
-          No podrá modificar los datos una vez que continue
-        </label>
+        <label className="txt3-modal">No podrá modificar los datos una vez que continue</label>
         <div className="flex flex-row justify-between w-full px-5 md:px-2">
           <button
             onClick={() => {

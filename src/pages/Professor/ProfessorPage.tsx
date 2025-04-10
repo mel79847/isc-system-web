@@ -1,8 +1,4 @@
-import {
-  DataGrid,
-  GridColDef,
-  GridColumnVisibilityModel,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
 import SpinModal from "../../components/common/SpinModal";
@@ -32,29 +28,24 @@ const ProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [columnVisibilityModel, setColumnVisibilityModel] =
-    useState<GridColumnVisibilityModel>({
-      code: true,
-      degree: true,
-      name: true,
-      lastName: true,
-      phone: true,
-      tutorias: true,
-      revisiones: true,
-      actions: true,
-    });
-  
-  const [addProfessorPermission, setAddProfessorPermission] =
-    useState<Permission>();
-  const [viewProfessorReportPermission, setViewProfessorReportPermission] =
-    useState<Permission>();
-  const [deleteProfessorPermission, setDeleteProfessorPermission] =
-    useState<Permission>();
-  const [editProfessorPermission, setEditProfessorPermission] =
-    useState<Permission>();
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
+    code: true,
+    degree: true,
+    name: true,
+    lastName: true,
+    phone: true,
+    tutorias: true,
+    revisiones: true,
+    actions: true,
+  });
 
-  const permissionsReady = viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
+  const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
+  const [viewProfessorReportPermission, setViewProfessorReportPermission] = useState<Permission>();
+  const [deleteProfessorPermission, setDeleteProfessorPermission] = useState<Permission>();
+  const [editProfessorPermission, setEditProfessorPermission] = useState<Permission>();
 
+  const permissionsReady =
+    viewProfessorReportPermission && editProfessorPermission && deleteProfessorPermission;
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -69,16 +60,12 @@ const ProfessorPage = () => {
       setIsLoading(false);
     };
 
-    fetchPermissions(); 
+    fetchPermissions();
   }, []);
 
-  const hasViewPermission = HasPermission(
-    viewProfessorReportPermission?.name || ""
-  );
+  const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
   const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
-  const hasDeletePermission = HasPermission(
-    deleteProfessorPermission?.name || ""
-  );
+  const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
 
   const columns: GridColDef[] = [
     {
@@ -227,8 +214,7 @@ const ProfessorPage = () => {
         if (!permissionsReady) {
           return <span>Cargando acciones...</span>;
         }
-        const hasActions =
-          hasViewPermission || hasEditPermission || hasDeletePermission;
+        const hasActions = hasViewPermission || hasEditPermission || hasDeletePermission;
 
         return hasActions ? (
           <div>
@@ -243,10 +229,7 @@ const ProfessorPage = () => {
               </IconButton>
             )}
             {hasDeletePermission && (
-              <IconButton
-                color="secondary"
-                onClick={() => handleClickOpen(params.row.id)}
-              >
+              <IconButton color="secondary" onClick={() => handleClickOpen(params.row.id)}>
                 <DeleteIcon />
               </IconButton>
             )}
@@ -395,9 +378,7 @@ const ProfessorPage = () => {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
-                {"Confirmar eliminación"}
-              </DialogTitle>
+              <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   ¿Estás seguro de que quieres eliminar este docente?

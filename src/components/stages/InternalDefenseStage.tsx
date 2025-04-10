@@ -36,10 +36,7 @@ interface InternalDefenseStageProps {
   onNext: () => void;
 }
 
-export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
-  onPrevious,
-  onNext,
-}) => {
+export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -93,16 +90,11 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
         { x: 222, y: 293, size: 10, text: values.president },
       ];
 
-      const pdfArrayBuffer = await fetch(pdfFile).then((res) =>
-        res.arrayBuffer(),
-      );
+      const pdfArrayBuffer = await fetch(pdfFile).then((res) => res.arrayBuffer());
       const modifiedPdf = await modifyPdf(pdfArrayBuffer, data);
       const pdfBlob = new Blob([modifiedPdf], { type: "application/pdf" });
 
-      downloadFile(
-        pdfBlob,
-        "Acta_Defensa_Interna_de_Seminario_de_Grado_V1.1.pdf",
-      );
+      downloadFile(pdfBlob, "Acta_Defensa_Interna_de_Seminario_de_Grado_V1.1.pdf");
     } catch (error) {
       console.error("Failed to download PDF:", error);
     }
@@ -135,24 +127,15 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
     }
   };
 
-  const handlePresidentChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handlePresidentChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("president", value?.id || "");
   };
 
-  const handleFirstJurorChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handleFirstJurorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("firstJuror", value?.id || "");
   };
 
-  const handleSecondJurorChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: Mentor | null,
-  ) => {
+  const handleSecondJurorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
     formik.setFieldValue("secondJuror", value?.id || "");
   };
 
@@ -161,7 +144,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
       formik.values.president &&
         formik.values.firstJuror &&
         formik.values.secondJuror &&
-        formik.values.date,
+        formik.values.date
     );
   };
 
@@ -181,14 +164,9 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
       </div>
       {subStage === 0 && (
         <>
-          <EmailSender/>
+          <EmailSender />
           <Box display="flex" justifyContent="space-between" pt={1} pb={0}>
-            <Button
-              type="button"
-              onClick={onPrevious}
-              variant="contained"
-              color="secondary"
-            >
+            <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
               Anterior
             </Button>
             <Button onClick={nextSubStage} variant="contained" color="primary">
@@ -210,9 +188,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
                   label={"Seleccionar Presidente"}
                 />
                 {formik.touched.president && formik.errors.president ? (
-                  <div className="text-red-1 text-xs mt-1">
-                    {String(formik.errors.president)}
-                  </div>
+                  <div className="text-red-1 text-xs mt-1">{String(formik.errors.president)}</div>
                 ) : null}
               </Grid>
 
@@ -225,9 +201,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
                   label={"Seleccionar Primer Jurado"}
                 />
                 {formik.touched.firstJuror && formik.errors.firstJuror ? (
-                  <div className="text-red-1 text-xs mt-1">
-                    {String(formik.errors.firstJuror)}
-                  </div>
+                  <div className="text-red-1 text-xs mt-1">{String(formik.errors.firstJuror)}</div>
                 ) : null}
               </Grid>
 
@@ -240,9 +214,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
                   label={"Seleccionar Segundo Jurado"}
                 />
                 {formik.touched.secondJuror && formik.errors.secondJuror ? (
-                  <div className="text-red-1 text-xs mt-1">
-                    {String(formik.errors.secondJuror)}
-                  </div>
+                  <div className="text-red-1 text-xs mt-1">{String(formik.errors.secondJuror)}</div>
                 ) : null}
               </Grid>
 
@@ -260,12 +232,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({
           </Box>
 
           <Box display="flex" justifyContent="space-between" pt={5}>
-            <Button
-              type="button"
-              onClick={onPrevious}
-              variant="contained"
-              color="secondary"
-            >
+            <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
               Anterior
             </Button>
             <Button type="submit" variant="contained" color="primary">

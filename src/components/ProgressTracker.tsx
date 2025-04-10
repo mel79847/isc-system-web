@@ -6,15 +6,7 @@ import { ReviewerStage } from "./stages/ReviewerStage";
 import { ExternalDefenseStage } from "./stages/ExternalDefenseStage";
 import { Seminar } from "../models/studentProcess";
 import { steps } from "../data/steps";
-import {
-  Stepper,
-  Step,
-  StepLabel,
-  Box,
-  Typography,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Stepper, Step, StepLabel, Box, Typography, Snackbar, Alert } from "@mui/material";
 import { useProcessStore } from "../store/store";
 
 interface ProgressTrackerProps {
@@ -23,10 +15,7 @@ interface ProgressTrackerProps {
   studentProcess: Seminar;
 }
 
-const ProgressTracker: FC<ProgressTrackerProps> = ({
-  currentStepIndex,
-  status,
-}) => {
+const ProgressTracker: FC<ProgressTrackerProps> = ({ currentStepIndex, status }) => {
   const process = useProcessStore((state) => state.process);
   const [currentStage, setCurrentStage] = useState(currentStepIndex);
   const { stage_id } = process || { stage_id: 0 };
@@ -57,23 +46,11 @@ const ProgressTracker: FC<ProgressTrackerProps> = ({
       case 0:
         return <RegistrationStage onNext={goToNextStage} />;
       case 1:
-        return (
-          <MentorStage onNext={goToNextStage} onPrevious={goToPreviousStage} />
-        );
+        return <MentorStage onNext={goToNextStage} onPrevious={goToPreviousStage} />;
       case 2:
-        return (
-          <ReviewerStage
-            onNext={goToNextStage}
-            onPrevious={goToPreviousStage}
-          />
-        );
+        return <ReviewerStage onNext={goToNextStage} onPrevious={goToPreviousStage} />;
       case 3:
-        return (
-          <InternalDefenseStage
-            onPrevious={goToPreviousStage}
-            onNext={goToNextStage}
-          />
-        );
+        return <InternalDefenseStage onPrevious={goToPreviousStage} onNext={goToNextStage} />;
       case 4:
         return <ExternalDefenseStage onPrevious={goToPreviousStage} />;
     }
@@ -109,11 +86,7 @@ const ProgressTracker: FC<ProgressTrackerProps> = ({
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <Alert
-          onClose={handleAlertClose}
-          severity="warning"
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleAlertClose} severity="warning" sx={{ width: "100%" }}>
           Debe completar la etapa actual para continuar.
         </Alert>
       </Snackbar>

@@ -1,17 +1,17 @@
 .confirm-button {
-    background-color: #002E5D !important;
-    color: #FFFFFF !important;
-  }
-  
-  .confirm-button:hover {
-    background-color: #001F3B !important;
-  }
-  
-  .cancel-button {
-    background-color: #FF4C4C !important;
-    color: #FFFFFF !important;
-  }
-  
-  .cancel-button:hover {
-    background-color: #CC0000 !important;
-  }
+  background-color: #002e5d !important;
+  color: #ffffff !important;
+}
+
+.confirm-button:hover {
+  background-color: #001f3b !important;
+}
+
+.cancel-button {
+  background-color: #ff4c4c !important;
+  color: #ffffff !important;
+}
+
+.cancel-button:hover {
+  background-color: #cc0000 !important;
+}

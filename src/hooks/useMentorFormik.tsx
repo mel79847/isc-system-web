@@ -18,9 +18,7 @@ const useMentorFormik = (process: Seminar | null, onSubmit: () => void) => {
     mentorName: Yup.string().required("Debe seleccionar un tutor"),
     tutorDesignationLetterSubmitted: Yup.boolean(),
     tutorApprovalLetterSubmitted: Yup.boolean(),
-    date_tutor_assignament: Yup.date()
-      .required("Debe seleccionar una fecha")
-      .nullable(),
+    date_tutor_assignament: Yup.date().required("Debe seleccionar una fecha").nullable(),
   });
 
   const formik = useFormik<MentorFormValues>({
@@ -43,14 +41,14 @@ const useMentorFormik = (process: Seminar | null, onSubmit: () => void) => {
         formik.values.mentor &&
           formik.values.tutorDesignationLetterSubmitted &&
           formik.values.date_tutor_assignament &&
-          formik.values.tutorApprovalLetterSubmitted,
+          formik.values.tutorApprovalLetterSubmitted
       ),
     [
       formik.values.mentor,
       formik.values.tutorDesignationLetterSubmitted,
       formik.values.date_tutor_assignament,
       formik.values.tutorApprovalLetterSubmitted,
-    ],
+    ]
   );
 
   return { formik, canApproveStage };

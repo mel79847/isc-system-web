@@ -1,7 +1,5 @@
-import { Permission } from "../models/permissionInterface";
-import { useUserStore } from "../store/store";
-
-
+import { Permission } from '../models/permissionInterface';
+import { useUserStore } from '../store/store';
 
 export function HasPermission(permissionName: string): boolean {
   const user = useUserStore((state) => state.user);
@@ -13,9 +11,8 @@ export function HasPermission(permissionName: string): boolean {
         if (permissionName.toLowerCase() === permission.name.toLowerCase()) {
           hasThePermission = true;
         }
-      })
-    })
+      });
+    });
   }
   return hasThePermission;
 }
-

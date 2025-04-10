@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Switch, Table, TableBody, TableCell, TableHead, TableRow, Typography, IconButton, Collapse} from "@mui/material";
+import {
+  Box,
+  Button,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+  IconButton,
+  Collapse,
+} from "@mui/material";
 import { getPermissions } from "../../services/permissionsService";
 import { Section } from "../../models/sectionInterface";
 import { Permission } from "../../models/permissionInterface";
@@ -23,13 +35,13 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
     const response = await getPermissions();
     const permissionsCategory: PermissionsCategory = response.data;
     const sections: Section[] = [];
-    Object.keys(permissionsCategory).forEach((secitionName:string) => {
+    Object.keys(permissionsCategory).forEach((secitionName: string) => {
       const section = permissionsCategory[secitionName];
-      sections.push({name:secitionName, permissions: section.flat()});
+      sections.push({ name: secitionName, permissions: section.flat() });
     });
     setSections(sections);
     setOpenSections(new Array(response.length).fill(true));
-  }
+  };
 
   useEffect(() => {
     fetchPermissions();
@@ -40,7 +52,11 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
     if (!listOfChanges.includes(newSections[sectionIndex].permissions[permissionIndex])) {
       setListOfChanges([...listOfChanges, newSections[sectionIndex].permissions[permissionIndex]]);
     } else {
-      setListOfChanges(listOfChanges.filter(permission => permission !== newSections[sectionIndex].permissions[permissionIndex]));
+      setListOfChanges(
+        listOfChanges.filter(
+          (permission) => permission !== newSections[sectionIndex].permissions[permissionIndex]
+        )
+      );
     }
   };
 
@@ -69,12 +85,12 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
   };
 
   const cancelChangesModal = () => {
-    setShowModal(false)
-  }
+    setShowModal(false);
+  };
 
   const saveChanges = () => {
     setShowModal(true);
-  }
+  };
 
   const handleSaveComplete = async () => {
     try {
@@ -97,41 +113,49 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
 
   const closeSnackbar = () => {
     setOpenSnackbar(false);
-  }
+  };
 
   return (
     <>
-        <Table className="border-table" sx={{ marginBottom: "10px"}}>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                sx={{
-                  backgroundColor: "#191D88",
-                  color: "white",
-                  fontWeight: "bold",
-                  width: "70%",
-                }}
-              >
-                Acción
-              </TableCell>
-              <TableCell
-                sx={{
-                  backgroundColor: "#191D88",
-                  color: "white",
-                  fontWeight: "bold",
-                  width: "30%",
-                }}
-              >
-                Permisos
-              </TableCell>
-            </TableRow>
-          </TableHead>
-        </Table>
-        <Box sx={{ maxHeight: '300px', overflowY: 'auto' }}>
-          {sections.length > 0 ? (
+      <Table className="border-table" sx={{ marginBottom: "10px" }}>
+        <TableHead>
+          <TableRow>
+            <TableCell
+              sx={{
+                backgroundColor: "#191D88",
+                color: "white",
+                fontWeight: "bold",
+                width: "70%",
+              }}
+            >
+              Acción
+            </TableCell>
+            <TableCell
+              sx={{
+                backgroundColor: "#191D88",
+                color: "white",
+                fontWeight: "bold",
+                width: "30%",
+              }}
+            >
+              Permisos
+            </TableCell>
+          </TableRow>
+        </TableHead>
+      </Table>
+      <Box sx={{ maxHeight: "300px", overflowY: "auto" }}>
+        {sections.length > 0 ? (
           sections.map((section, sectionIndex) => (
             <Box key={sectionIndex} sx={{ marginBottom: "20px" }}>
-              <Box sx={{ display: "flex", alignItems: "center", backgroundColor: "#e0e0e0", padding: "10px", overflow: "auto" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  backgroundColor: "#e0e0e0",
+                  padding: "10px",
+                  overflow: "auto",
+                }}
+              >
                 <IconButton onClick={() => toggleSection(sectionIndex)}>
                   {openSections[sectionIndex] ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
@@ -147,7 +171,14 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
                         <TableCell>{permission.name}</TableCell>
                         <TableCell>
                           <Switch
-                            checked={(currentRol.permissions.includes(permission.name) || listOfChanges.includes(permission))&&!(currentRol.permissions.includes(permission.name) && listOfChanges.includes(permission))}
+                            checked={
+                              (currentRol.permissions.includes(permission.name) ||
+                                listOfChanges.includes(permission)) &&
+                              !(
+                                currentRol.permissions.includes(permission.name) &&
+                                listOfChanges.includes(permission)
+                              )
+                            }
                             onChange={handleSwitchChange(sectionIndex, permissionIndex)}
                           />
                         </TableCell>
@@ -162,14 +193,15 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
           <Typography>No data available</Typography>
         )}
       </Box>
-  
+
       {buttonVisible && (
         <Box display="flex" justifyContent="flex-end" sx={{ marginTop: "20px" }}>
           <Button
-          variant="contained"
-          color="primary"
-          sx={{ marginRight: "20px", borderRadius: "16px" }}
-          onClick={saveChanges}>
+            variant="contained"
+            color="primary"
+            sx={{ marginRight: "20px", borderRadius: "16px" }}
+            onClick={saveChanges}
+          >
             Guardar
           </Button>
           <Button
@@ -184,13 +216,21 @@ const PermissionTable: React.FC<PermissionTableProps> = ({ currentRol }) => {
       )}
 
       {showModal && (
-        <SavePermissionsModal isVisible={showModal} setIsVisible={setShowModal} onSave={handleSaveComplete} onCancel={cancelChangesModal} role={currentRol.name} />
+        <SavePermissionsModal
+          isVisible={showModal}
+          setIsVisible={setShowModal}
+          onSave={handleSaveComplete}
+          onCancel={cancelChangesModal}
+          role={currentRol.name}
+        />
       )}
 
       {openSnackbar && (
-        <AlertSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar}>
-          
-        </AlertSnackbar>
+        <AlertSnackbar
+          open={openSnackbar}
+          message={snackbarMessage}
+          onClose={closeSnackbar}
+        ></AlertSnackbar>
       )}
     </>
   );

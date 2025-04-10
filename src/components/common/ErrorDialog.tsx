@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogActions, Button, Typography } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
 interface ErrorDialogProps {

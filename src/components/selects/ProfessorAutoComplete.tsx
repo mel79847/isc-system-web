@@ -43,12 +43,7 @@ const ProfessorAutocomplete: FC<ProfessorAutocompleteProps> = ({
       value={mentors.find((mentor) => mentor.id === Number(value)) || null}
       onChange={onChange}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          label={label}
-          error={Boolean(error)}
-          helperText={error}
-        />
+        <TextField {...params} label={label} error={Boolean(error)} helperText={error} />
       )}
     />
   );

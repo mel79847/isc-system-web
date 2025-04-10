@@ -1,7 +1,7 @@
-import { User } from "./userInterface";
+import { User } from './userInterface';
 
 export interface UserFormProps {
-    handleClose: () => void,
-    openCreate: boolean,
-    user: User | null
+  handleClose: () => void;
+  openCreate: boolean;
+  user: User | null;
 }

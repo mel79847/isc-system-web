@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  Button,
-  Divider,
-  Grid,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Divider, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { ProfessorInterface } from "../../services/models/Professor";
 import { createProfessor } from "../../services/mentorsService";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
@@ -25,7 +18,7 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .matches(
       /^\+\d{1,3}\s\d+$/,
-      "El número de teléfono debe tener una extensión válida y un número de teléfono",
+      "El número de teléfono debe tener una extensión válida y un número de teléfono"
     )
     .required("El número de teléfono es requerido"),
   degree: Yup.string().required("El título académico es obligatorio"),
@@ -76,9 +69,9 @@ const CreateProfessorPage = () => {
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     const formattedValue = value
-      .replace(/[^+\d\s]/g, '')
-      .replace(/(\+\d{1,3})\s?(\d{0,})/, '$1 $2');
-    formik.setFieldValue('phone', formattedValue);
+      .replace(/[^+\d\s]/g, "")
+      .replace(/(\+\d{1,3})\s?(\d{0,})/, "$1 $2");
+    formik.setFieldValue("phone", formattedValue);
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,13 +124,8 @@ const CreateProfessorPage = () => {
                       fullWidth
                       value={formik.values.lastname}
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.lastname &&
-                        Boolean(formik.errors.lastname)
-                      }
-                      helperText={
-                        formik.touched.lastname && formik.errors.lastname
-                      }
+                      error={formik.touched.lastname && Boolean(formik.errors.lastname)}
+                      helperText={formik.touched.lastname && formik.errors.lastname}
                       margin="normal"
                     />
                   </Grid>
@@ -152,13 +140,8 @@ const CreateProfessorPage = () => {
                       fullWidth
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.mothername &&
-                        Boolean(formik.errors.mothername)
-                      }
-                      helperText={
-                        formik.touched.mothername && formik.errors.mothername
-                      }
+                      error={formik.touched.mothername && Boolean(formik.errors.mothername)}
+                      helperText={formik.touched.mothername && formik.errors.mothername}
                       margin="normal"
                     />
                   </Grid>

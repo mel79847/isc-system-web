@@ -1,4 +1,4 @@
-import { Permission } from "../../models/permissionInterface";
+import { Permission } from '../../models/permissionInterface';
 
 export interface LoginResponse {
   token: string;
@@ -18,8 +18,8 @@ export interface UserResponse {
   roles: string[];
   roles_permissions: {
     [roleNumber: string]: {
-      role_name: string,
-      permissions: Permission[]
+      role_name: string;
+      permissions: Permission[];
     };
   };
   created_at: string; // Puede ser `Date` si necesitas manipular las fechas

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import CancelIcon from '@mui/icons-material/Cancel';
+import CancelIcon from "@mui/icons-material/Cancel";
 import DialogContent from "@mui/material/DialogContent";
 import Typography from "@mui/material/Typography";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -102,11 +102,7 @@ const EventByInterns = () => {
       <Typography variant="h4" color="primary" style={{ marginBottom: "10px" }}>
         Lista de Becarios
       </Typography>
-      <Typography
-        variant="subtitle1"
-        color="textSecondary"
-        style={{ marginBottom: "20px" }}
-      >
+      <Typography variant="subtitle1" color="textSecondary" style={{ marginBottom: "20px" }}>
         Eventos hechos por becarios
       </Typography>
 
@@ -139,20 +135,14 @@ const EventByInterns = () => {
         sx={{ "& .MuiDialog-paper": { width: "500px", maxWidth: "80%" } }}
       >
         <DialogTitle id="edit-hours-dialog-title">
-          <Typography
-            variant="h5"
-            align="center"
-            color="primary"
-            style={{ fontWeight: "bold" }}
-          >
+          <Typography variant="h5" align="center" color="primary" style={{ fontWeight: "bold" }}>
             {students.find((student) => student.id === selectedId)?.name} -{" "}
-            {students.find((student) => student.id === selectedId)?.total_hours}{" "}
-            horas
+            {students.find((student) => student.id === selectedId)?.total_hours} horas
           </Typography>
           <IconButton
             aria-label="close"
             onClick={handleEditHoursClose}
-            style={{ color: '#231F74', position: 'absolute', right: 3, top: 11 }}
+            style={{ color: "#231F74", position: "absolute", right: 3, top: 11 }}
           >
             <CancelIcon />
           </IconButton>
@@ -196,11 +186,7 @@ const EventByInterns = () => {
                     .find((student) => student.id === selectedId)
                     ?.events?.map((event, index) => (
                       <tr key={index}>
-                        <td
-                          style={{ padding: "8px", border: "1px solid #ddd" }}
-                        >
-                          {event.title}
-                        </td>
+                        <td style={{ padding: "8px", border: "1px solid #ddd" }}>{event.title}</td>
                         <td
                           style={{
                             padding: "8px",

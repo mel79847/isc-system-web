@@ -42,15 +42,9 @@ const CompleteScholarshipHourPage = () => {
           eventEndDate.isAfter(today, "day")
         );
       } else if (tabValue === 1) {
-        return (
-          eventStartDate.isAfter(today, "day") &&
-          eventEndDate.isAfter(today, "day")
-        );
+        return eventStartDate.isAfter(today, "day") && eventEndDate.isAfter(today, "day");
       } else if (tabValue === 2) {
-        return (
-          eventEndDate.isBefore(today, "day") ||
-          eventEndDate.isSame(today, "day")
-        );
+        return eventEndDate.isBefore(today, "day") || eventEndDate.isSame(today, "day");
       }
 
       return true;
@@ -59,27 +53,15 @@ const CompleteScholarshipHourPage = () => {
 
   return (
     <>
-      <Box
-        sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "20px" }}
-      >
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label="event tabs"
-        >
+      <Box sx={{ borderBottom: 1, borderColor: "divider", marginBottom: "20px" }}>
+        <Tabs value={tabValue} onChange={handleTabChange} aria-label="event tabs">
           <Tab label="Eventos del mes" />
           <Tab label="Eventos próximos" />
           <Tab label="Eventos pasados" />
         </Tabs>
       </Box>
 
-      <Grid
-        container
-        spacing={1}
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-      >
+      <Grid container spacing={1} direction="column" alignItems="center" justifyContent="center">
         {filterEvents()?.map((event, index) => (
           <Grid item xs={12} key={index}>
             <CompleteScholarshipHourEventCard event={event} />

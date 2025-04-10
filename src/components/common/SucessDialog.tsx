@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogActions, Button, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 interface SuccessDialogProps {
@@ -15,18 +9,9 @@ interface SuccessDialogProps {
   subtitle: string;
 }
 
-const SuccessDialog: React.FC<SuccessDialogProps> = ({
-  open,
-  onClose,
-  title,
-  subtitle,
-}) => {
+const SuccessDialog: React.FC<SuccessDialogProps> = ({ open, onClose, title, subtitle }) => {
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      aria-labelledby="success-dialog-title"
-    >
+    <Dialog open={open} onClose={onClose} aria-labelledby="success-dialog-title">
       <DialogContent sx={{ textAlign: "center", p: 4 }}>
         <CheckCircleIcon sx={{ fontSize: 60, color: "green", mb: 2 }} />
         <Typography variant="h5" sx={{ mb: 2 }}>
