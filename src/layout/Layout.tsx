@@ -124,7 +124,7 @@ const Layout = () => {
             </Typography>
           </Box>
 
-          <Tooltip data-test-id="user_icon" title="Open settings">
+          <Tooltip data-test-id="user_icon" title="Abrir configuraciones">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar alt={user?.name} src="/static/images/avatar/2.jpg" />
             </IconButton>
