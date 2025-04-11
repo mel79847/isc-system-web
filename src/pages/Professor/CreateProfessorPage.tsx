@@ -8,10 +8,19 @@ import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import SuccessDialog from "../../components/common/SucessDialog";
 import LoadingOverlay from "../../components/common/Loading";
+
+const onlyLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+
 const validationSchema = Yup.object({
-  name: Yup.string().required("El nombre completo es obligatorio"),
-  lastname: Yup.string().required("El apellido es obligatorio"),
-  mothername: Yup.string().required("El apellido materno es obligatorio"),
+  name: Yup.string()
+    .matches(onlyLettersRegex, "El nombre solo debe contener letras")
+    .required("El nombre completo es obligatorio"),
+  lastname: Yup.string()
+    .matches(onlyLettersRegex, "El apellido paterno solo debe contener letras")
+    .required("El apellido es obligatorio"),
+  mothername: Yup.string()
+    .matches(onlyLettersRegex, "El apellido materno solo debe contener letras")
+    .required("El apellido materno es obligatorio"),
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
@@ -22,8 +31,11 @@ const validationSchema = Yup.object({
     )
     .required("El número de teléfono es requerido"),
   degree: Yup.string().required("El título académico es obligatorio"),
-  code: Yup.number().required("El código de docente es obligatorio"),
+  code: Yup.number()
+    .typeError("El código debe ser numérico")
+    .required("El código de docente es obligatorio"),
 });
+
 
 const CreateProfessorPage = () => {
   const [loading, setLoading] = useState(false);
