@@ -16,18 +16,37 @@ import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 
+const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
+
 const validationSchema = Yup.object({
-  name: Yup.string().required("El nombre completo es obligatorio"),
-  lastname: Yup.string().required("El apellido es obligatorio"),
-  mothername: Yup.string().required("El apellido materno es obligatorio"),
+  name: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(lettersRegex, "Solo letras y espacios")
+    .required("El nombre completo es obligatorio"),
+
+  lastname: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(lettersRegex, "Solo letras y espacios")
+    .required("El apellido paterno es obligatorio"),
+
+  mothername: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(lettersRegex, "Solo letras y espacios")
+    .required("El apellido materno es obligatorio"),
+
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
+    .max(20, "Máximo 20 caracteres")
     .required("El correo electrónico es obligatorio"),
+
   phone: Yup.string()
-    .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
-    .optional(),
-  code: Yup.string().optional(),
+    .matches(/^\d{8}$/, "El número debe tener exactamente 8 dígitos"),
+
+  code: Yup.string()
+    .matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos"),
+
   isIntern: Yup.boolean(),
+
   total_hours: Yup.number().when("isIntern", {
     is: true,
     then: (schema) => schema.required("Las horas becarias son obligatorias"),
@@ -115,6 +134,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="name"
                       label="Nombres"
                       fullWidth
+                      inputProps={{ maxLength: 20 }}
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       error={formik.touched.name && Boolean(formik.errors.name)}
@@ -127,6 +147,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="lastname"
                       label="Apellido Paterno"
                       fullWidth
+                      inputProps={{ maxLength: 20 }}
                       value={formik.values.lastname}
                       onChange={formik.handleChange}
                       error={formik.touched.lastname && Boolean(formik.errors.lastname)}
@@ -141,6 +162,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="mothername"
                       label="Apellido Materno"
                       fullWidth
+                      inputProps={{ maxLength: 20 }}
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
                       error={formik.touched.mothername && Boolean(formik.errors.mothername)}
@@ -177,6 +199,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   fullWidth
                   value={formik.values.email}
                   onChange={formik.handleChange}
+                  inputProps={{ maxLength: 20 }}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                   margin="normal"
