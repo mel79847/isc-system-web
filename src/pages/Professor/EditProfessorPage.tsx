@@ -31,7 +31,7 @@ const EditStudentPage = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  // @ts-ignore
+
   const [student, setStudent] = useState<any>();
   const { id } = useParams();
 
