@@ -148,6 +148,30 @@ const GraduationProcessPage = () => {
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
+            sx={{
+              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell--editing": {
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
+                outline: "none !important",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "transparent",
+              },
+              "& .MuiDataGrid-row.Mui-selected": {
+                backgroundColor: "inherit !important",
+              },
+            }}
             pageSizeOptions={[5, 10, 25]}
             disableRowSelectionOnClick
           />
