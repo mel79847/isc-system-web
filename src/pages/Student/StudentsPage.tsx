@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
+  Box,
 } from "@mui/material";
 import ContainerPage from "../../components/common/ContainerPage";
 import { deleteStudent, getStudents } from "../../services/studentService";
@@ -113,18 +114,18 @@ const StudentPage = () => {
             </IconButton>
           )}
           {HasPermission(editStudentPermission?.name || "") && (
-            <IconButton
-              color="primary"
-              aria-label="editar"
+            <IconButton 
+              color="primary" 
+              aria-label="editar" 
               onClick={() => handleEdit(params.row.id)}
             >
               <EditIcon />
             </IconButton>
           )}
           {HasPermission(deleteStudentPermission?.name || "") && (
-            <IconButton
+            <IconButton 
               color="secondary"
-              aria-label="eliminar"
+              aria-label="eliminar" 
               onClick={() => handleClickOpen(params.row.id)}
             >
               <DeleteIcon />
@@ -191,59 +192,66 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleCreateStudent}
-          startIcon={<AddIcon />}
-          disabled={!addStudentPermission}
-        >
-          Agregar Estudiante
-        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreateStudent}
+            startIcon={<AddIcon />}
+            disabled={!addStudentPermission}
+            sx={{
+              width: { xs: "120%", sm: "auto" },
+              mb: { xs: 1, sm: 0 },
+              mt: { xs: 5, sm: 0 },
+            }}
+          >
+            Agregar Estudiante
+          </Button>
         )
       }
       children={
-        <div style={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={students}
-            columns={columns}
-            localeText={dataGridLocaleText}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => {
-              const updatedModel = {
-                ...newModel,
-                name: true,
-              };
-              const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
-              if (visibleColumns === 0) {
-                return;
-              }
-              setColumnVisibilityModel(updatedModel);
-            }}
-            classes={{
-              root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800",
-              cell: "bg-white dark:bg-gray-800",
-              row: "bg-white dark:bg-gray-800",
-              columnHeaderTitle: "!font-bold text-center",
-            }}
-            pageSizeOptions={[5, 10]}
-          />
+        <Box sx={{ width: "100%", overflowX: "auto" }}>
+          <Box sx={{ height: { xs: "auto" } }}>
+            <DataGrid
+              rows={students}
+              columns={columns}
+              localeText={dataGridLocaleText}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              columnVisibilityModel={columnVisibilityModel}
+              onColumnVisibilityModelChange={(newModel) => {
+                const updatedModel = { 
+                  ...newModel,
+                  name: true, 
+                };
+                const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
+                if (visibleColumns === 0) {
+                  return;
+                }
+                setColumnVisibilityModel(updatedModel);
+              }}
+              classes={{
+                root: "bg-white dark:bg-gray-800",
+                columnHeader: "bg-gray-200 dark:bg-gray-800",
+                cell: "bg-white dark:bg-gray-800",
+                row: "bg-white dark:bg-gray-800",
+                columnHeaderTitle: "!font-bold text-center",
+              }}
+              pageSizeOptions={[5, 10]}
+            />
+          </Box>
           <Dialog
             open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
+            onClose={handleClose} 
+            aria-labelledby="alert-dialog-title" 
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede
+                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede 
                 deshacer.
               </DialogContentText>
             </DialogContent>
@@ -256,22 +264,22 @@ const StudentPage = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          <Dialog
-            open={openCreateModal}
-            onClose={() => setOpenCreateModal(false)}
-            maxWidth="md"
-            PaperProps={{
-              sx: {
-                borderRadius: 3,
-                p: 0,
-                maxHeight: '100vh',
-              },
+          <Dialog 
+            open={openCreateModal} 
+            onClose={() => setOpenCreateModal(false)} 
+            maxWidth="md" 
+            PaperProps={{ 
+              sx: { 
+                borderRadius: 3, 
+                p: 0, 
+                maxHeight: '100vh', 
+                },
             }}>
             <DialogContent sx={{ p: 2, m: 0 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>
           </Dialog>
-        </div>
+        </Box>
       }
     ></ContainerPage>
   );
