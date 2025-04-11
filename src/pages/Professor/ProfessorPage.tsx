@@ -350,25 +350,30 @@ const ProfessorPage = () => {
                 sortIcon: "bg-gray-200 dark:bg-gray-800",
               }}
               sx={{
-                "& .MuiDataGrid-cell:focus": {
+                "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                  outline: "none !important",
+                  border: "none !important",
+                  boxShadow: "none !important",
+                },
+                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                  outline: "none !important",
+                  border: "none !important",
+                  boxShadow: "none !important",
+                },
+                "& .MuiDataGrid-cell--editing": {
+                  boxShadow: "none !important",
+                },
+                "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
                   outline: "none !important",
                 },
-                "& .MuiDataGrid-cell:focus-within": {
-                  outline: "none !important",
+                "& .MuiDataGrid-cell": {
+                  borderColor: "transparent",
                 },
-                "& .MuiDataGrid-virtualScroller": {
-                  minHeight: "0px",
-                  overflow: "hidden",
-                },
-                "& .MuiDataGrid-main": {
-                  overflow: "hidden",
-                  paddingBottom: 0,
-                },
-                "& .MuiDataGrid-footerContainer": {
-                  minHeight: "auto",
-                  marginBottom: 0,
+                "& .MuiDataGrid-row.Mui-selected": {
+                  backgroundColor: "inherit !important",
                 },
               }}
+              
             />
 
             <Dialog
