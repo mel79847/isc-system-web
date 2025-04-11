@@ -1,18 +1,11 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import {
-  Button,
-  Divider,
-  Grid,
-  TextField,
-  Typography,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getUserById, putUser } from "../../services/usersService";
+import { getUserById, updateStudent } from "../../services/studentService";
 import { useParams } from "react-router-dom";
+import LoadingOverlay from "../../components/common/Loading";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -27,26 +20,27 @@ const validationSchema = Yup.object({
   code: Yup.number().optional(),
 });
 
-const EditStudentPage = () => {
+const EditProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-
-  const [student, setStudent] = useState<any>();
+  const [loading, setLoading] = useState(false); 
+  const [Profesor, setProfessor] = useState<any>();
+  
   const { id } = useParams();
 
-  const fetchStudent = async () => {
+  const fetchProfessor = async () => {
     try {
       const response = await getUserById(Number(id));
       formik.setValues(response);
-      setStudent(response);
+      setProfessor(response);
     } catch (error) {
-      console.error("Error al obtener el docente:", error);
+      console.error("Error al obtener docente:", error);
     }
   };
 
   useEffect(() => {
-    fetchStudent();
+    fetchProfessor();
   }, [id]);
 
   const formik = useFormik({
@@ -57,34 +51,24 @@ const EditStudentPage = () => {
       phone: "",
       code: "",
       mothername: "",
+      degree: "",
     },
     validationSchema,
     onSubmit: async (values) => {
-        try {
-          await putUser(Number(id), {
-            ...values,
-            degree: student?.degree || "",
-            roles: student?.roles || [],
-            role_id: student?.role_id || null,
-            isStudent: student?.isStudent || false,
-            is_scholarship: student?.is_scholarship || false,
-          });
-          setMessage("Docente actualizado con éxito");
-          setSeverity("success");
-          setOpen(true);
-        } catch (error) {
-          setMessage("Error al actualizar el docente");
-          setSeverity("error");
-          setOpen(true);
-        }
+      try {
+        // @ts-ignore
+        await updateStudent(values);
+        setMessage("Docente actualizado con éxito");
+        setSeverity("success");
+        setOpen(true);
+      } catch (error) {
+        setMessage("Error al actualizar");
+        setSeverity("error");
+        setOpen(true);
       }
-      
-    });
-
-  const handleClose = (
-    _event: React.SyntheticEvent | Event,
-    reason?: string,
-  ) => {
+    },
+  });
+  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -104,9 +88,9 @@ const EditStudentPage = () => {
       formik.setFieldValue("code", value);
     }
   };
-
   return (
     <FormContainer>
+      {loading && <LoadingOverlay message="Actializando Docente..." />}
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
@@ -147,13 +131,8 @@ const EditStudentPage = () => {
                       fullWidth
                       value={formik.values.lastname}
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.lastname &&
-                        Boolean(formik.errors.lastname)
-                      }
-                      helperText={
-                        formik.touched.lastname && formik.errors.lastname
-                      }
+                      error={formik.touched.lastname && Boolean(formik.errors.lastname)}
+                      helperText={formik.touched.lastname && formik.errors.lastname}
                       margin="normal"
                     />
                   </Grid>
@@ -168,13 +147,8 @@ const EditStudentPage = () => {
                       fullWidth
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
-                      error={
-                        formik.touched.mothername &&
-                        Boolean(formik.errors.mothername)
-                      }
-                      helperText={
-                        formik.touched.mothername && formik.errors.mothername
-                      }
+                      error={formik.touched.mothername && Boolean(formik.errors.mothername)}
+                      helperText={formik.touched.mothername && formik.errors.mothername}
                       margin="normal"
                     />
                   </Grid>
@@ -194,6 +168,24 @@ const EditStudentPage = () => {
                     />
                   </Grid>
                 </Grid>
+                <TextField
+                  id="degree"
+                  name="degree"
+                  label="Título Académico"
+                  variant="outlined"
+                  fullWidth
+                  select
+                  value={formik.values.degree}
+                  onChange={formik.handleChange}
+                  error={formik.touched.degree && Boolean(formik.errors.degree)}
+                  helperText={formik.touched.degree && formik.errors.degree}
+                  margin="normal"
+                >
+                  <MenuItem value="">Seleccione un título</MenuItem>
+                  <MenuItem value="Ing.">Ing.</MenuItem>
+                  <MenuItem value="Msc">Msc.</MenuItem>
+                  <MenuItem value="PhD">PhD.</MenuItem>
+                </TextField>
               </Grid>
             </Grid>
             <Divider flexItem sx={{ my: 2 }} />
@@ -229,7 +221,7 @@ const EditStudentPage = () => {
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
                   margin="normal"
-                  inputProps={{ maxLength: 8 }}
+                  inputProps={{ maxLength: 20 }}
                 />
               </Grid>
             </Grid>
@@ -240,23 +232,22 @@ const EditStudentPage = () => {
                 <Button variant="contained" color="primary" type="submit">
                   GUARDAR
                 </Button>
-              </Grid>
+                </Grid>
             </Grid>
           </Grid>
         </Grid>
       </form>
       <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
-          {message}
-        </Alert>
-      </Snackbar>
-    </FormContainer>
-  );
-};
-
-export default EditStudentPage;
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+            {message}
+          </Alert>
+        </Snackbar>
+      </FormContainer>
+    );
+  };
+export default EditProfessorPage;
