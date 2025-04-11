@@ -1,5 +1,4 @@
 import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
-import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -44,12 +43,9 @@ const StudentPage = () => {
   useEffect(() => {
     const fetchPermissions = async () => {
       const response = await getPermissionById(13);
-      const response = await getPermissionById(13);
       setAddStudentPermission(response.data[0]);
       const deleteStudentResponse = await getPermissionById(14);
-      const deleteStudentResponse = await getPermissionById(14);
       setDeleteStudentPermission(deleteStudentResponse.data[0]);
-      const editStudentResponse = await getPermissionById(15);
       const editStudentResponse = await getPermissionById(15);
       setEditStudentPermission(editStudentResponse.data[0]);
       const viewStudentReportResponse = await getPermissionById(16);
@@ -69,9 +65,6 @@ const StudentPage = () => {
       minWidth: 100,
       maxWidth: 200,
       resizable: true,
-      minWidth: 100,
-      maxWidth: 200,
-      resizable: true,
     },
     {
       field: "name",
@@ -82,9 +75,6 @@ const StudentPage = () => {
       minWidth: 150,
       maxWidth: 250,
       resizable: true,
-      minWidth: 150,
-      maxWidth: 250,
-      resizable: true,
     },
     {
       field: "email",
@@ -92,9 +82,6 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth: 180,
-      maxWidth: 300,
-      resizable: true,
       minWidth: 180,
       maxWidth: 300,
       resizable: true,
@@ -109,9 +96,6 @@ const StudentPage = () => {
       minWidth: 120,
       maxWidth: 180,
       resizable: true,
-      minWidth: 120,
-      maxWidth: 180,
-      resizable: true,
     },
     {
       field: "actions",
@@ -119,8 +103,6 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth: 150,
-      maxWidth: 200,
       minWidth: 150,
       maxWidth: 200,
       renderCell: (params) => (
@@ -221,7 +203,10 @@ const StudentPage = () => {
         )
       }
       children={
-        <div style={{ height: 400, width: "100%" }}>
+        <div style={{
+          height: 400,
+          width: "100%", //ESTO SE CAMBIA
+        }}>
           <DataGrid
             rows={students}
             columns={columns}
@@ -243,21 +228,8 @@ const StudentPage = () => {
               }
               setColumnVisibilityModel(updatedModel);
             }}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => {
-              const updatedModel = {
-                ...newModel,
-                name: true,
-              };
-              const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
-              if (visibleColumns === 0) {
-                return;
-              }
-              setColumnVisibilityModel(updatedModel);
-            }}
             classes={{
               root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800",
               columnHeader: "bg-gray-200 dark:bg-gray-800",
               cell: "bg-white dark:bg-gray-800",
               row: "bg-white dark:bg-gray-800",
