@@ -1,21 +1,23 @@
 import { useState, useCallback, useEffect } from "react";
-import { TextField, Button, Grid, Typography, MenuItem, Autocomplete } from "@mui/material";
+import { TextField, Grid, Typography, MenuItem, Autocomplete } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useFormik } from "formik";
 
 import { Student } from "../../../models/studentInterface";
-import { getStudents } from "../../../services/studentService";
+import { getStudentsForGraduation } from "../../../services/studentService";
 import { getModes } from "../../../services/modesService";
 import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
 import { useNavigate } from "react-router-dom";
 import { useProcessStore } from "../../../store/store";
+import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
 
 function ProcessForm() {
   const [, setError] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [modes, setModes] = useState<Modes[]>([]);
+  const [loading, setLoading] = useState(false);
   const updateProcess = useProcessStore((state) => state.setProcess);
   const navigate = useNavigate();
   const actualDate = new Date();
@@ -34,7 +36,9 @@ function ProcessForm() {
       .positive("El código debe ser positivo")
       .required("Campo requerido"),
 
-    modeId: yup.number().required("Campo requerido"),
+    modeId: yup.mixed().test("is-valid-mode", "Seleccionar Modalidad", (value) => {
+      return typeof value === "number" && !isNaN(value);
+    }),
 
     period: yup.string().required("Campo requerido"),
 
@@ -48,7 +52,7 @@ function ProcessForm() {
 
   const fetchData = useCallback(async () => {
     try {
-      const responseStudents = await getStudents();
+      const responseStudents = await getStudentsForGraduation();
       const responseModes = await getModes();
       setModes(responseModes.data);
       setStudents(responseStudents.data);
@@ -86,10 +90,17 @@ function ProcessForm() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const response = await createGraduationProcess(values);
-      if (response.success) {
-        updateProcess(response.data);
-        navigate(`/studentProfile/${response.data.id}`);
+      setLoading(true);
+      try {
+        const response = await createGraduationProcess(values);
+        if (response.success) {
+          updateProcess(response.data);
+          navigate(`/studentProfile/${response.data.id}`);
+        }
+      } catch (error) {
+        console.error("Error al crear proceso:", error);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -217,9 +228,9 @@ function ProcessForm() {
         <Grid item xs={12}>
           <Grid container spacing={2} justifyContent="flex-end">
             <Grid item>
-              <Button variant="contained" color="primary" type="submit">
+              <LoadingButton variant="contained" color="primary" type="submit" loading={loading}>
                 GUARDAR
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         </Grid>

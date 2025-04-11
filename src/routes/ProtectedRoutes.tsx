@@ -28,6 +28,7 @@ import ViewInternSupervisor from "../pages/supervisor/ViewInternSupervisor";
 import EventsByInternsPage from "../pages/interns/EventsByInterns";
 import { roles } from "../constants/roles";
 import EventRegisterPage from "../pages/Events/EventRegisterPage";
+import EditProfessorPage from "../pages/Professor/EditProfessorPage";
 
 function loader() {
   return getProcess();
@@ -92,6 +93,14 @@ const protectedRoutes = [
         element: (
           <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
             <EditStudentPage />
+          </RoleGuard>
+        ),
+      },
+      {
+        path: "/edit-professor/:id",
+        element: (
+          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
+            <EditProfessorPage />
           </RoleGuard>
         ),
       },
