@@ -120,7 +120,7 @@ const Layout = () => {
               {user?.name}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary" textAlign={"right"}>
-              {TranslateRole(user?.roles)}
+              {TranslateRole(user?.roles?.join(", ") || "")}
             </Typography>
           </Box>
 

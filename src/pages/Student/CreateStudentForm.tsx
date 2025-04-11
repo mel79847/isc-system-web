@@ -39,11 +39,9 @@ const validationSchema = Yup.object({
     .max(20, "Máximo 20 caracteres")
     .required("El correo electrónico es obligatorio"),
 
-  phone: Yup.string()
-    .matches(/^\d{8}$/, "El número debe tener exactamente 8 dígitos"),
+  phone: Yup.string().matches(/^\d{8}$/, "El número debe tener exactamente 8 dígitos"),
 
-  code: Yup.string()
-    .matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos"),
+  code: Yup.string().matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos"),
 
   isIntern: Yup.boolean(),
 
@@ -82,7 +80,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
             pending_hours: 0,
           });
         } else {
-          await createStudent(rest);
+          await createStudent({ ...rest, code: Number(values.code) });
         }
         setSuccessDialog(true);
         setTimeout(() => {
