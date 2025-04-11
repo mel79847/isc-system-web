@@ -52,6 +52,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [, setError] = useState<any | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [edited, setEdited] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,13 +88,22 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
     },
     validationSchema,
     onSubmit: () => {
-      setShowModal(true);
+      if (!edited) {
+        onNext()
+      } else {
+        setShowModal(true)
+      }
     },
   });
 
   const editForm = () => {
     setReadOnly(false);
   };
+
+  const handleOnChange = (event: any) => {
+    setEdited(true)
+    formik.handleChange(event);
+  }
 
   return (
     <>
@@ -111,7 +121,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
                 name="mode"
                 row
                 value={formik.values.mode}
-                onChange={formik.handleChange}
+                onChange={handleOnChange}
               >
                 {modes.map((option) => (
                   <FormControlLabel
@@ -132,7 +142,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
                 id="period"
                 name="period"
                 value={formik.values.period}
-                onChange={formik.handleChange}
+                onChange={handleOnChange}
                 label="2. Seleccione periodo de inscripción"
                 disabled={readOnly}
                 error={formik.touched.period && Boolean(formik.errors.period)}
