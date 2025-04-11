@@ -100,7 +100,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
       <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>
         Etapa 1: Seminario de Grado <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
       </Typography>
-
+  
       <form onSubmit={formik.handleSubmit} className="mt-5 mx-16">
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={7} lg={8}>
@@ -124,7 +124,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={12} md={5} lg={4}>
+          <Grid item xs={12} sm={12} md={7} lg={8}>
             <FormControl fullWidth variant="outlined" margin="normal">
               <InputLabel id="period-label">2. Seleccione periodo de inscripción</InputLabel>
               <Select
@@ -137,9 +137,6 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
                 disabled={readOnly}
                 error={formik.touched.period && Boolean(formik.errors.period)}
               >
-                <MenuItem value="">
-                  <em>Seleccione Periodo</em>
-                </MenuItem>
                 {periods.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.value}
