@@ -2,7 +2,7 @@ const dataGridLocaleText = {
   MuiTablePagination: {
     labelRowsPerPage: 'Filas por página',
     labelDisplayedRows: ({ from, to, count }: { from: number; to: number; count: number }) =>
-          `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`,
+      `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`,
   },
   noRowsLabel: 'No hay registros',
   footerRowSelected: (count: number) =>
