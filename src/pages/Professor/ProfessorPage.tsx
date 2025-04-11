@@ -20,7 +20,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Permission } from "../../models/permissionInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
-import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import dataGridLocaleText from "../../locales/datagridLocaleEs"
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
@@ -337,6 +337,27 @@ const ProfessorPage = () => {
                   code: true,
                 };
                 setColumnVisibilityModel(updatedModel);
+              }}
+              slotProps={{
+               columnsManagement: {
+                 autoFocusSearchField: false,
+                 searchInputProps: {
+                   sx: {
+                     '& .MuiOutlinedInput-root': {
+                       '&:hover fieldset': {
+                         borderColor: 'secondary.main',
+                       },
+                       '&.Mui-focused fieldset': {
+                         borderColor: 'secondary.main',
+                       },
+                     },
+                     '& input': {
+                       outline: 'none !important',
+                       boxShadow: 'none !important',
+                     },
+                   },
+                 },
+               },
               }}
               classes={{
                 root: "bg-white dark:bg-gray-800",
