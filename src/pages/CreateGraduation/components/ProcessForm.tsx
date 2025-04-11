@@ -10,12 +10,14 @@ import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
 import { useNavigate } from "react-router-dom";
 import { useProcessStore } from "../../../store/store";
+import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
 
 function ProcessForm() {
   const [, setError] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [modes, setModes] = useState<Modes[]>([]);
+  const [loading, setLoading] = useState(false);
   const updateProcess = useProcessStore((state) => state.setProcess);
   const navigate = useNavigate();
   const actualDate = new Date();
@@ -86,10 +88,17 @@ function ProcessForm() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      const response = await createGraduationProcess(values);
-      if (response.success) {
-        updateProcess(response.data);
-        navigate(`/studentProfile/${response.data.id}`);
+      setLoading(true);
+      try {
+        const response = await createGraduationProcess(values);
+        if (response.success) {
+          updateProcess(response.data);
+          navigate(`/studentProfile/${response.data.id}`);
+        }
+      } catch (error) {
+        console.error("Error al crear proceso:", error);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -217,9 +226,9 @@ function ProcessForm() {
         <Grid item xs={12}>
           <Grid container spacing={2} justifyContent="flex-end">
             <Grid item>
-              <Button variant="contained" color="primary" type="submit">
+              <LoadingButton variant="contained" color="primary" type="submit" loading={loading}>
                 GUARDAR
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
         </Grid>
