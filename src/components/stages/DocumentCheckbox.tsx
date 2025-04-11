@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Checkbox, Paper, Typography } from "@mui/material";
 import DownloadButton from "../common/DownloadButton";
 import { letters } from "../../constants/letters";
@@ -18,6 +18,18 @@ interface DocumentCheckboxProps {
 }
 
 const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer, process }) => {
+  const [downloadBlocked, setDownloadBlocked] = useState(false);
+
+  const handleBlockedDownload = () => {
+    if (!formik.values.mentor) {
+      setDownloadBlocked(true);
+    } else {
+      setDownloadBlocked(false);
+    }
+  };
+
+  const isMentorSelected = !!formik.values.mentor;
+
   return (
     <>
       <Paper
@@ -43,6 +55,8 @@ const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer,
         </Typography>
         <DownloadButton
           url={TUTOR_ASSIGNMENT.path}
+          disabled={!isMentorSelected}
+          onClick={handleBlockedDownload}
           data={{
             student: process?.student_fullname || "",
             tutor: process?.tutor_fullname || "",
@@ -78,6 +92,8 @@ const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer,
         </Typography>
         <DownloadButton
           url={TUTOR_APPROBAL.path}
+          disabled={!isMentorSelected}
+          onClick={handleBlockedDownload}
           data={{
             student: process?.student_fullname || "",
             tutor: process?.tutor_fullname || "",
