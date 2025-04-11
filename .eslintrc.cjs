@@ -30,5 +30,15 @@ module.exports = {
   },
   rules: {
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    'react/react-in-jsx-scope': 'off',  
+    'no-unused-vars': ['warn'],  
+    '@typescript-eslint/no-unused-vars': ['warn'], 
   },
+  overrides: [
+    {
+      files: ['*.js', '*.jsx'], 
+      rules: {
+      }
+    }
+  ],
 };
