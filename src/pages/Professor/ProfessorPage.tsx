@@ -258,11 +258,11 @@ const ProfessorPage = () => {
 
   const handleView = (id: number) => {
     navigate(`/profile/${id}`);
-    console.log(`Ver estudiante con id: ${id}`);
+    console.log(`Ver docente con id: ${id}`);
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/edit-student/${id}`);
+    navigate(`/edit-professor/${id}`);
   };
 
   const handleClickOpen = (id: number) => {
