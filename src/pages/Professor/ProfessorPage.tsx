@@ -334,11 +334,8 @@ const ProfessorPage = () => {
               onColumnVisibilityModelChange={(newModel) => {
                 const updatedModel = {
                   ...newModel,
+                  code: true,
                 };
-                const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
-                if (visibleColumns === 0) {
-                  return;
-                }
                 setColumnVisibilityModel(updatedModel);
               }}
               classes={{
