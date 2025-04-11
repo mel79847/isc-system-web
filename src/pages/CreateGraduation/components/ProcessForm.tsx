@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import { useFormik } from "formik";
 
 import { Student } from "../../../models/studentInterface";
-import { getStudents } from "../../../services/studentService";
+import { getStudentsForGraduation } from "../../../services/studentService";
 import { getModes } from "../../../services/modesService";
 import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
@@ -52,7 +52,7 @@ function ProcessForm() {
 
   const fetchData = useCallback(async () => {
     try {
-      const responseStudents = await getStudents();
+      const responseStudents = await getStudentsForGraduation();
       const responseModes = await getModes();
       setModes(responseModes.data);
       setStudents(responseStudents.data);
