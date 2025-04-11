@@ -10,6 +10,7 @@ import { Box, Button, IconButton, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
 
 const GraduationProcessPage = () => {
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
@@ -186,6 +187,7 @@ const GraduationProcessPage = () => {
           <DataGrid
             rows={filteredData}
             columns={tableHeaders}
+            localeText={dataGridLocaleText}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
