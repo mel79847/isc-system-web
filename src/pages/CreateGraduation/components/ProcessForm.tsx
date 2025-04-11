@@ -36,7 +36,9 @@ function ProcessForm() {
       .positive("El código debe ser positivo")
       .required("Campo requerido"),
 
-    modeId: yup.number().required("Campo requerido"),
+    modeId: yup.mixed().test("is-valid-mode", "Seleccionar Modalidad", (value) => {
+      return typeof value === "number" && !isNaN(value);
+    }),
 
     period: yup.string().required("Campo requerido"),
 
