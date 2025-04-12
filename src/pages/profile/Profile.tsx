@@ -7,6 +7,8 @@ import TaskList from "./component/TaskList";
 import SpinModal from "../../components/common/SpinModal";
 import TutoringCard from "./component/TutoringCard";
 import StudentCard from "./component/StudentCard";
+import { UserResponse } from "../../services/models/LoginResponse";
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,7 +41,7 @@ function a11yProps(index: number) {
 
 const Profile = () => {
   const { id } = useParams();
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
