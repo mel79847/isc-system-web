@@ -30,3 +30,6 @@ yarn.lock.back
 # Contentlayer
 .contentlayer
 
+package-lock.json
+
+
