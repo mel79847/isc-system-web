@@ -10,7 +10,7 @@ import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
 import { useNavigate } from "react-router-dom";
 import { useProcessStore } from "../../../store/store";
-import { LoadingButton } from "@mui/lab";
+//import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
 
 function ProcessForm() {
@@ -228,9 +228,6 @@ function ProcessForm() {
         <Grid item xs={12}>
           <Grid container spacing={2} justifyContent="flex-end">
             <Grid item>
-              <LoadingButton variant="contained" color="primary" type="submit" loading={loading}>
-                GUARDAR
-              </LoadingButton>
             </Grid>
           </Grid>
         </Grid>

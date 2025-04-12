@@ -236,6 +236,7 @@ const StudentPage = () => {
               columnHeaderTitle: "!font-bold text-center",
             }}
             pageSizeOptions={[5, 10]}
+            disableRowSelectionOnClick
           />
           <Dialog
             open={open}

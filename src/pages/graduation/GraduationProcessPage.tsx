@@ -99,57 +99,6 @@ const GraduationProcessPage = () => {
     },
   ];
 
-  const tableHeaders: GridColDef[] = [
-    {
-      field: "student_name",
-      headerName: "Estudiante",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-    },
-    {
-      field: "period",
-      headerName: "Periodo",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-    },
-    {
-      field: "tutor_name",
-      headerName: "Tutor",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-    },
-    {
-      field: "reviewer_name",
-      headerName: "Revisor",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-    },
-    {
-      field: "actions",
-      headerName: "Acciones",
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      renderCell: (params) => (
-        <div>
-          {
-            <IconButton
-              color="primary"
-              aria-label="ver"
-              onClick={() => navigate(`/studentProfile/${params.row.id}`)}
-            >
-              <VisibilityIcon />
-            </IconButton>
-          }
-        </div>
-      ),
-    },
-  ];
-
   return (
     <ContainerPage
       title="Procesos de Graduación"
