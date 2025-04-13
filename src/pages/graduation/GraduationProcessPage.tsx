@@ -32,7 +32,6 @@ const GraduationProcessPage = () => {
     fetchCreateProcess();
   }, []);
 
-
   useEffect(() => {
     const results = students.filter((item: Student) =>
       item.student_name.toLowerCase().includes(search.toLowerCase())
