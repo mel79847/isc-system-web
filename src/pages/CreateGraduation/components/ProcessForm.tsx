@@ -26,11 +26,17 @@ function ProcessForm() {
   const validationSchema = yup.object().shape({
     studentId: yup
       .number()
+      .transform((value, originalValue) => {
+        return originalValue.trim() === "" ? null : value;
+      })
       .typeError("El ID del estudiante debe ser un número")
       .required("Campo requerido"),
 
     studentCode: yup
       .number()
+      .transform((value, originalValue) => {
+        return originalValue.trim() === "" ? null : value;
+      })
       .typeError("El código del estudiante debe ser un número")
       .integer("El código debe ser un número entero")
       .positive("El código debe ser positivo")
@@ -81,11 +87,11 @@ function ProcessForm() {
 
   const formik = useFormik({
     initialValues: {
-      studentId: " ",
-      studentCode: " ",
-      modeId: " ",
-      period: " ",
-      titleProject: " ",
+      studentId: "",
+      studentCode: "",
+      modeId: "",
+      period: "",
+      titleProject: "",
       stageId: 1,
     },
     validationSchema: validationSchema,

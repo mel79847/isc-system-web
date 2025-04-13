@@ -234,8 +234,12 @@ const CreateProfessorPage = () => {
           <Grid item xs={12}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Grid item>
-                <Button variant="contained" color="primary" type="submit">
+                <Button variant="contained" color="primary" type="submit" sx={{ mr: 3 }}>
                   GUARDAR
+                </Button>
+                <Button variant="contained" color="primary" type="button" 
+                onClick={() => window.history.back()}>
+                  CANCELAR
                 </Button>
               </Grid>
             </Grid>

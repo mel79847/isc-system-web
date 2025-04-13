@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
+  Box,
 } from "@mui/material";
 import ContainerPage from "../../components/common/ContainerPage";
 import { deleteStudent, getStudents } from "../../services/studentService";
@@ -197,16 +198,19 @@ const StudentPage = () => {
           onClick={handleCreateStudent}
           startIcon={<AddIcon />}
           disabled={!addStudentPermission}
+          sx={{
+            width: { xs: "120%", sm: "auto" },
+            mb: { xs: 1, sm: 0 },
+            mt: { xs: 5, sm: 0 },
+          }}
         >
           Agregar Estudiante
         </Button>
         )
       }
       children={
-        <div style={{
-          height: 400,
-          width: "100%", //ESTO SE CAMBIA
-        }}>
+        <Box sx={{ width: "100%", overflowX: "auto" }}>
+          <Box sx={{ height: { xs: "auto" } }}>
           <DataGrid
             rows={students}
             columns={columns}
@@ -238,6 +242,7 @@ const StudentPage = () => {
             pageSizeOptions={[5, 10]}
             disableRowSelectionOnClick
           />
+          </Box>
           <Dialog
             open={open}
             onClose={handleClose}
@@ -275,7 +280,7 @@ const StudentPage = () => {
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>
           </Dialog>
-        </div>
+        </Box>
       }
     ></ContainerPage>
   );
