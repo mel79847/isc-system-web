@@ -8,6 +8,7 @@ import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import SuccessDialog from "../../components/common/SucessDialog";
 import LoadingOverlay from "../../components/common/Loading";
+import { COUNTRY_CODES } from "../../constants/countryCodes";
 
 const onlyLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
 
@@ -55,7 +56,6 @@ const CreateProfessorPage = () => {
       lastname: "",
       mothername: "",
       email: "",
-      phone: "",
       degree: "",
       code: "",
       countryCode: "+591",
@@ -225,26 +225,7 @@ const CreateProfessorPage = () => {
                       helperText={formik.touched.countryCode && formik.errors.countryCode}
                       margin="normal"
                     >
-                      {[
-                        { code: "+591", name: "Bolivia", flag: "🇧🇴" },
-                        { code: "+54", name: "Argentina", flag: "🇦🇷" },
-                        { code: "+55", name: "Brasil", flag: "🇧🇷" },
-                        { code: "+506", name: "Costa Rica", flag: "🇨🇷" },
-                        { code: "+53", name: "Cuba", flag: "🇨🇺" },
-                        { code: "+503", name: "El Salvador", flag: "🇸🇻" },
-                        { code: "+593", name: "Ecuador", flag: "🇪🇨" },
-                        { code: "+1", name: "EE.UU.", flag: "🇺🇸" },
-                        { code: "+34", name: "España", flag: "🇪🇸" },
-                        { code: "+502", name: "Guatemala", flag: "🇬🇹" },
-                        { code: "+504", name: "Honduras", flag: "🇭🇳" },
-                        { code: "+52", name: "México", flag: "🇲🇽" },
-                        { code: "+505", name: "Nicaragua", flag: "🇳🇮" },
-                        { code: "+507", name: "Panamá", flag: "🇵🇦" },
-                        { code: "+51", name: "Perú", flag: "🇵🇪" },
-                        { code: "+56", name: "Chile", flag: "🇨🇱" },
-                        { code: "+57", name: "Colombia", flag: "🇨🇴" },
-                        { code: "+58", name: "Venezuela", flag: "🇻🇪" },
-                      ].map((c) => (
+                      {COUNTRY_CODES.map((c) => (
                         <MenuItem key={c.code} value={c.code}>
                           {c.flag} {c.code} ({c.name})
                         </MenuItem>
