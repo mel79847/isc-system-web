@@ -24,18 +24,15 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
-  phone: Yup.string()
-    .matches(
-      /^\+\d{1,3}\s\d+$/,
-      "El número de teléfono debe tener una extensión válida y un número de teléfono"
-    )
-    .required("El número de teléfono es requerido"),
+  countryCode: Yup.string().required("Seleccione un código de país"),
+  phoneNumber: Yup.string()
+    .matches(/^\d{7,15}$/, "Número inválido, solo dígitos entre 7 y 15")
+    .required("El número de teléfono es obligatorio"),
   degree: Yup.string().required("El título académico es obligatorio"),
   code: Yup.number()
     .typeError("El código debe ser numérico")
     .required("El código de docente es obligatorio"),
 });
-
 
 const CreateProfessorPage = () => {
   const [loading, setLoading] = useState(false);
@@ -61,12 +58,18 @@ const CreateProfessorPage = () => {
       phone: "",
       degree: "",
       code: "",
+      countryCode: "+591",
+      phoneNumber: "",
     },
     validationSchema,
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        await createProfessor(values);
+        const payload = {
+          ...values,
+          phone: `${values.countryCode} ${values.phoneNumber}`, // Formatea el teléfono
+        };
+        await createProfessor(payload);
         setMessage("Profesor creado con éxito");
         setSuccessDialog(true);
       } catch (error) {
@@ -77,14 +80,6 @@ const CreateProfessorPage = () => {
       }
     },
   });
-
-  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const formattedValue = value
-      .replace(/[^+\d\s]/g, "")
-      .replace(/(\+\d{1,3})\s?(\d{0,})/, "$1 $2");
-    formik.setFieldValue("phone", formattedValue);
-  };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -215,19 +210,66 @@ const CreateProfessorPage = () => {
                   margin="normal"
                   inputProps={{ maxLength: 50 }}
                 />
-                <TextField
-                  id="phone"
-                  name="phone"
-                  label="Número de Teléfono"
-                  variant="outlined"
-                  fullWidth
-                  value={formik.values.phone}
-                  onChange={handlePhoneChange}
-                  error={formik.touched.phone && Boolean(formik.errors.phone)}
-                  helperText={formik.touched.phone && formik.errors.phone}
-                  margin="normal"
-                  inputProps={{ maxLength: 20 }}
-                />
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    <TextField
+                      select
+                      id="countryCode"
+                      name="countryCode"
+                      label="Código País"
+                      variant="outlined"
+                      fullWidth
+                      value={formik.values.countryCode}
+                      onChange={formik.handleChange}
+                      error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
+                      helperText={formik.touched.countryCode && formik.errors.countryCode}
+                      margin="normal"
+                    >
+                      {[
+                        { code: "+591", name: "Bolivia", flag: "🇧🇴" },
+                        { code: "+54", name: "Argentina", flag: "🇦🇷" },
+                        { code: "+55", name: "Brasil", flag: "🇧🇷" },
+                        { code: "+506", name: "Costa Rica", flag: "🇨🇷" },
+                        { code: "+53", name: "Cuba", flag: "🇨🇺" },
+                        { code: "+503", name: "El Salvador", flag: "🇸🇻" },
+                        { code: "+593", name: "Ecuador", flag: "🇪🇨" },
+                        { code: "+1", name: "EE.UU.", flag: "🇺🇸" },
+                        { code: "+34", name: "España", flag: "🇪🇸" },
+                        { code: "+502", name: "Guatemala", flag: "🇬🇹" },
+                        { code: "+504", name: "Honduras", flag: "🇭🇳" },
+                        { code: "+52", name: "México", flag: "🇲🇽" },
+                        { code: "+505", name: "Nicaragua", flag: "🇳🇮" },
+                        { code: "+507", name: "Panamá", flag: "🇵🇦" },
+                        { code: "+51", name: "Perú", flag: "🇵🇪" },
+                        { code: "+56", name: "Chile", flag: "🇨🇱" },
+                        { code: "+57", name: "Colombia", flag: "🇨🇴" },
+                        { code: "+58", name: "Venezuela", flag: "🇻🇪" },
+                      ].map((c) => (
+                        <MenuItem key={c.code} value={c.code}>
+                          {c.flag} {c.code} ({c.name})
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={8}>
+                    <TextField
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      label="Número de Teléfono"
+                      variant="outlined"
+                      fullWidth
+                      value={formik.values.phoneNumber}
+                      onChange={(e) => {
+                        const cleaned = e.target.value.replace(/\D/g, "");
+                        formik.setFieldValue("phoneNumber", cleaned);
+                      }}
+                      error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                      helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+                      margin="normal"
+                      inputProps={{ maxLength: 15 }}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
