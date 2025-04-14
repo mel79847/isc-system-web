@@ -10,6 +10,7 @@ import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
 import { useNavigate } from "react-router-dom";
 import { useProcessStore } from "../../../store/store";
+import { LoadingButton } from "@mui/lab";
 import * as yup from "yup";
 
 function ProcessForm() {
@@ -76,7 +77,7 @@ function ProcessForm() {
     let currentYear = actualDate.getFullYear();
     const listPeriods = [];
     for (let i = 0; i < option; i++) {
-      let strPeriod = firstSemester ? "Primero" : "Segundo";
+      const strPeriod = firstSemester ? "Primero" : "Segundo";
       listPeriods.push(strPeriod + currentYear);
       if (!firstSemester) currentYear++;
       firstSemester = !firstSemester;
@@ -233,6 +234,9 @@ function ProcessForm() {
         <Grid item xs={12}>
           <Grid container spacing={2} justifyContent="flex-end">
             <Grid item>
+              <LoadingButton variant="contained" color="primary" type="submit" loading={loading}>
+                GUARDAR
+              </LoadingButton>
             </Grid>
           </Grid>
         </Grid>
