@@ -24,8 +24,8 @@ const EditProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  const [loading, setLoading] = useState(false); 
-  const [Profesor, setProfessor] = useState<any>();
+  const [loading, ] = useState(false); 
+  const [, setProfessor] = useState<any>();
   
   const { id } = useParams();
 
