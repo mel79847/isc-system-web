@@ -77,7 +77,7 @@ function ProcessForm() {
     let currentYear = actualDate.getFullYear();
     const listPeriods = [];
     for (let i = 0; i < option; i++) {
-      let strPeriod = firstSemester ? "Primero" : "Segundo";
+      const strPeriod = firstSemester ? "Primero" : "Segundo";
       listPeriods.push(strPeriod + currentYear);
       if (!firstSemester) currentYear++;
       firstSemester = !firstSemester;
