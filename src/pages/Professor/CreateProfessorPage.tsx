@@ -56,6 +56,7 @@ const CreateProfessorPage = () => {
       lastname: "",
       mothername: "",
       email: "",
+      phone: "",
       degree: "",
       code: "",
       countryCode: "+591",
