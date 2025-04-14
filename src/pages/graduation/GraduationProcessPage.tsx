@@ -110,7 +110,7 @@ const GraduationProcessPage = () => {
             onClick={goToCreateProcessPage}
             startIcon={<AddIcon />}
           >
-            Crear Proceso de Graduación
+            Nuevo Proceso
           </Button>
         )
       }
