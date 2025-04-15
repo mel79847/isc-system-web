@@ -18,6 +18,13 @@ const dataGridLocaleText = {
   columnMenuManageColumns: 'Administrar columnas',
   columnHeaderSortIconLabel: 'Ordenar',
 
+  columnHeaderFiltersTooltipActive: (count: number) =>
+    count !== 1
+      ? `${count} filtros activos`
+      : `${count} filtro activo`,
+  toolbarColumns: 'Columnas',
+  toolbarFilters: 'Filtros',
+
   filterPanelTitle: 'Filtros',
   filterPanelColumns: 'Columna',
   filterPanelOperators: 'Operador',
