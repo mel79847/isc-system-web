@@ -21,4 +21,14 @@ const createProfessor = async (professor: ProfessorInterface) => {
   }
 };
 
-export { getMentors, createProfessor };
+const deleteProfessor = async (professorId: number) => {
+  try {
+    const response = await apiClient.delete(`professor/${professorId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar el tutor:', error);
+    throw error;
+  }
+};
+
+export { getMentors, createProfessor, deleteProfessor };

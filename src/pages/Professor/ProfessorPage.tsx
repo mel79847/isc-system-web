@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ContainerPage from "../../components/common/ContainerPage";
 import SpinModal from "../../components/common/SpinModal";
 import { useEffect, useState } from "react";
-import { getMentors } from "../../services/mentorsService";
+import { deleteProfessor, getMentors } from "../../services/mentorsService";
 import {
   Button,
   Dialog,
@@ -20,7 +20,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Permission } from "../../models/permissionInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { HasPermission } from "../../helper/permissions";
-import dataGridLocaleText from "../../locales/datagridLocaleEs"
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import { SnackbarProps } from "../../models/SnackBarProps";
+import SnackBar from "../../components/common/SnackBar";
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
@@ -37,6 +39,13 @@ const ProfessorPage = () => {
     tutorias: true,
     revisiones: true,
     actions: true,
+  });
+
+  const [snackbar, setSnackBar] = useState<SnackbarProps>({
+    open: false,
+    message: "",
+    onClose: () => {},
+    severity: "error",
   });
 
   const [addProfessorPermission, setAddProfessorPermission] = useState<Permission>();
@@ -275,12 +284,32 @@ const ProfessorPage = () => {
     setSelectedId(null);
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackBar((prev) => ({
+      ...prev,
+      open: false,
+    }));
+  };
+
+  const showSnackbar = (message: string, severity: "success" | "error" | "warning") => {
+    setSnackBar({
+      open: true,
+      message,
+      severity,
+      onClose: handleCloseSnackbar,
+    });
+  };
+
   const handleDelete = async () => {
     if (selectedId !== null) {
       try {
-        console.log(`Eliminar docente con id: ${selectedId}`);
+        await deleteProfessor(selectedId);
+        const newProfessors = professors.filter(({ id }) => id !== selectedId);
+        setProfessors(newProfessors);
+        showSnackbar("El docente fue eliminado correctamente", "success");
       } catch (error) {
         console.log(error);
+        showSnackbar("Error al eliminar el docente", "error");
       } finally {
         handleClose();
       }
@@ -339,25 +368,25 @@ const ProfessorPage = () => {
                 setColumnVisibilityModel(updatedModel);
               }}
               slotProps={{
-               columnsManagement: {
-                 autoFocusSearchField: false,
-                 searchInputProps: {
-                   sx: {
-                     '& .MuiOutlinedInput-root': {
-                       '&:hover fieldset': {
-                         borderColor: 'secondary.main',
-                       },
-                       '&.Mui-focused fieldset': {
-                         borderColor: 'secondary.main',
-                       },
-                     },
-                     '& input': {
-                       outline: 'none !important',
-                       boxShadow: 'none !important',
-                     },
-                   },
-                 },
-               },
+                columnsManagement: {
+                  autoFocusSearchField: false,
+                  searchInputProps: {
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        "&:hover fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                      },
+                      "& input": {
+                        outline: "none !important",
+                        boxShadow: "none !important",
+                      },
+                    },
+                  },
+                },
               }}
               classes={{
                 root: "bg-white dark:bg-gray-800",
@@ -391,7 +420,6 @@ const ProfessorPage = () => {
                   backgroundColor: "inherit !important",
                 },
               }}
-              
             />
 
             <Dialog
@@ -415,6 +443,12 @@ const ProfessorPage = () => {
                 </Button>
               </DialogActions>
             </Dialog>
+            <SnackBar
+              open={snackbar.open}
+              message={snackbar.message}
+              severity={snackbar.severity}
+              onClose={handleCloseSnackbar}
+            />
           </div>
         )
       }
