@@ -3,28 +3,28 @@ module.exports = {
   env: {
     browser: true,
     es2020: true,
-    node: true,
+    jest: true, // Si estás usando Jest para pruebas
   },
-  parser: '@typescript-eslint/parser',
+  parser: '@typescript-eslint/parser', // Para que ESLint entienda TypeScript
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true,
+      jsx: true, // Habilitar soporte para JSX
     },
   },
   plugins: [
     'react',
     'react-hooks',
-    '@typescript-eslint',
+    '@typescript-eslint', // Para las reglas de TypeScript
     'jsx-a11y',
-    'react-refresh',
+    'import',
+    'prettier',
     'unused-imports',
     'promise',
-    'security',
+    'security', // Mantén este plugin
     'jest',
-    'sonarjs',
-    'import',
+    'sonarjs'
   ],
   extends: [
     'eslint:recommended',
@@ -32,59 +32,73 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
-    'prettier',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript', // Permite usar imports en TypeScript
+    'airbnb-base',
+    'plugin:jest/recommended',
+    'prettier', // Para evitar conflictos de Prettier
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: [
+    'dist', // Ignorar dist
+    '.eslintrc.cjs', // Ignorar la configuración ESLint
+    'node_modules', // Ignorar node_modules
+    'coverage', // Ignorar cobertura de pruebas
+    'Dockerfile', // Ignorar Dockerfile
+    '*.conf', // Ignorar archivos .conf
+    '*.yml', // Ignorar archivos .yml
+    'vite.config.ts', // Ignorar archivo de configuración de Vite
+    'tailwind.config.js', // Ignorar archivo de configuración de Tailwind
+  ], 
   settings: {
     react: {
-      version: 'detect',
+      version: 'detect', // Detecta automáticamente la versión de React
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx','.json'],
+      },
     },
   },
   rules: {
-    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-    'react/react-in-jsx-scope': 'off',
-    'no-unused-vars': ['warn'],
-    '@typescript-eslint/no-unused-vars': ['warn'],
-    'eqeqeq': 'error',
     'no-console': 'warn',
-    'no-debugger': 'error',
-    'import/no-unresolved': 'error',
-    'import/named': 'error',
-    'import/default': 'error',
-    'react/prop-types': 'off',
-    'react/jsx-filename-extension': ['warn', { extensions: ['.jsx', '.tsx'] }],
-    'security/detect-object-injection': 'warn',
-    'promise/always-return': 'warn',
-    'sonarjs/cognitive-complexity': ['warn', 15],
-    'no-console': 'warn',
-    'no-unused-vars': ['error', { argsIgnorePattern: '^' }],
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'prefer-const': 'error',
     'no-undef': 'error',
+    eqeqeq: ['error', 'always'],
     'no-multi-spaces': ['error'],
     'brace-style': ['error', '1tbs'],
     curly: ['error', 'all'],
     'prefer-destructuring': ['error', { object: true, array: false }],
-    indent: ['error', 2], // Usar 2 espacios para la indentación
+    indent: ['error', 2],
     semi: ['error', 'always'],
     'object-curly-spacing': ['error', 'always'],
     'no-inline-comments': 'error',
     'sonarjs/no-duplicate-string': 'warn',
+    'sonarjs/cognitive-complexity': ['warn', 15],
+    'promise/always-return': 'warn',
+    'promise/no-return-wrap': 'error',
+    'promise/param-names': 'error',
     'promise/catch-or-return': 'warn',
     'promise/no-nesting': 'warn',
-    'import/extensions': 'off',
+    "import/extensions": "off",
     'unused-imports/no-unused-imports': 'error',
     'unused-imports/no-unused-vars': [
       'warn',
       {
         vars: 'all',
-        varsIgnorePattern: '^',
+        varsIgnorePattern: '^_',
         args: 'after-used',
         argsIgnorePattern: '^_',
       },
     ],
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
     'react/jsx-uses-vars': 'error',
     'react/jsx-pascal-case': ['error', { 'allowAllCaps': false }],
     'react/jsx-no-undef': 'error',
+    'react/prop-types': 'off',
+    'react/display-name': 'off',
     'react/no-deprecated': 'warn',
     'react/no-did-mount-set-state': 'warn',
     'react/no-did-update-set-state': 'warn',
@@ -102,13 +116,4 @@ module.exports = {
     'react/jsx-indent-props': ['error', 2],
     'react/jsx-equals-spacing': ['error', 'always'],
   },
-  overrides: [
-    {
-      files: ['*.js', '*.jsx'],
-      rules: {
-        'no-console': 'warn',
-        'eqeqeq': 'error',
-      }
-    }
-  ],
 };
