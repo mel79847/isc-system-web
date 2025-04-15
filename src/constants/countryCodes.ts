@@ -17,4 +17,4 @@ export const COUNTRY_CODES = [
   { code: '+56', name: 'Chile', flag: '🇨🇱' },
   { code: '+57', name: 'Colombia', flag: '🇨🇴' },
   { code: '+58', name: 'Venezuela', flag: '🇻🇪' },
-]
+];
