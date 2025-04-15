@@ -3,26 +3,26 @@ module.exports = {
   env: {
     browser: true,
     es2020: true,
-    jest: true, // Si estás usando Jest para pruebas
+    jest: true,
   },
-  parser: '@typescript-eslint/parser', // Para que ESLint entienda TypeScript
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true, // Habilitar soporte para JSX
+      jsx: true,
     },
   },
   plugins: [
     'react',
     'react-hooks',
-    '@typescript-eslint', // Para las reglas de TypeScript
+    '@typescript-eslint',
     'jsx-a11y',
     'import',
     'prettier',
     'unused-imports',
     'promise',
-    'security', // Mantén este plugin
+    'security',
     'jest',
     'sonarjs'
   ],
@@ -34,25 +34,25 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
-    'plugin:import/typescript', // Permite usar imports en TypeScript
+    'plugin:import/typescript',
     'airbnb-base',
     'plugin:jest/recommended',
-    'prettier', // Para evitar conflictos de Prettier
+    'prettier',
   ],
   ignorePatterns: [
-    'dist', // Ignorar dist
-    '.eslintrc.cjs', // Ignorar la configuración ESLint
-    'node_modules', // Ignorar node_modules
-    'coverage', // Ignorar cobertura de pruebas
-    'Dockerfile', // Ignorar Dockerfile
-    '*.conf', // Ignorar archivos .conf
-    '*.yml', // Ignorar archivos .yml
-    'vite.config.ts', // Ignorar archivo de configuración de Vite
-    'tailwind.config.js', // Ignorar archivo de configuración de Tailwind
+    'dist',
+    '.eslintrc.cjs',
+    'node_modules',
+    'coverage',
+    'Dockerfile',
+    '*.conf',
+    '*.yml',
+    'vite.config.ts',
+    'tailwind.config.js',
   ], 
   settings: {
     react: {
-      version: 'detect', // Detecta automáticamente la versión de React
+      version: 'detect',
     },
     'import/resolver': {
       node: {
