@@ -241,6 +241,21 @@ const ProfessorPage = () => {
     },
   ];
 
+  const getResponsiveColumns = (): GridColDef[] => {
+    const visibleColumns = columns.filter(col => columnVisibilityModel[col.field] !== false && col.field !== 'actions');
+    const dynamicFlex = visibleColumns.length > 0 ? Math.floor(12 / visibleColumns.length) : 1;
+
+    return columns.map(col => {
+      if (col.field === 'actions' || columnVisibilityModel[col.field] === false) return col;
+      return {
+          ...col,
+          flex: dynamicFlex,
+          minWidth: 100,
+          maxWidth: undefined,
+      };
+    });
+  };
+
   const handleCreateTeacher = () => {
     navigate("/create-professor");
   };
@@ -319,7 +334,7 @@ const ProfessorPage = () => {
           <div style={{ width: "100%", paddingBottom: 0 }}>
             <DataGrid
               rows={professors}
-              columns={columns}
+              columns={getResponsiveColumns()}
               localeText={dataGridLocaleText}
               initialState={{
                 pagination: {
