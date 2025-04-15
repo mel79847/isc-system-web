@@ -18,7 +18,7 @@ interface DocumentCheckboxProps {
 }
 
 const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer, process }) => {
-  const [downloadBlocked, setDownloadBlocked] = useState(false);
+  const [, setDownloadBlocked] = useState(false);
 
   const handleBlockedDownload = () => {
     if (!formik.values.mentor) {
