@@ -10,6 +10,7 @@ import { periods, currentPeriod } from "../../data/periods";
 import { useProcessStore } from "../../store/store";
 import { updateProcess } from "../../services/processServicer";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import {Typography } from "@mui/material";
 import {
   FormControl,
   FormControlLabel,
@@ -51,6 +52,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [, setError] = useState<any | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [edited, setEdited] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +88,11 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
     },
     validationSchema,
     onSubmit: () => {
-      setShowModal(true);
+      if (!edited) {
+        onNext()
+      } else {
+        setShowModal(true)
+      }
     },
   });
 
@@ -94,12 +100,17 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
     setReadOnly(false);
   };
 
+  const handleOnChange = (event: any) => {
+    setEdited(true)
+    formik.handleChange(event);
+  }
+
   return (
     <>
-      <div className="txt1">
-        Etapa 1: Seminario de Grado <ModeEditIcon onClick={editForm} />
-      </div>
-
+      <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>
+        Etapa 1: Seminario de Grado <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
+      </Typography>
+  
       <form onSubmit={formik.handleSubmit} className="mt-5 mx-16">
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={7} lg={8}>
@@ -110,7 +121,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
                 name="mode"
                 row
                 value={formik.values.mode}
-                onChange={formik.handleChange}
+                onChange={handleOnChange}
               >
                 {modes.map((option) => (
                   <FormControlLabel
@@ -123,7 +134,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
               </RadioGroup>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={12} md={5} lg={4}>
+          <Grid item xs={12} sm={12} md={7} lg={8}>
             <FormControl fullWidth variant="outlined" margin="normal">
               <InputLabel id="period-label">2. Seleccione periodo de inscripción</InputLabel>
               <Select
@@ -131,14 +142,11 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
                 id="period"
                 name="period"
                 value={formik.values.period}
-                onChange={formik.handleChange}
+                onChange={handleOnChange}
                 label="2. Seleccione periodo de inscripción"
                 disabled={readOnly}
                 error={formik.touched.period && Boolean(formik.errors.period)}
               >
-                <MenuItem value="">
-                  <em>Seleccione Periodo</em>
-                </MenuItem>
                 {periods.map((option) => (
                   <MenuItem key={option.id} value={option.id}>
                     {option.value}

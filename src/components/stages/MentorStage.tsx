@@ -51,6 +51,7 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext 
     const updatedProcess = {
       ...process,
       tutor_letter: tutorDesignationLetterSubmitted,
+      tutor_approval: formik.values.tutorApprovalLetterSubmitted,
       tutor_id: Number(mentor),
       tutor_name: mentorName,
       date_tutor_assignament: date_tutor_assignament ? dayjs(date_tutor_assignament) : null,
@@ -94,7 +95,7 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext 
 
   return (
     <>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6"  gutterBottom style={{ fontWeight: 'bold' }}>
         Etapa 2: Seleccionar Tutor <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
       </Typography>
 

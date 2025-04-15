@@ -10,6 +10,8 @@ import { Box, Button, IconButton, Paper } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import dataGridLocaleText from "../../locales/datagridLocaleEs";
+import ContainerPage from "../../components/common/ContainerPage";
 
 const GraduationProcessPage = () => {
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
@@ -97,61 +99,92 @@ const GraduationProcessPage = () => {
   ];
 
   return (
-    <>
-      <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between m-5 mb-8 overflow-hidden">
-        <label htmlFor="table-search" className="sr-only">
-          Search
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-            <FaSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          </div>
-          <input
-            type="text"
-            id="table-search"
-            className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Buscar por nombre de estudiante"
-            value={search}
-            onChange={handleSearchChange}
-          />
-        </div>
-        {HasPermission(createProcess?.name || "") && (
+    <ContainerPage
+      title="Procesos de Graduación"
+      subtitle="Lista de procesos de graduación de los estudiantes"
+      actions={
+        HasPermission(createProcess?.name || "") && (
           <Button
             variant="contained"
             color="secondary"
             onClick={goToCreateProcessPage}
             startIcon={<AddIcon />}
-            style={{ display: "inline-flex" }}
           >
-            Crear Proceso de Graduación
+            Nuevo Proceso
           </Button>
-        )}
+        )
+      }
+    >
+      <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between mb-4">
+        <label htmlFor="table-search" className="sr-only">
+          Buscar
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+            <FaSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </div>
+          <input
+            type="text"
+            id="table-search"
+            className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            placeholder="Buscar por nombre de estudiante"
+            value={search}
+            onChange={handleSearchChange}
+          />
+        </div>
       </div>
 
-      {/* Tabla de Datos */}
       <Box sx={{ mb: 2 }}>
         <Paper>
           <DataGrid
             rows={filteredData}
             columns={tableHeaders}
+            localeText={dataGridLocaleText}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 },
               },
             }}
+            pageSizeOptions={[5, 10, 25]}
+            disableRowSelectionOnClick
+            sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "#e5e7eb",
+              },
+              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell--editing": {
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
+                outline: "none !important",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "transparent",
+              },
+              "& .MuiDataGrid-row.Mui-selected": {
+                backgroundColor: "inherit !important",
+              },
+            }}
             classes={{
               root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800 ",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
               cell: "bg-white dark:bg-gray-800",
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
-            pageSizeOptions={[5, 10, 25]}
-            disableRowSelectionOnClick
           />
         </Paper>
       </Box>
-    </>
+    </ContainerPage>
   );
 };
 

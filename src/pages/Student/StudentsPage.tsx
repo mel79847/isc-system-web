@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
+  Box,
 } from "@mui/material";
 import ContainerPage from "../../components/common/ContainerPage";
 import { deleteStudent, getStudents } from "../../services/studentService";
@@ -31,7 +32,8 @@ const StudentPage = () => {
   const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
   const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission | null>();
+  const [viewStudentReportPermission, setViewStudentReportPermission] =
+    useState<Permission | null>();
   const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
     code: true,
     name: true,
@@ -63,7 +65,7 @@ const StudentPage = () => {
       align: "center",
       flex: 1,
       minWidth: 100,
-      maxWidth: 200,
+      maxWidth: 150,
       resizable: true,
     },
     {
@@ -72,8 +74,8 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth: 150,
-      maxWidth: 250,
+      minWidth: 200,
+      maxWidth: 300,
       resizable: true,
     },
     {
@@ -82,7 +84,7 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth: 180,
+      minWidth: 200,
       maxWidth: 300,
       resizable: true,
     },
@@ -93,8 +95,8 @@ const StudentPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
-      minWidth: 120,
-      maxWidth: 180,
+      minWidth: 150,
+      maxWidth: 200,
       resizable: true,
     },
     {
@@ -191,31 +193,24 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
-<<<<<<< HEAD
           <Button
             variant="contained"
             color="secondary"
-            onClick={handleCreateTeacher}
+            onClick={handleCreateStudent}
             startIcon={<AddIcon />}
             disabled={!addStudentPermission}
+            sx={{
+              width: { xs: "120%", sm: "auto" },
+              mb: { xs: 1, sm: 0 },
+              mt: { xs: 5, sm: 0 },
+            }}
           >
             Agregar Estudiante
           </Button>
-=======
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleCreateStudent}
-          startIcon={<AddIcon />}
-          disabled={!addStudentPermission}
-        >
-          Agregar Estudiante
-        </Button>
->>>>>>> 4aeb040c714a1c22879459031a406c6e090fa4e8
         )
       }
       children={
-        <div style={{ height: 400, width: "100%" }}>
+        <Box sx={{ width: "100%", height: { xs: "auto" } }}>
           <DataGrid
             rows={students}
             columns={columns}
@@ -244,7 +239,53 @@ const StudentPage = () => {
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
+            slotProps={{
+              columnsManagement: {
+                autoFocusSearchField: false,
+                searchInputProps: {
+                  sx: {
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "secondary.main",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "secondary.main",
+                      },
+                    },
+                    "& input": {
+                      outline: "none !important",
+                      boxShadow: "none !important",
+                    },
+                  },
+                },
+              },
+            }}
+            sx={{
+              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell--editing": {
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
+                outline: "none !important",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "transparent",
+              },
+              "& .MuiDataGrid-row.Mui-selected": {
+                backgroundColor: "inherit !important",
+              },
+            }}
             pageSizeOptions={[5, 10]}
+            disableRowSelectionOnClick
           />
           <Dialog
             open={open}
@@ -276,14 +317,15 @@ const StudentPage = () => {
               sx: {
                 borderRadius: 3,
                 p: 0,
-                maxHeight: '100vh',
+                maxHeight: "100vh",
               },
-            }}>
+            }}
+          >
             <DialogContent sx={{ p: 2, m: 0 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>
           </Dialog>
-        </div>
+        </Box>
       }
     ></ContainerPage>
   );

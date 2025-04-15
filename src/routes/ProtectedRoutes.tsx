@@ -28,6 +28,7 @@ import ViewInternSupervisor from "../pages/supervisor/ViewInternSupervisor";
 import EventsByInternsPage from "../pages/interns/EventsByInterns";
 import { roles } from "../constants/roles";
 import EventRegisterPage from "../pages/Events/EventRegisterPage";
+import EditProfessorPage from "../pages/Professor/EditProfessorPage";
 
 function loader() {
   return getProcess();
@@ -96,10 +97,18 @@ const protectedRoutes = [
         ),
       },
       {
+        path: "/edit-professor/:id",
+        element: (
+          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
+            <EditProfessorPage />
+          </RoleGuard>
+        ),
+      },
+      {
         path: "/create-professor",
         loader: loader,
         element: (
-          <RoleGuard allowedRoles={[ADMIN]}>
+          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
             <CreateProfessorPage />
           </RoleGuard>
         ),

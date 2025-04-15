@@ -10,6 +10,8 @@ interface DownloadButtonProps extends ButtonProps {
   };
   filename: string;
   buttonText?: string;
+  disabled?: boolean;
+  onClick?: () => void; 
 }
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
@@ -17,10 +19,19 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   data,
   filename,
   buttonText = "Descargar",
+  disabled = false,
+  onClick,
   ...buttonProps
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const handleDownload = async () => {
+
+    if (onClick) {
+      onClick();
+    }
+
+    if (disabled) return;
+
     setIsDownloading(true);
     try {
       await generateDocument(url, data, filename);
@@ -36,7 +47,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       onClick={handleDownload}
       variant="contained"
       startIcon={<DownloadIcon />}
-      disabled={isDownloading}
+      disabled={disabled || isDownloading}
       {...buttonProps}
     >
       {isDownloading ? "Descargando..." : buttonText}

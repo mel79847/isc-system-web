@@ -1,89 +1,85 @@
-import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, Divider, Grid, MenuItem, TextField, Typography } from "@mui/material";
-import { ProfessorInterface } from "../../services/models/Professor";
-import { createProfessor } from "../../services/mentorsService";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import ErrorDialog from "../../components/common/ErrorDialog";
-import SuccessDialog from "../../components/common/SucessDialog";
+import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getUserById, updateStudent } from "../../services/studentService";
+import { useParams } from "react-router-dom";
 import LoadingOverlay from "../../components/common/Loading";
 
-const onlyLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-
 const validationSchema = Yup.object({
-  name: Yup.string()
-    .matches(onlyLettersRegex, "El nombre solo debe contener letras")
-    .required("El nombre completo es obligatorio"),
-  lastname: Yup.string()
-    .matches(onlyLettersRegex, "El apellido paterno solo debe contener letras")
-    .required("El apellido es obligatorio"),
-  mothername: Yup.string()
-    .matches(onlyLettersRegex, "El apellido materno solo debe contener letras")
-    .required("El apellido materno es obligatorio"),
+  name: Yup.string().required("El nombre completo es obligatorio"),
+  lastname: Yup.string().required("El apellido es obligatorio"),
+  mothername: Yup.string().required("El apellido materno es obligatorio"),
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(
-      /^\+\d{1,3}\s\d+$/,
-      "El número de teléfono debe tener una extensión válida y un número de teléfono"
-    )
-    .required("El número de teléfono es requerido"),
-  degree: Yup.string().required("El título académico es obligatorio"),
-  code: Yup.number()
-    .typeError("El código debe ser numérico")
-    .required("El código de docente es obligatorio"),
+    .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
+    .optional(),
+  code: Yup.number().optional(),
 });
 
-
-const CreateProfessorPage = () => {
-  const [loading, setLoading] = useState(false);
+const EditProfessorPage = () => {
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [successDialog, setSuccessDialog] = useState(false);
-  const [errorDialog, setErrorDialog] = useState(false);
+  const [severity, setSeverity] = useState<"success" | "error">("success");
+  const [loading, ] = useState(false); 
+  const [, setProfessor] = useState<any>();
+  
+  const { id } = useParams();
 
-  const sucessDialogClose = () => {
-    setSuccessDialog(false);
-    formik.resetForm();
+  const fetchProfessor = async () => {
+    try {
+      const response = await getUserById(Number(id));
+      formik.setValues(response);
+      setProfessor(response);
+    } catch (error) {
+      console.error("Error al obtener docente:", error);
+    }
   };
 
-  const errorDialogClose = () => {
-    setErrorDialog(false);
-  };
+  useEffect(() => {
+    fetchProfessor();
+  }, [id]);
 
-  const formik = useFormik<ProfessorInterface>({
+  const formik = useFormik({
     initialValues: {
       name: "",
       lastname: "",
-      mothername: "",
       email: "",
       phone: "",
-      degree: "",
       code: "",
+      mothername: "",
+      degree: "",
     },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
       try {
-        await createProfessor(values);
-        setMessage("Profesor creado con éxito");
-        setSuccessDialog(true);
+        // @ts-ignore
+        await updateStudent(values);
+        setMessage("Docente actualizado con éxito");
+        setSeverity("success");
+        setOpen(true);
       } catch (error) {
-        setMessage("Error al crear el docente");
-        setErrorDialog(true);
-      } finally {
-        setLoading(false);
+        setMessage("Error al actualizar");
+        setSeverity("error");
+        setOpen(true);
       }
     },
   });
+  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const formattedValue = value
-      .replace(/[^+\d\s]/g, "")
-      .replace(/(\+\d{1,3})\s?(\d{0,})/, "$1 $2");
-    formik.setFieldValue("phone", formattedValue);
+    const value = event.target.value;
+    if (/^[0-9]*$/.test(value)) {
+      formik.setFieldValue("phone", value);
+    }
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,14 +88,13 @@ const CreateProfessorPage = () => {
       formik.setFieldValue("code", value);
     }
   };
-
   return (
     <FormContainer>
-      {loading && <LoadingOverlay message="Creando Docente..." />}
+      {loading && <LoadingOverlay message="Actializando Docente..." />}
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
-            <Typography variant="h4">Crear Nuevo Docente</Typography>
+            <Typography variant="h4">Editar Docente</Typography>
             <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
               Ingrese los datos del docente a continuación.
             </Typography>
@@ -234,32 +229,25 @@ const CreateProfessorPage = () => {
           <Grid item xs={12}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Grid item>
-                <Button variant="contained" color="primary" type="submit" sx={{ mr: 3 }}>
+                <Button variant="contained" color="primary" type="submit">
                   GUARDAR
                 </Button>
-                <Button variant="contained" color="primary" type="button" 
-                onClick={() => window.history.back()}>
-                  CANCELAR
-                </Button>
-              </Grid>
+                </Grid>
             </Grid>
           </Grid>
         </Grid>
       </form>
-      <SuccessDialog
-        open={successDialog}
-        onClose={sucessDialogClose}
-        title={"Docente Creado!"}
-        subtitle={"El docente ha sido creado con éxito."}
-      />
-      <ErrorDialog
-        open={errorDialog}
-        onClose={errorDialogClose}
-        title={"¡Vaya!"}
-        subtitle={message}
-      />
-    </FormContainer>
-  );
-};
-
-export default CreateProfessorPage;
+      <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        >
+          <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+            {message}
+          </Alert>
+        </Snackbar>
+      </FormContainer>
+    );
+  };
+export default EditProfessorPage;

@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { Box, FormControlLabel, Checkbox } from "@mui/material";
+import { FC, useState } from "react";
+import { Checkbox, Paper, Typography } from "@mui/material";
 import DownloadButton from "../common/DownloadButton";
 import { letters } from "../../constants/letters";
 import { FormikProps } from "formik";
@@ -18,23 +18,45 @@ interface DocumentCheckboxProps {
 }
 
 const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer, process }) => {
+  const [, setDownloadBlocked] = useState(false);
+
+  const handleBlockedDownload = () => {
+    if (!formik.values.mentor) {
+      setDownloadBlocked(true);
+    } else {
+      setDownloadBlocked(false);
+    }
+  };
+
+  const isMentorSelected = !!formik.values.mentor;
+
   return (
     <>
-      <Box mt={3}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="tutorDesignationLetterSubmitted"
-              color="primary"
-              checked={formik.values.tutorDesignationLetterSubmitted}
-              onChange={formik.handleChange}
-              disabled={disabled}
-            />
-          }
-          label="Carta de Asignación de Tutor Presentada"
+      <Paper
+        elevation={0}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: "#e6f4ff",
+          p: 2,
+          borderRadius: 2,
+          mt: 2,
+        }}
+      >
+        <Checkbox
+          name="tutorDesignationLetterSubmitted"
+          color="primary"
+          checked={formik.values.tutorDesignationLetterSubmitted}
+          onChange={formik.handleChange}
+          disabled={disabled}
         />
+        <Typography variant="body2" sx={{ flexGrow: 1 }}>
+          Carta de Asignación de Tutor Presentada
+        </Typography>
         <DownloadButton
           url={TUTOR_ASSIGNMENT.path}
+          disabled={!isMentorSelected}
+          onClick={handleBlockedDownload}
           data={{
             student: process?.student_fullname || "",
             tutor: process?.tutor_fullname || "",
@@ -46,22 +68,32 @@ const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer,
           }}
           filename={`${TUTOR_ASSIGNMENT.filename}_${formik.values.mentorName}.${TUTOR_ASSIGNMENT.extention}`}
         />
-      </Box>
-      <Box mt={3}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="tutorApprovalLetterSubmitted"
-              color="primary"
-              checked={formik.values.tutorApprovalLetterSubmitted}
-              onChange={formik.handleChange}
-              disabled={disabled}
-            />
-          }
-          label="Carta de Aprobación de Tutor Presentada"
+      </Paper>
+      <Paper
+        elevation={0}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: "#e6f4ff",
+          p: 2,
+          borderRadius: 2,
+          mt: 2,
+        }}
+      >
+        <Checkbox
+          name="tutorApprovalLetterSubmitted"
+          color="primary"
+          checked={formik.values.tutorApprovalLetterSubmitted}
+          onChange={formik.handleChange}
+          disabled={disabled}
         />
+        <Typography variant="body2" sx={{ flexGrow: 1 }}>
+          Carta de Aprobación de Tutor Presentada
+        </Typography>
         <DownloadButton
           url={TUTOR_APPROBAL.path}
+          disabled={!isMentorSelected}
+          onClick={handleBlockedDownload}
           data={{
             student: process?.student_fullname || "",
             tutor: process?.tutor_fullname || "",
@@ -76,7 +108,7 @@ const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer,
           }}
           filename={`${TUTOR_APPROBAL.filename}_${formik.values.mentorName}.${TUTOR_APPROBAL.extention}`}
         />
-      </Box>
+      </Paper>
     </>
   );
 };
