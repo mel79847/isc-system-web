@@ -220,39 +220,83 @@ const StudentPage = () => {
         )
       }
       children={
-        <Box sx={{ width: "100%", overflowX: "auto" }}>
-          <Box sx={{ height: { xs: "auto" } }}>
-            <DataGrid
-              rows={students}
-              columns={columns}
-              localeText={dataGridLocaleText}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
+        <Box sx={{ width: "100%", height: { xs: "auto" } }}>
+          <DataGrid
+            rows={students}
+            columns={columns}
+            localeText={dataGridLocaleText}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
+            }}
+            columnVisibilityModel={columnVisibilityModel}
+            onColumnVisibilityModelChange={(newModel) => {
+              const updatedModel = {
+                ...newModel,
+                name: true,
+              };
+              const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
+              if (visibleColumns === 0) {
+                return;
+              }
+              setColumnVisibilityModel(updatedModel);
+            }}
+            classes={{
+              root: "bg-white dark:bg-gray-800",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
+              cell: "bg-white dark:bg-gray-800",
+              row: "bg-white dark:bg-gray-800",
+              columnHeaderTitle: "!font-bold text-center",
+            }}
+            slotProps={{
+              columnsManagement: {
+                autoFocusSearchField: false,
+                searchInputProps: {
+                  sx: {
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "secondary.main",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "secondary.main",
+                      },
+                    },
+                    "& input": {
+                      outline: "none !important",
+                      boxShadow: "none !important",
+                    },
+                  },
                 },
-              }}
-              columnVisibilityModel={columnVisibilityModel}
-              onColumnVisibilityModelChange={(newModel) => {
-                const updatedModel = {
-                  ...newModel,
-                  name: true,
-                };
-                const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
-                if (visibleColumns === 0) {
-                  return;
-                }
-                setColumnVisibilityModel(updatedModel);
-              }}
-              classes={{
-                root: "bg-white dark:bg-gray-800",
-                columnHeader: "bg-gray-200 dark:bg-gray-800",
-                cell: "bg-white dark:bg-gray-800",
-                row: "bg-white dark:bg-gray-800",
-                columnHeaderTitle: "!font-bold text-center",
-              }}
-              pageSizeOptions={[5, 10]}
-            />
-          </Box>
+              },
+            }}
+            sx={{
+              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell--editing": {
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
+                outline: "none !important",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "transparent",
+              },
+              "& .MuiDataGrid-row.Mui-selected": {
+                backgroundColor: "inherit !important",
+              },
+            }}
+            pageSizeOptions={[5, 10]}
+            disableRowSelectionOnClick
+          />
           <Dialog
             open={open}
             onClose={handleClose}
@@ -284,10 +328,25 @@ const StudentPage = () => {
                 borderRadius: 3,
                 p: 0,
                 maxHeight: "100vh",
+                position: "relative",
               },
             }}
           >
-            <DialogContent sx={{ p: 2, m: 0 }}>
+          <IconButton
+            onClick={() => setOpenCreateModal(false)}
+            sx={{
+              position: "absolute",
+              left: 2,
+              top: 2,
+              "&:hover": {
+                bgcolor: "grey.200",
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+            <DialogContent sx={{ p: 2, m: 1 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>
           </Dialog>
