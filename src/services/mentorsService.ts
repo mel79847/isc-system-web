@@ -1,5 +1,7 @@
+import { UserRequest } from '../models/userInterface';
 import apiClient from './apiInstance';
 import { ProfessorInterface } from './models/Professor';
+import { putUser } from './usersService';
 
 const getMentors = async () => {
   try {
@@ -19,6 +21,12 @@ const createProfessor = async (professor: ProfessorInterface) => {
     console.error('Error al crear el tutor:', error);
     throw error;
   }
+};
+type ProfessorWithId = UserRequest & { id: number };
+
+export const updateProfessor = async (professor: ProfessorWithId) => {
+  const response = await putUser(professor.id, professor);
+  return response;
 };
 
 export { getMentors, createProfessor };

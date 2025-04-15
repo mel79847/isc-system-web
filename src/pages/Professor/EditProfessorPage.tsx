@@ -3,9 +3,10 @@ import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getUserById, updateStudent } from "../../services/studentService";
+import { getUserById } from "../../services/studentService";
 import { useParams } from "react-router-dom";
 import LoadingOverlay from "../../components/common/Loading";
+import { updateProfessor } from "../../services/mentorsService";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -24,15 +25,21 @@ const EditProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  const [loading, ] = useState(false); 
+  const [loading] = useState(false);
   const [, setProfessor] = useState<any>();
-  
   const { id } = useParams();
-
   const fetchProfessor = async () => {
     try {
       const response = await getUserById(Number(id));
-      formik.setValues(response);
+      formik.setValues({
+        ...formik.initialValues,
+        ...response,
+        roles: response.roles || [3],
+        role_id: response.role_id || 3,
+        isStudent: false,
+        is_scholarship: false,
+        degree: response.degree || "",
+      });
       setProfessor(response);
     } catch (error) {
       console.error("Error al obtener docente:", error);
@@ -52,18 +59,22 @@ const EditProfessorPage = () => {
       code: "",
       mothername: "",
       degree: "",
+      roles: [3],
+      role_id: 3,
+      isStudent: false,
+      is_scholarship: false,
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
         // @ts-ignore
-        await updateStudent(values);
+        await updateProfessor(values);
         setMessage("Docente actualizado con éxito");
         setSeverity("success");
-        setOpen(true);
       } catch (error) {
         setMessage("Error al actualizar");
         setSeverity("error");
+      } finally {
         setOpen(true);
       }
     },
