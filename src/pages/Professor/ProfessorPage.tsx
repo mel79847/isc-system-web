@@ -210,6 +210,8 @@ const ProfessorPage = () => {
       resizable: false,
       minWidth: 150,
       maxWidth: 200,
+      filterable: false,
+      sortable: false,
       renderCell: (params) => {
         if (!permissionsReady) {
           return <span>Cargando acciones...</span>;
