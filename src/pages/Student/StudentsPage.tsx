@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import CloseIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
   IconButton,
@@ -311,17 +312,31 @@ const StudentPage = () => {
           </Dialog>
           <Dialog
             open={openCreateModal}
-            onClose={() => setOpenCreateModal(false)}
             maxWidth="md"
             PaperProps={{
               sx: {
                 borderRadius: 3,
                 p: 0,
                 maxHeight: "100vh",
+                position: "relative",
               },
             }}
           >
-            <DialogContent sx={{ p: 2, m: 0 }}>
+          <IconButton
+            onClick={() => setOpenCreateModal(false)}
+            sx={{
+              position: "absolute",
+              left: 2,
+              top: 2,
+              "&:hover": {
+                bgcolor: "grey.200",
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+            <DialogContent sx={{ p: 2, m: 1 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>
           </Dialog>
