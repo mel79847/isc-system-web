@@ -1,136 +1,120 @@
 import dayjs from "dayjs";
-import "dayjs/locale/es";
 import {
   FaEnvelope,
-  FaCalendarCheck,
+  FaCalendar,
   FaUserTie,
-  FaUserSecret,
-  // FaUserShield,
-  // FaUserGraduate,
+  FaUser,
+  FaCheck,
+  FaClock,
+  FaMinus,
 } from "react-icons/fa";
 import { Seminar } from "../models/studentProcess";
 import { useProcessStore } from "../store/store";
 
 const Checklist = () => {
   const process = useProcessStore((state) => state.process);
-  let formattedDate = "";
-  if (process) {
-    formattedDate = process.tutor_approval_date
-      ? dayjs(process.tutor_approval_date).format("DD/MM/YYYY")
-      : "";
-  }
+
+  const formattedTutorDate = process?.tutor_approval_date
+    ? dayjs(process.tutor_approval_date).format("DD/MM/YYYY")
+    : "";
+
+  const formattedReviewerDate = process?.reviewer_approval_date
+    ? dayjs(process.reviewer_approval_date).format("DD/MM/YYYY")
+    : "";
 
   const {
-    student_name: studentName,
-    project_name: titleProject,
-    modality_name: mode,
+    student_name,
+    tutor_fullname,
+    tutor_degree,
+    reviewer_fullname,
+    reviewer_degree,
+    period,
+    tutor_approval,
+    reviewer_approval,
+    stage_id,
   } = process as Seminar;
+
+  const renderStatusIcon = (stage: number) => {
+    if (stage < stage_id) return <FaCheck className="text-green-500 ml-auto" />;
+    else if (stage == stage_id) return <FaClock className="text-yellow-500 ml-auto" />;
+    else return <FaMinus className="text-gray-400 ml-auto" />;
+  };
+
   const telegramLink = `https://t.me/+59176517816`;
+
   return (
-    <div className="h-full bg-white rounded-lg shadow-lg p-4 m-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold">{studentName}</h2>
-          <p className="text-gray-600">{titleProject}</p>
-          <p className="text-gray-500 text-sm">{mode}</p>
+    <div className="space-y-4">
+      <div className="bg-white rounded-lg p-4 shadow-md">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">{student_name}</h2>
+            <p className="text-sm text-gray-500">Sistema de Gestión Académica</p>
+          </div>
+          <a href={telegramLink} target="_blank" rel="noopener noreferrer">
+            <button className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-sm">
+              <FaEnvelope />
+              Enviar Mensaje
+            </button>
+          </a>
         </div>
       </div>
 
-      <div className="flex space-x-4 my-4">
-        <a href={telegramLink} target="_blank" rel="noopener noreferrer">
-          <button className="btn flex flex-row items-center">
-            <FaEnvelope className="mr-2" /> Enviar Mensaje
-          </button>
-        </a>
-      </div>
+      <div className="bg-white rounded-lg p-4 shadow-md">
+        <h3 className="text-md font-semibold text-gray-900 mb-4 ml-2">Etapas de Graduación</h3>
 
-      <div className="border-t pt-4">
-        <div className="flex items-center justify-between text-gray-800 text-md">
-          <button>Etapas de Graduación</button>
-        </div>
-      </div>
+        <ul className="space-y-6 relative border-s border-gray-200 ml-3">
+          <li className="flex items-start gap-3 relative ms-6">
+            <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-9 ring-8 ring-white">
+              <FaCalendar className="text-blue-800" />
+            </span>
+            <div>
+              <h4 className="text-sm font-bold text-gray-900">Seminario de Grado</h4>
+              <p className="text-sm text-gray-500">
+                {period ? `Inscripción ${period}` : "No inscrito aún"}
+              </p>
+            </div>
+            {renderStatusIcon(0)}
+          </li>
 
-      <ol className="ml-5 mt-2 relative border-s border-gray-200 dark:border-gray-700">
-        <li className="mb-10 ms-6">
-          <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <FaCalendarCheck className="text-blue-800" />
-          </span>
-          <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Seminario de Grado
-          </h3>
-          {process?.period ? (
-            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Inscripción {process.period}
-            </time>
-          ) : (
-            <span>No inscrito aun</span>
-          )}
-        </li>
-        <li className="mb-10 ms-6">
-          <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <FaUserTie className="text-blue-800" />
-          </span>
-          <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Tutor: {process?.tutor_degree}. {process?.tutor_fullname || " "}
-          </h3>
-          {process?.tutor_approval ? (
-            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Aprobación del Tutor el {formattedDate}
-            </time>
-          ) : (
-            <span>Fase de Tutor no Aprobada</span>
-          )}
-        </li>
-        <li className="mb-10 ms-6">
-          <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <FaUserSecret className="text-blue-800" />
-          </span>
-          <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Revisor: {process?.reviewer_degree}. {process?.reviewer_fullname || " "}
-          </h3>
-          {process?.reviewer_approval ? (
-            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Aprobación del Revisor on {formattedDate}
-            </time>
-          ) : (
-            <span>Fase de Revisor no Aprobada</span>
-          )}
-        </li>
-        {/* <li className="mb-10 ms-6">
-          <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <FaUserShield className="text-blue-800" />
-          </span>
-          <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Defensa Interna
-          </h3>
-          {internalDefenseStage.passed ? (
-            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Defensa Interna on December 2nd, 2021
-            </time>
-          ) : (
-            <span className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Sin defensa Interna
+          <li className="flex items-start gap-3 relative ms-6">
+            <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-9 ring-8 ring-white">
+              <FaUserTie className="text-blue-800" />
             </span>
-          )}
-        </li>
-        <li className="ms-6">
-          <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-            <FaUserGraduate className="text-blue-800"/>
-          </span>
-          <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-            Defensa Externa
-          </h3>
-          {internalDefenseStage.passed ? (
-            <time className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Defensa Interna on December 2nd, 2021
-            </time>
-          ) : (
-            <span className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-              Sin defensa Externa
+            <div>
+              <h4 className="text-sm font-bold text-gray-900">
+                Tutor: {tutor_degree} {tutor_fullname}
+              </h4>
+              {tutor_approval ? (
+                <p className="text-sm text-gray-500">
+                  Aprobación del Tutor el {formattedTutorDate}
+                </p>
+              ) : (
+                <p className="text-sm text-gray-500">Fase de Tutor no Aprobada</p>
+              )}
+            </div>
+            {renderStatusIcon(1)}
+          </li>
+
+          <li className="flex items-start gap-3 relative ms-6">
+            <span className="absolute flex items-center justify-center w-7 h-7 bg-blue-100 rounded-full -start-9 ring-8 ring-white">
+              <FaUser className="text-blue-800" />
             </span>
-          )}
-        </li> */}
-      </ol>
+            <div>
+              <h4 className="text-sm font-bold text-gray-900">
+                Revisor: {reviewer_degree} {reviewer_fullname}
+              </h4>
+              {reviewer_approval ? (
+                <p className="text-sm text-gray-500">
+                  Aprobación del Revisor el {formattedReviewerDate}
+                </p>
+              ) : (
+                <p className="text-sm text-gray-500">Fase de Revisor no Aprobada</p>
+              )}
+            </div>
+            {renderStatusIcon(2)}
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
