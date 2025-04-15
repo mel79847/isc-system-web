@@ -332,19 +332,19 @@ const StudentPage = () => {
               },
             }}
           >
-            <IconButton
-              onClick={() => setOpenCreateModal(false)}
-              sx={{
-                position: "absolute",
-                left: 2,
-                top: 2,
-                "&:hover": {
-                  bgcolor: "grey.200",
-                },
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
+          <IconButton
+            onClick={() => setOpenCreateModal(false)}
+            sx={{
+              position: "absolute",
+              left: 2,
+              top: 2,
+              "&:hover": {
+                bgcolor: "grey.200",
+              },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
 
             <DialogContent sx={{ p: 2, m: 1 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
