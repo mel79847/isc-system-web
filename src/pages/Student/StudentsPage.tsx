@@ -32,7 +32,8 @@ const StudentPage = () => {
   const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
   const [deleteStudentPermission, setDeleteStudentPermission] = useState<Permission>();
   const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [viewStudentReportPermission, setViewStudentReportPermission] = useState<Permission | null>();
+  const [viewStudentReportPermission, setViewStudentReportPermission] =
+    useState<Permission | null>();
   const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({
     code: true,
     name: true,
@@ -66,6 +67,8 @@ const StudentPage = () => {
       minWidth: 100,
       maxWidth: 200,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "name",
@@ -76,6 +79,8 @@ const StudentPage = () => {
       minWidth: 150,
       maxWidth: 250,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "email",
@@ -86,6 +91,8 @@ const StudentPage = () => {
       minWidth: 180,
       maxWidth: 300,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "phone",
@@ -97,6 +104,8 @@ const StudentPage = () => {
       minWidth: 120,
       maxWidth: 180,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "actions",
@@ -106,6 +115,8 @@ const StudentPage = () => {
       flex: 1,
       minWidth: 150,
       maxWidth: 200,
+      sortable: false,
+      filterable: false,
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
@@ -192,55 +203,55 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleCreateStudent}
-          startIcon={<AddIcon />}
-          disabled={!addStudentPermission}
-          sx={{
-            width: { xs: "120%", sm: "auto" },
-            mb: { xs: 1, sm: 0 },
-            mt: { xs: 5, sm: 0 },
-          }}
-        >
-          Agregar Estudiante
-        </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleCreateStudent}
+            startIcon={<AddIcon />}
+            disabled={!addStudentPermission}
+            sx={{
+              width: { xs: "120%", sm: "auto" },
+              mb: { xs: 1, sm: 0 },
+              mt: { xs: 5, sm: 0 },
+            }}
+          >
+            Agregar Estudiante
+          </Button>
         )
       }
       children={
         <Box sx={{ width: "100%", overflowX: "auto" }}>
           <Box sx={{ height: { xs: "auto" } }}>
-          <DataGrid
-            rows={students}
-            columns={columns}
-            localeText={dataGridLocaleText}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => {
-              const updatedModel = {
-                ...newModel,
-                name: true,
-              };
-              const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
-              if (visibleColumns === 0) {
-                return;
-              }
-              setColumnVisibilityModel(updatedModel);
-            }}
-            classes={{
-              root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800",
-              cell: "bg-white dark:bg-gray-800",
-              row: "bg-white dark:bg-gray-800",
-              columnHeaderTitle: "!font-bold text-center",
-            }}
-            pageSizeOptions={[5, 10]}
-          />
+            <DataGrid
+              rows={students}
+              columns={columns}
+              localeText={dataGridLocaleText}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              columnVisibilityModel={columnVisibilityModel}
+              onColumnVisibilityModelChange={(newModel) => {
+                const updatedModel = {
+                  ...newModel,
+                  name: true,
+                };
+                const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
+                if (visibleColumns === 0) {
+                  return;
+                }
+                setColumnVisibilityModel(updatedModel);
+              }}
+              classes={{
+                root: "bg-white dark:bg-gray-800",
+                columnHeader: "bg-gray-200 dark:bg-gray-800",
+                cell: "bg-white dark:bg-gray-800",
+                row: "bg-white dark:bg-gray-800",
+                columnHeaderTitle: "!font-bold text-center",
+              }}
+              pageSizeOptions={[5, 10]}
+            />
           </Box>
           <Dialog
             open={open}
@@ -272,9 +283,10 @@ const StudentPage = () => {
               sx: {
                 borderRadius: 3,
                 p: 0,
-                maxHeight: '100vh',
+                maxHeight: "100vh",
               },
-            }}>
+            }}
+          >
             <DialogContent sx={{ p: 2, m: 0 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>

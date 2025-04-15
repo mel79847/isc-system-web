@@ -15,7 +15,7 @@ import { createIntern } from "../../services/internService";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
-
+import { AxiosError } from "axios";
 const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
 
 const validationSchema = Yup.object({
@@ -36,7 +36,7 @@ const validationSchema = Yup.object({
 
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
-    .max(20, "Máximo 20 caracteres")
+    .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
   phone: Yup.string().matches(/^\d{8}$/, "El número debe tener exactamente 8 dígitos"),
@@ -45,11 +45,13 @@ const validationSchema = Yup.object({
 
   isIntern: Yup.boolean(),
 
-  total_hours: Yup.number().when("isIntern", {
-    is: true,
-    then: (schema) => schema.required("Las horas becarias son obligatorias"),
-    otherwise: (schema) => schema.nullable(),
-  }),
+  total_hours: Yup.number()
+    .min(0, "Las horas no pueden ser negativas")
+    .when("isIntern", {
+      is: true,
+      then: (schema) => schema.required("Las horas becarias son obligatorias"),
+      otherwise: (schema) => schema.nullable(),
+    }),
 });
 
 const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
@@ -87,8 +89,12 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
           onSuccess();
           resetForm();
         }, 2000);
-      } catch (error: any) {
-        setMessage(error?.response?.data?.message || "Error al crear estudiante");
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          setMessage(error?.response?.data?.message || "Error al crear estudiante");
+        } else {
+          setMessage("Error inesperado. Por favor, inténtelo de nuevo.");
+        }
         setErrorDialog(true);
       }
     },
@@ -176,7 +182,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       value={formik.values.code}
                       onChange={handleCodeChange}
                       margin="normal"
-                      inputProps={{ maxLength: 10 }}
+                      inputProps={{ maxLength: 8 }}
                     />
                   </Grid>
                 </Grid>
@@ -197,7 +203,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   fullWidth
                   value={formik.values.email}
                   onChange={formik.handleChange}
-                  inputProps={{ maxLength: 20 }}
+                  inputProps={{ maxLength: 50 }}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                   margin="normal"
