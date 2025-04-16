@@ -35,7 +35,10 @@ const validationSchema = Yup.object({
     .required("El apellido materno es obligatorio"),
 
   email: Yup.string()
-    .email("Ingrese un correo electrónico válido")
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Ingrese un correo electrónico válido"
+    )
     .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
