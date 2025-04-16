@@ -54,6 +54,8 @@ const GraduationProcessPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      hideable: false,
+      minWidth: 120,
     },
     {
       field: "period",
