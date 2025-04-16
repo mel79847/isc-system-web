@@ -12,11 +12,12 @@ import {
 } from "@mui/material";
 import { createStudent } from "../../services/studentService";
 import { createIntern } from "../../services/internService";
+import { AxiosError } from "axios";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
-import { AxiosError } from "axios";
 const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -35,10 +36,7 @@ const validationSchema = Yup.object({
     .required("El apellido materno es obligatorio"),
 
   email: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Ingrese un correo electrónico válido"
-    )
+    .matches(emailRegex,"Ingrese un correo electrónico válido")
     .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
