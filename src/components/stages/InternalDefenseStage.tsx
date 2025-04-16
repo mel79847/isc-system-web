@@ -36,6 +36,8 @@ interface InternalDefenseStageProps {
   onNext: () => void;
 }
 
+const currentDate = dayjs();
+
 export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -225,6 +227,8 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
                     value={formik.values.date}
                     onChange={handleDateChange}
                     format="DD/MM/YYYY"
+                    minDate={currentDate}
+                    maxDate={currentDate.add(1, "year")}
                   />
                 </LocalizationProvider>
               </Grid>
