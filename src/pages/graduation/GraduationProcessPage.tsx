@@ -82,6 +82,8 @@ const GraduationProcessPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      filterable: false,
+      sortable: false,
       renderCell: (params) => (
         <div>
           {
