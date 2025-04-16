@@ -3,11 +3,10 @@ import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getUserById, updateStudent } from "../../services/studentService";
+import { getUserById } from "../../services/studentService";
 import { useParams } from "react-router-dom";
 import LoadingOverlay from "../../components/common/Loading";
-import { COUNTRY_CODES } from "../../constants/countryCodes";
-
+import { updateProfessor } from "../../services/mentorsService";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -16,10 +15,9 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
-  countryCode: Yup.string().required("Seleccione un código de país"),
-  phoneNumber: Yup.string()
-    .matches(/^\d{7,15}$/, "Número inválido, solo dígitos entre 7 y 15")
-    .required("El número de teléfono es obligatorio"),
+  phone: Yup.string()
+    .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
+    .optional(),
   code: Yup.number().optional(),
 });
 
@@ -27,35 +25,28 @@ const EditProfessorPage = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  const [loading, ] = useState(false); 
+  const [loading] = useState(false);
   const [, setProfessor] = useState<any>();
-  
   const { id } = useParams();
-
   const fetchProfessor = async () => {
     try {
       const response = await getUserById(Number(id));
-      const phoneRaw = response.phone || "";
-      let countryCode = "+591";
-      let phoneNumber = phoneRaw;
-      if (phoneRaw.startsWith("+")) {
-      const match = phoneRaw.match(/^(\+\d+)\s*(\d+)$/);
-      if (match) {
-        countryCode = match[1];
-        phoneNumber = match[2];
-       }
-      }
       formik.setValues({
-            ...response,
-            countryCode,
-            phoneNumber,
-          });
+        ...formik.initialValues,
+        ...response,
+        roles: response.roles || [3],
+        role_id: response.role_id || 3,
+        isStudent: false,
+        is_scholarship: false,
+        degree: response.degree || "",
+      });
       setProfessor(response);
     } catch (error) {
       console.error("Error al obtener docente:", error);
     }
   };
-    useEffect(() => {
+
+  useEffect(() => {
     fetchProfessor();
   }, [id]);
 
@@ -64,27 +55,26 @@ const EditProfessorPage = () => {
       name: "",
       lastname: "",
       email: "",
+      phone: "",
       code: "",
       mothername: "",
       degree: "",
-      countryCode: "+591",
-      phoneNumber: "",
+      roles: [3],
+      role_id: 3,
+      isStudent: false,
+      is_scholarship: false,
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const updatedValues = {
-          ...values,
-          phone: `${values.countryCode} ${values.phoneNumber}`,
-        };
         // @ts-ignore
-        await updateStudent(values);
+        await updateProfessor(values);
         setMessage("Docente actualizado con éxito");
         setSeverity("success");
-        setOpen(true);
       } catch (error) {
         setMessage("Error al actualizar");
         setSeverity("error");
+      } finally {
         setOpen(true);
       }
     },
@@ -231,47 +221,19 @@ const EditProfessorPage = () => {
                   margin="normal"
                   inputProps={{ maxLength: 50 }}
                 />
-                <Grid container spacing={2}>
-                  <Grid item xs={4}>
-                    <TextField
-                      select
-                      id="countryCode"
-                      name="countryCode"
-                      label="Código País"
-                      variant="outlined"
-                      fullWidth
-                      value={formik.values.countryCode}
-                      onChange={formik.handleChange}
-                      error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
-                      helperText={formik.touched.countryCode && formik.errors.countryCode}
-                      margin="normal"
-                    >
-                      {COUNTRY_CODES.map((c) => (
-                        <MenuItem key={c.code} value={c.code}>
-                          {c.flag} {c.code} ({c.name})
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <TextField
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      label="Número de Teléfono"
-                      variant="outlined"
-                      fullWidth
-                      value={formik.values.phoneNumber}
-                      onChange={(e) => {
-                        const cleaned = e.target.value.replace(/\D/g, "");
-                        formik.setFieldValue("phoneNumber", cleaned);
-                      }}
-                      error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-                      helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                      margin="normal"
-                      inputProps={{ maxLength: 15 }}
-                    />
-                  </Grid>
-                </Grid>
+                <TextField
+                  id="phone"
+                  name="phone"
+                  label="Número de Teléfono"
+                  variant="outlined"
+                  fullWidth
+                  value={formik.values.phone}
+                  onChange={handlePhoneChange}
+                  error={formik.touched.phone && Boolean(formik.errors.phone)}
+                  helperText={formik.touched.phone && formik.errors.phone}
+                  margin="normal"
+                  inputProps={{ maxLength: 20 }}
+                />
               </Grid>
             </Grid>
           </Grid>
