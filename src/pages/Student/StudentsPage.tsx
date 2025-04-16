@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import CloseIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
   IconButton,
@@ -203,20 +204,20 @@ const StudentPage = () => {
       subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleCreateStudent}
-            startIcon={<AddIcon />}
-            disabled={!addStudentPermission}
-            sx={{
-              width: { xs: "120%", sm: "auto" },
-              mb: { xs: 1, sm: 0 },
-              mt: { xs: 5, sm: 0 },
-            }}
-          >
-            Agregar Estudiante
-          </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCreateStudent}
+          startIcon={<AddIcon />}
+          disabled={!addStudentPermission}
+          sx={{
+            width: { xs: "120%", sm: "auto" },
+            mb: { xs: 1, sm: 0 },
+            mt: { xs: 5, sm: 0 },
+          }}
+        >
+          Agregar Estudiante
+        </Button>
         )
       }
       children={
