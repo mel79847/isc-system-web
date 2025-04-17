@@ -12,10 +12,14 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 import ContainerPage from "../../components/common/ContainerPage";
+import ProcessForm from "../CreateGraduation/components/ProcessForm";
 
 const GraduationProcessPage = () => {
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
   const [search, setSearch] = useState("");
+  const [open,setOpen] = useState(false);
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
   const studentsResponse = useLoaderData() as {
     data: Student[];
     message: string;
@@ -44,7 +48,7 @@ const GraduationProcessPage = () => {
   };
 
   const goToCreateProcessPage = () => {
-    navigate("/createProcess");
+    handleOpen();
   };
 
   const tableHeaders: GridColDef[] = [
@@ -184,6 +188,11 @@ const GraduationProcessPage = () => {
           />
         </Paper>
       </Box>
+      <ProcessForm
+        isVisible={open}
+        isClosed={handleClose}
+      >
+      </ProcessForm>
     </ContainerPage>
   );
 };
