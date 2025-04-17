@@ -4,6 +4,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 import { HasPermission } from "../../../helper/permissions";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Permission } from "../../../models/permissionInterface";
 import { getPermissionById } from "../../../services/permissionsService";
 import { UserResponse } from "../../../services/models/LoginResponse";
@@ -17,6 +18,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
     useState<Permission | null>(null);
   const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] =
     useState<Permission | null>(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPermissions = async () => {
       const scheduleAppointmentStudentResponse = await getPermissionById(17);
@@ -33,7 +36,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
   return (
   <>
     <IconButton
-      onClick={() => window.history.back()}
+      onClick={() => navigate(-1)}
       sx={{
         display: "flex",
         top: -19,
