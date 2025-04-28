@@ -23,6 +23,7 @@ import { HasPermission } from "../../helper/permissions";
 import { Permission } from "../../models/permissionInterface";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 import CreateStudentForm from "./CreateStudentForm";
+import StudentModal from "../../components/common/StudentModal";
 
 const StudentPage = () => {
   const navigate = useNavigate();
@@ -42,6 +43,8 @@ const StudentPage = () => {
     phone: true,
     actions: true,
   });
+  const [studentModalOpen, setStudentModalOpen] = useState(false);
+  const [studentModalFunc, setStudentModalFunc] = useState<"edit" | "create">("create");
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -148,7 +151,9 @@ const StudentPage = () => {
     },
   ];
 
-  const handleCreateStudent = () => setOpenCreateModal(true);
+  const handleCreateStudent = () => {
+    handleStudentModalOpen("create");
+  };
 
   const handleStudentCreated = () => {
     setOpenCreateModal(false);
@@ -171,7 +176,8 @@ const StudentPage = () => {
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/edit-student/${id}`);
+    setSelectedId(id);
+    handleStudentModalOpen("edit");
   };
 
   const handleClickOpen = (id: number) => {
@@ -196,6 +202,16 @@ const StudentPage = () => {
         handleClose();
       }
     }
+  };
+
+  const handleStudentModalOpen = (func: "edit" | "create") => {
+    setStudentModalFunc(func);
+    setStudentModalOpen(true);
+  };
+
+  const handleStudentModalClose = () => {
+    fetchStudents();
+    setStudentModalOpen(false);
   };
 
   return (
@@ -332,24 +348,30 @@ const StudentPage = () => {
               },
             }}
           >
-          <IconButton
-            onClick={() => setOpenCreateModal(false)}
-            sx={{
-              position: "absolute",
-              left: 2,
-              top: 2,
-              "&:hover": {
-                bgcolor: "grey.200",
-              },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+            <IconButton
+              onClick={() => setOpenCreateModal(false)}
+              sx={{
+                position: "absolute",
+                left: 2,
+                top: 2,
+                "&:hover": {
+                  bgcolor: "grey.200",
+                },
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
 
             <DialogContent sx={{ p: 2, m: 1 }}>
               <CreateStudentForm onSuccess={handleStudentCreated} />
             </DialogContent>
           </Dialog>
+          <StudentModal
+            open={studentModalOpen}
+            onClose={handleStudentModalClose}
+            func={studentModalFunc}
+            id={selectedId}
+          />
         </Box>
       }
     ></ContainerPage>
