@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 
+
+const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
   lastname: Yup.string().required("El apellido es obligatorio"),
@@ -16,7 +18,7 @@ const validationSchema = Yup.object({
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
+    .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
     .optional(),
   code: Yup.number().optional(),
 });
