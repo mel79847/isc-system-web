@@ -141,15 +141,15 @@ const GraduationProcessPage = () => {
                         sx={{
                           '& .MuiOutlinedInput-root': {
                             '&:hover fieldset': {
-                              borderColor: 'secondary.main', // Cambia el color del borde al pasar el ratón
+                              borderColor: 'secondary.main',
                             },
                             '&.Mui-focused fieldset': {
-                              borderColor: 'secondary.main', // Cambia el color del borde cuando el campo está enfocado
+                              borderColor: 'secondary.main',
                             },
                           },
                           '& input': {
-                            outline: 'none !important', // Elimina el contorno
-                            boxShadow: 'none !important', // Elimina la sombra
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
                           },
                         }}
           />
