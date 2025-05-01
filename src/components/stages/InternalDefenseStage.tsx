@@ -159,6 +159,14 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
   const nextSubStage = () => {
     setSubStage(subStage + 1);
   };
+
+  const prevSubStage = () => {
+    if(subStage === 0)
+      onPrevious();
+    else
+      setSubStage(subStage - 1);
+  };
+
   return (
     <>
       <div className="txt1">
@@ -168,7 +176,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
         <>
           <EmailSender />
           <Box display="flex" justifyContent="space-between" pt={1} pb={0}>
-            <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
+            <Button type="button" onClick={prevSubStage} variant="contained" color="secondary">
               Anterior
             </Button>
             <Button onClick={nextSubStage} variant="contained" color="primary">
@@ -236,7 +244,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
           </Box>
 
           <Box display="flex" justifyContent="space-between" pt={5}>
-            <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
+            <Button type="button" onClick={prevSubStage} variant="contained" color="secondary">
               Anterior
             </Button>
             <Button type="submit" variant="contained" color="primary">
