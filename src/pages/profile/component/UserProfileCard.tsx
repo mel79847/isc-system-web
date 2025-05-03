@@ -1,7 +1,10 @@
 import { Button, Typography, Avatar, Paper, Box } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IconButton } from "@mui/material";
 import { HasPermission } from "../../../helper/permissions";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Permission } from "../../../models/permissionInterface";
 import { getPermissionById } from "../../../services/permissionsService";
 import { UserResponse } from "../../../services/models/LoginResponse";
@@ -15,6 +18,8 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
     useState<Permission | null>(null);
   const [scheduleAppointmentPermissionProffesor, setScheduleAppointmentPermissionProfessor] =
     useState<Permission | null>(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPermissions = async () => {
       const scheduleAppointmentStudentResponse = await getPermissionById(17);
@@ -29,6 +34,18 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
   const hasStudentPermission = HasPermission(scheduleAppointmentPermissionStudent?.name || "");
 
   return (
+  <>
+    <IconButton
+      onClick={() => navigate(-1)}
+      sx={{
+        display: "flex",
+        top: -19,
+        width: 20,
+        height:0,
+      }}
+    >
+      <ArrowBackIcon  />
+    </IconButton>
     <Paper
       elevation={5}
       sx={{
@@ -131,6 +148,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
         <Typography variant="body1">{user?.phone}</Typography>
       </Paper>
     </Paper>
+  </>
   );
 };
 

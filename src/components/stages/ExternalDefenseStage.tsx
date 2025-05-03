@@ -107,6 +107,8 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious
     formik.setFieldValue("date", value);
   };
 
+  const currentDate = dayjs();
+
   return (
     <>
       <div className="txt1">Etapa Final: Defensa Externa</div>
@@ -160,6 +162,8 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious
                   value={formik.values.date}
                   onChange={handleDateChange}
                   format="DD/MM/YYYY"
+                  minDate={currentDate}
+                  maxDate={currentDate.add(1, "year")}
                 />
               </LocalizationProvider>
             </Grid>

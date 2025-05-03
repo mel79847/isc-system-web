@@ -68,6 +68,8 @@ const StudentPage = () => {
       minWidth: 100,
       maxWidth: 150,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "name",
@@ -78,6 +80,8 @@ const StudentPage = () => {
       minWidth: 200,
       maxWidth: 300,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "email",
@@ -88,6 +92,8 @@ const StudentPage = () => {
       minWidth: 200,
       maxWidth: 300,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "phone",
@@ -99,6 +105,8 @@ const StudentPage = () => {
       minWidth: 150,
       maxWidth: 200,
       resizable: true,
+      sortable: false,
+      filterable: false,
     },
     {
       field: "actions",
@@ -108,6 +116,8 @@ const StudentPage = () => {
       flex: 1,
       minWidth: 150,
       maxWidth: 200,
+      sortable: false,
+      filterable: false,
       renderCell: (params) => (
         <div>
           {HasPermission(viewStudentReportPermission?.name || "") && (
