@@ -262,7 +262,7 @@ const ProfessorPage = () => {
           ...col,
           flex: dynamicFlex,
           minWidth: 100,
-          maxWidth: undefined,
+          maxWidth: 200,
       };
     });
   };
