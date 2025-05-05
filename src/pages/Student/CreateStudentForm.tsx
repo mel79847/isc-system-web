@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { createStudent } from "../../services/studentService";
 import { createIntern } from "../../services/internService";
-import { AxiosError } from "axios";
+import axios from "axios";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
@@ -83,7 +83,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
             pending_hours: 0,
           });
         } else {
-          await createStudent({ ...rest, code: Number(values.code) });
+          await createStudent(rest );
         }
         setSuccessDialog(true);
         setTimeout(() => {
@@ -91,8 +91,9 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
           resetForm();
         }, 2000);
       } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          setMessage(error?.response?.data?.message || "Error al crear estudiante");
+        if (axios.isAxiosError(error)) {
+          const backendMessage = error?.response?.data?.error;
+          setMessage(backendMessage || "Error al crear estudiante");
         } else {
           setMessage("Error inesperado. Por favor, inténtelo de nuevo.");
         }
