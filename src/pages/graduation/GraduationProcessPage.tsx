@@ -1,15 +1,16 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { FaSearch } from "react-icons/fa";
-import { Box, Button, IconButton, Paper } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Student } from "../../models/studentInterface";
 import { getPermissionById } from "../../services/permissionsService";
 import { Permission } from "../../models/permissionInterface";
 import { HasPermission } from "../../helper/permissions";
+import { Box, Button, IconButton, Paper } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 import ContainerPage from "../../components/common/ContainerPage";
 import ProcessForm from "../CreateGraduation/components/ProcessForm";
@@ -17,7 +18,7 @@ import ProcessForm from "../CreateGraduation/components/ProcessForm";
 const GraduationProcessPage = () => {
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
   const [search, setSearch] = useState("");
-  const [open, setOpen] = useState(false);
+  const [open,setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const studentsResponse = useLoaderData() as {
@@ -207,7 +208,11 @@ const GraduationProcessPage = () => {
           />
         </Paper>
       </Box>
-      <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
+      <ProcessForm
+        isVisible={open}
+        isClosed={handleClose}
+      >
+      </ProcessForm>
       <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
       <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
       <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
