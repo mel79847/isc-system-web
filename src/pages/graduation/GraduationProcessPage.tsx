@@ -209,6 +209,7 @@ const GraduationProcessPage = () => {
       </Box>
       <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
       <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
+      <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
     </ContainerPage>
   );
 };
