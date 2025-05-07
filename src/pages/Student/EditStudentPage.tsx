@@ -74,12 +74,14 @@ const EditStudentPage = () => {
       phone: "",
       code: "",
       mothername: "",
+      role: "",
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
+        const { role, ...dataToSend } = values;
         // @ts-ignore
-        await updateStudent(values);
+        await updateStudent(dataToSend);
         setMessage("Estudiante actualizado con éxito");
         setSeverity("success");
         setOpen(true);
