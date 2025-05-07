@@ -9,11 +9,11 @@ import {
   Typography,
   Switch,
   FormControlLabel,
+  Container,
 } from "@mui/material";
 import { createStudent } from "../../services/studentService";
 import { createIntern } from "../../services/internService";
 import axios from "axios";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
@@ -117,8 +117,8 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   return (
-    <FormContainer>
-      <form onSubmit={formik.handleSubmit}>
+    <Container>
+      <form onSubmit={formik.handleSubmit} style={{ marginLeft: -20}}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Typography variant="h4">Crear Nuevo Estudiante</Typography>
@@ -287,7 +287,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
         title="¡Vaya!"
         subtitle={message}
       />
-    </FormContainer>
+    </Container>
   );
 };
 
