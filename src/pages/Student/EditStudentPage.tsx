@@ -1,12 +1,22 @@
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert } from "@mui/material";
-import { useEffect, useState } from "react";
-import { getUserById, updateStudent } from "../../services/studentService";
-import { useParams } from "react-router-dom";
+import {
+  Button,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+  IconButton,
+} from "@mui/material";
+
+import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { IconButton } from "@mui/material";
+
+import { FormContainer } from "../CreateGraduation/components/FormContainer";
+import { getUserById, updateStudent } from "../../services/studentService";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -25,23 +35,8 @@ const EditStudentPage = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  // @ts-ignore
-  const [student, setStudent] = useState<any>();
   const { id } = useParams();
-
-  const fetchStudent = async () => {
-    try {
-      const response = await getUserById(Number(id));
-      formik.setValues(response);
-      setStudent(response);
-    } catch (error) {
-      console.error("Error al obtener el estudiante:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchStudent();
-  }, [id]);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -55,7 +50,6 @@ const EditStudentPage = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        // @ts-ignore
         await updateStudent(values);
         setMessage("Estudiante actualizado con éxito");
         setSeverity("success");
@@ -68,7 +62,43 @@ const EditStudentPage = () => {
     },
   });
 
-  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
+  const fetchStudent = async () => {
+    try {
+      const response = await getUserById(Number(id));
+
+      const roleMapping: { [key: number]: string } = {
+        1: "admin",
+        2: "teacher",
+        3: "student",
+      };
+
+      response.role = response.rolesAndPermissions
+        ? Object.values(response.rolesAndPermissions)
+            .map((rp) => (rp as { role_name: string }).role_name)
+            .join(", ")
+        : roleMapping[response.role_id] || "No role found";
+
+      if (response.role.includes("student")) {
+        formik.setValues(response);
+      } else {
+        setMessage("No tienes permiso para editar este usuario.");
+        setSeverity("error");
+        setOpen(true);
+        setTimeout(() => navigate("/students"), 3000);
+      }
+    } catch (error) {
+      setMessage("Error al cargar los datos del estudiante.");
+      setSeverity("error");
+      setOpen(true);
+      setTimeout(() => navigate("/students"), 3000);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudent();
+  }, [id, fetchStudent]);
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -76,14 +106,14 @@ const EditStudentPage = () => {
   };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const { value } = event.target;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("phone", value);
     }
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const { value } = event.target;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("code", value);
     }
@@ -106,9 +136,9 @@ const EditStudentPage = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2} sx={{ padding: 2 }}>
             <Grid item xs={12}>
-              <Typography variant="h4">Crear Nuevo Estudiante</Typography>
+              <Typography variant="h4">{"Crear Nuevo Estudiante"}</Typography>
               <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
-                Ingrese los datos del estudiante a continuación.
+                {"Ingrese los datos del estudiante a continuación.\r"}
               </Typography>
               <Divider flexItem sx={{ mt: 2, mb: 2 }} />
             </Grid>
@@ -116,7 +146,7 @@ const EditStudentPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={2} sx={{ padding: 2 }}>
                 <Grid item xs={3}>
-                  <Typography variant="h6">Información del Estudiante</Typography>
+                  <Typography variant="h6">{"Información del Estudiante"}</Typography>
                 </Grid>
                 <Grid item xs={9}>
                   <Grid container spacing={2}>
@@ -188,7 +218,7 @@ const EditStudentPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={2} sx={{ padding: 2 }}>
                 <Grid item xs={3}>
-                  <Typography variant="h6">Información Adicional</Typography>
+                  <Typography variant="h6">{"Información Adicional"}</Typography>
                 </Grid>
                 <Grid item xs={9}>
                   <TextField
@@ -224,7 +254,7 @@ const EditStudentPage = () => {
               <Grid container spacing={2} justifyContent="flex-end">
                 <Grid item>
                   <Button variant="contained" color="primary" type="submit">
-                    GUARDAR
+                    {"GUARDAR\r"}
                   </Button>
                 </Grid>
               </Grid>
