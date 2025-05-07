@@ -1,22 +1,12 @@
-import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  Button,
-  Divider,
-  Grid,
-  TextField,
-  Typography,
-  Snackbar,
-  Alert,
-  IconButton,
-} from "@mui/material";
-
+import { FormContainer } from "../CreateGraduation/components/FormContainer";
+import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert } from "@mui/material";
+import { useEffect, useState } from "react";
+import { getUserById, updateStudent } from "../../services/studentService";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import { getUserById, updateStudent } from "../../services/studentService";
+import { IconButton } from "@mui/material";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -32,35 +22,13 @@ const validationSchema = Yup.object({
 });
 
 const EditStudentPage = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+  // @ts-ignore
+  const [student, setStudent] = useState<any>();
   const { id } = useParams();
-  const navigate = useNavigate();
-
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      lastname: "",
-      email: "",
-      phone: "",
-      code: "",
-      mothername: "",
-    },
-    validationSchema,
-    onSubmit: async (values) => {
-      try {
-        await updateStudent(values);
-        setMessage("Estudiante actualizado con éxito");
-        setSeverity("success");
-        setOpen(true);
-      } catch (error) {
-        setMessage("Error al crear el estudiante");
-        setSeverity("error");
-        setOpen(true);
-      }
-    },
-  });
 
   const fetchStudent = async () => {
     try {
@@ -96,9 +64,34 @@ const EditStudentPage = () => {
 
   useEffect(() => {
     fetchStudent();
-  }, [id, fetchStudent]);
+  }, [id]);
 
-  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      lastname: "",
+      email: "",
+      phone: "",
+      code: "",
+      mothername: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        // @ts-ignore
+        await updateStudent(values);
+        setMessage("Estudiante actualizado con éxito");
+        setSeverity("success");
+        setOpen(true);
+      } catch (error) {
+        setMessage("Error al crear el estudiante");
+        setSeverity("error");
+        setOpen(true);
+      }
+    },
+  });
+
+  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === "clickaway") {
       return;
     }
@@ -106,14 +99,14 @@ const EditStudentPage = () => {
   };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
+    const value = event.target.value;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("phone", value);
     }
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
+    const value = event.target.value;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("code", value);
     }
@@ -136,9 +129,9 @@ const EditStudentPage = () => {
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={2} sx={{ padding: 2 }}>
             <Grid item xs={12}>
-              <Typography variant="h4">{"Crear Nuevo Estudiante"}</Typography>
+              <Typography variant="h4">Crear Nuevo Estudiante</Typography>
               <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
-                {"Ingrese los datos del estudiante a continuación.\r"}
+                Ingrese los datos del estudiante a continuación.
               </Typography>
               <Divider flexItem sx={{ mt: 2, mb: 2 }} />
             </Grid>
@@ -146,7 +139,7 @@ const EditStudentPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={2} sx={{ padding: 2 }}>
                 <Grid item xs={3}>
-                  <Typography variant="h6">{"Información del Estudiante"}</Typography>
+                  <Typography variant="h6">Información del Estudiante</Typography>
                 </Grid>
                 <Grid item xs={9}>
                   <Grid container spacing={2}>
@@ -218,7 +211,7 @@ const EditStudentPage = () => {
             <Grid item xs={12}>
               <Grid container spacing={2} sx={{ padding: 2 }}>
                 <Grid item xs={3}>
-                  <Typography variant="h6">{"Información Adicional"}</Typography>
+                  <Typography variant="h6">Información Adicional</Typography>
                 </Grid>
                 <Grid item xs={9}>
                   <TextField
@@ -254,7 +247,7 @@ const EditStudentPage = () => {
               <Grid container spacing={2} justifyContent="flex-end">
                 <Grid item>
                   <Button variant="contained" color="primary" type="submit">
-                    {"GUARDAR\r"}
+                    GUARDAR
                   </Button>
                 </Grid>
               </Grid>
