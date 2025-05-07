@@ -70,7 +70,8 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
     if (studentProcess) {
       studentProcess.modality_id = mode;
       studentProcess.period = period;
-      setProcess(studentProcess);
+      // Actualiza el resumen de inmediato con los datos locales
+      setProcess({ ...studentProcess });
       await updateProcess(studentProcess);
       onNext();
     }
