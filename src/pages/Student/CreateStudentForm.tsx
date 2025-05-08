@@ -49,10 +49,10 @@ const validationSchema = Yup.object({
   isIntern: Yup.boolean(),
 
   total_hours: Yup.number()
-    .min(0, "Las horas no pueden ser negativas")
-    .when("isIntern", {
+    .min(0, "Las horas no pueden ser negativas.")
+    .when("isIntern",{
       is: true,
-      then: (schema) => schema.required("Las horas becarias son obligatorias"),
+      then: (schema) => schema.required("Las horas becarias son obligatorias."),
       otherwise: (schema) => schema.nullable(),
     }),
 });
