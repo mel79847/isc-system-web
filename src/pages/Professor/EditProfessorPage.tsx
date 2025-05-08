@@ -33,10 +33,9 @@ const EditProfessorPage = () => {
     try {
       const response = await getUserById(Number(id));
       formik.setValues({
-        ...formik.initialValues,
         ...response,
-        roles: response.roles || [3],
-        role_id: response.role_id || 3,
+        roles: [2], 
+        role_id: 2,
         isStudent: false,
         is_scholarship: false,
         degree: response.degree || "",
@@ -68,8 +67,16 @@ const EditProfessorPage = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
+        const updatedValues = {
+          ...values,
+          id: Number(id),
+          role_id: 2,
+          roles: [2],
+          isStudent: false,
+          is_scholarship: false
+        };
         // @ts-ignore
-        await updateProfessor(values);
+        await updateProfessor(updatedValues);
         setMessage("Docente actualizado con éxito");
         setSeverity("success");
       } catch (error) {
