@@ -59,11 +59,11 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
 
   const saveStage = async () => {
     if (process) {
-      const { reviewer, reviewerDesignationLetterSubmitted } = formik.values;
+      const { reviewer, reviewerDesignationLetterSubmitted, reviewerApprovalLetterSubmitted } = formik.values;
+      process.reviewer_approval = reviewerApprovalLetterSubmitted;
       process.reviewer_letter = reviewerDesignationLetterSubmitted;
       process.reviewer_id = Number(reviewer);
       process.stage_id = 3;
-      process.reviewer_approval = true;
       process.reviewer_approval_date = dayjs();
       setProcess(process);
       try {
@@ -97,6 +97,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
     return Boolean(
       formik.values.reviewer &&
         formik.values.reviewerDesignationLetterSubmitted &&
+        formik.values.reviewerApprovalLetterSubmitted &&
         formik.values.date_reviewer_assignament
     );
   };
@@ -233,7 +234,12 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
           <Button type="button" variant="contained" color="secondary" onClick={onPrevious}>
             Anterior
           </Button>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary"
+          disabled={
+              !formik.values.reviewerDesignationLetterSubmitted ||
+              !formik.values.reviewerApprovalLetterSubmitted
+            }
+          >
             {isApproveButton ? "Aprobar Etapa" : "Guardar"}
           </Button>
         </Box>
