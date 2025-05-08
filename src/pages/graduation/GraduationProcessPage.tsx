@@ -147,6 +147,20 @@ const GraduationProcessPage = () => {
             placeholder="Buscar por nombre de estudiante"
             value={search}
             onChange={handleSearchChange}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '&:hover fieldset': {
+                              borderColor: 'secondary.main',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'secondary.main',
+                            },
+                          },
+                          '& input': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                          },
+                        }}
           />
         </div>
       </div>
@@ -198,6 +212,27 @@ const GraduationProcessPage = () => {
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
+            slotProps={{
+                columnsManagement: {
+                  autoFocusSearchField: false,
+                  searchInputProps: {
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        "&:hover fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                      },
+                      "& input": {
+                        outline: "none !important",
+                        boxShadow: "none !important",
+                      },
+                    },
+                  },
+                },
+              }}
           />
         </Paper>
       </Box>
