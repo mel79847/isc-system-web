@@ -17,5 +17,5 @@ export interface StudentForm {
   mothername: string;
   email: string;
   phone: string;
-  code?: number;
+  code?: string;
 }

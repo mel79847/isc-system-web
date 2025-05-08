@@ -43,6 +43,8 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious
   const setProcess = useProcessStore((state) => state.setProcess);
   const defenseDetail = useDefenseExternalDetail(process?.id || 0);
 
+  const [uniqueJurors, setUniqueJurors] = useState<boolean>(true);
+
   const formik = useFormik({
     initialValues: {
       president: defenseDetail?.president?.toString() || "",
@@ -109,6 +111,16 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious
 
   const currentDate = dayjs();
 
+  useEffect(() => {
+    const firstJuror = formik.values.firstJuror;
+    const secondJuror = formik.values.secondJuror;
+    if (firstJuror == "" || secondJuror == "") {
+      setUniqueJurors(true);
+    } else {
+      setUniqueJurors(new Set([firstJuror, secondJuror]).size === 2);
+    }
+  }, [formik.values]);
+
   return (
     <>
       <div className="txt1">Etapa Final: Defensa Externa</div>
@@ -153,6 +165,9 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious
               {formik.touched.secondJuror && formik.errors.secondJuror ? (
                 <div className="text-red-1 text-xs mt-1">{String(formik.errors.secondJuror)}</div>
               ) : null}
+              {!uniqueJurors && (
+                <div className="text-red-1 text-xs mt-1">Los jurados deben ser distintos</div>
+              )}
             </Grid>
 
             <Grid item xs={12} sm={6} marginTop={5}>
@@ -173,7 +188,7 @@ export const ExternalDefenseStage: FC<ExternalDefenseStageProps> = ({ onPrevious
           <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
             Anterior
           </Button>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary" disabled={!uniqueJurors}>
             Finalizar
           </Button>
         </Box>

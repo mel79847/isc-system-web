@@ -35,9 +35,27 @@ const Checklist = () => {
   } = process as Seminar;
 
   const renderStatusIcon = (stage: number) => {
-    if (stage < stage_id) return <FaCheck className="text-green-500 ml-auto" />;
-    else if (stage == stage_id) return <FaClock className="text-yellow-500 ml-auto" />;
-    else return <FaMinus className="text-gray-400 ml-auto" />;
+    switch (stage) {
+      case 0:
+        return <FaCheck className="text-green-500 ml-auto" />; // Siempre aprobado por estar inscrito
+
+      case 1:
+        return tutor_approval
+          ? <FaCheck className="text-green-500 ml-auto" />
+          : stage_id === 1
+            ? <FaClock className="text-yellow-500 ml-auto" />
+            : <FaMinus className="text-gray-400 ml-auto" />;
+
+      case 2:
+        return reviewer_approval
+          ? <FaCheck className="text-green-500 ml-auto" />
+          : stage_id === 2
+            ? <FaClock className="text-yellow-500 ml-auto" />
+            : <FaMinus className="text-gray-400 ml-auto" />;
+
+      default:
+        return <FaMinus className="text-gray-400 ml-auto" />;
+    }
   };
 
   const telegramLink = `https://t.me/+59176517816`;
