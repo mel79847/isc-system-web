@@ -10,6 +10,7 @@ import SuccessDialog from "../../components/common/SucessDialog";
 import LoadingOverlay from "../../components/common/Loading";
 import { COUNTRY_CODES } from "../../constants/countryCodes";
 
+const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 const onlyLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
 
 const validationSchema = Yup.object({
@@ -27,7 +28,7 @@ const validationSchema = Yup.object({
     .required("El correo electrónico es obligatorio"),
   countryCode: Yup.string().required("Seleccione un código de país"),
   phoneNumber: Yup.string()
-    .matches(/^\d{7,15}$/, "Número inválido, solo dígitos entre 7 y 15")
+    .matches(/^\d{7,15}$/, PHONE_ERROR_MESSAGE)
     .required("El número de teléfono es obligatorio"),
   degree: Yup.string().required("El título académico es obligatorio"),
   code: Yup.number()

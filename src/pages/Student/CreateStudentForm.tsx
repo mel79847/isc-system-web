@@ -19,6 +19,8 @@ import ErrorDialog from "../../components/common/ErrorDialog";
 const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
+
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(20, "Máximo 20 caracteres")
@@ -40,7 +42,7 @@ const validationSchema = Yup.object({
     .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
-  phone: Yup.string().matches(/^\d{8}$/, "El número debe tener exactamente 8 dígitos"),
+  phone: Yup.string().matches(/^\d{8}$/, PHONE_ERROR_MESSAGE),
 
   code: Yup.string().matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos"),
 
