@@ -18,7 +18,7 @@ import ProcessForm from "../CreateGraduation/components/ProcessForm";
 const GraduationProcessPage = () => {
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
   const [search, setSearch] = useState("");
-  const [open,setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const studentsResponse = useLoaderData() as {
@@ -104,6 +104,8 @@ const GraduationProcessPage = () => {
       resizable: false,
       filterable: false,
       sortable: false,
+      minWidth: 100,
+      resizable: false,
       renderCell: (params) => (
         <div>
           {
@@ -152,6 +154,20 @@ const GraduationProcessPage = () => {
             placeholder="Buscar por nombre de estudiante"
             value={search}
             onChange={handleSearchChange}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '&:hover fieldset': {
+                              borderColor: 'secondary.main',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'secondary.main',
+                            },
+                          },
+                          '& input': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                          },
+                        }}
           />
         </div>
       </div>
@@ -205,16 +221,30 @@ const GraduationProcessPage = () => {
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
+            slotProps={{
+                columnsManagement: {
+                  autoFocusSearchField: false,
+                  searchInputProps: {
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        "&:hover fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                      },
+                      "& input": {
+                        outline: "none !important",
+                        boxShadow: "none !important",
+                      },
+                    },
+                  },
+                },
+              }}
           />
         </Paper>
       </Box>
-      <ProcessForm
-        isVisible={open}
-        isClosed={handleClose}
-      >
-      </ProcessForm>
-      <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
-      <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
       <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
     </ContainerPage>
   );

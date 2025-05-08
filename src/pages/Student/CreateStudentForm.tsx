@@ -9,15 +9,17 @@ import {
   Typography,
   Switch,
   FormControlLabel,
+  Container,
 } from "@mui/material";
 import { createStudent } from "../../services/studentService";
 import { createIntern } from "../../services/internService";
-import { AxiosError } from "axios";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
+import axios from "axios";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -40,17 +42,17 @@ const validationSchema = Yup.object({
     .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
-  phone: Yup.string().matches(/^\d{8}$/, "El número debe tener exactamente 8 dígitos"),
+  phone: Yup.string().matches(/^\d{8}$/, PHONE_ERROR_MESSAGE),
 
   code: Yup.string().matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos"),
 
   isIntern: Yup.boolean(),
 
   total_hours: Yup.number()
-    .min(0, "Las horas no pueden ser negativas")
-    .when("isIntern", {
+    .min(0, "Las horas no pueden ser negativas.")
+    .when("isIntern",{
       is: true,
-      then: (schema) => schema.required("Las horas becarias son obligatorias"),
+      then: (schema) => schema.required("Las horas becarias son obligatorias."),
       otherwise: (schema) => schema.nullable(),
     }),
 });
@@ -83,7 +85,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
             pending_hours: 0,
           });
         } else {
-          await createStudent({ ...rest, code: Number(values.code) });
+          await createStudent(rest );
         }
         setSuccessDialog(true);
         setTimeout(() => {
@@ -91,8 +93,9 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
           resetForm();
         }, 2000);
       } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          setMessage(error?.response?.data?.message || "Error al crear estudiante");
+        if (axios.isAxiosError(error)) {
+          const backendMessage = error?.response?.data?.error;
+          setMessage(backendMessage || "Error al crear estudiante");
         } else {
           setMessage("Error inesperado. Por favor, inténtelo de nuevo.");
         }
@@ -116,8 +119,8 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
   };
 
   return (
-    <FormContainer>
-      <form onSubmit={formik.handleSubmit}>
+    <Container>
+      <form onSubmit={formik.handleSubmit} style={{ marginLeft: -20}}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Typography variant="h4">Crear Nuevo Estudiante</Typography>
@@ -286,7 +289,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
         title="¡Vaya!"
         subtitle={message}
       />
-    </FormContainer>
+    </Container>
   );
 };
 
