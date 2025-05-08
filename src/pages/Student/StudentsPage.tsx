@@ -62,6 +62,7 @@ const StudentPage = () => {
     {
       field: "code",
       headerName: "Código",
+      description: "Código",
       headerAlign: "center",
       align: "center",
       flex: 1,
@@ -74,6 +75,7 @@ const StudentPage = () => {
     {
       field: "name",
       headerName: "Nombre Completo",
+      description: "Nombre Completo",
       headerAlign: "center",
       align: "center",
       flex: 1,
@@ -86,6 +88,7 @@ const StudentPage = () => {
     {
       field: "email",
       headerName: "Correo",
+      description: "Correo",
       headerAlign: "center",
       align: "center",
       flex: 1,
@@ -98,6 +101,7 @@ const StudentPage = () => {
     {
       field: "phone",
       headerName: "Celular",
+      description: "Celular",
       type: "number",
       headerAlign: "center",
       align: "center",
@@ -111,6 +115,7 @@ const StudentPage = () => {
     {
       field: "actions",
       headerName: "Acciones",
+      description: "Acciones",
       headerAlign: "center",
       align: "center",
       flex: 1,
