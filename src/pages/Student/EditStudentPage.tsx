@@ -4,7 +4,7 @@ import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getUserById, updateStudent } from "../../services/studentService";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 
@@ -24,6 +24,7 @@ const validationSchema = Yup.object({
 });
 
 const EditStudentPage = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
@@ -34,10 +35,32 @@ const EditStudentPage = () => {
   const fetchStudent = async () => {
     try {
       const response = await getUserById(Number(id));
-      formik.setValues(response);
-      setStudent(response);
+
+      const roleMapping: { [key: number]: string } = {
+        1: "admin",
+        2: "teacher",
+        3: "student",
+      };
+
+      response.role = response.rolesAndPermissions
+        ? Object.values(response.rolesAndPermissions)
+            .map((rp) => (rp as { role_name: string }).role_name)
+            .join(", ")
+        : roleMapping[response.role_id] || "No role found";
+
+      if (response.role.includes("student")) {
+        formik.setValues(response);
+      } else {
+        setMessage("No tienes permiso para editar este usuario.");
+        setSeverity("error");
+        setOpen(true);
+        setTimeout(() => navigate("/students"), 3000);
+      }
     } catch (error) {
-      console.error("Error al obtener el estudiante:", error);
+      setMessage("Error al cargar los datos del estudiante.");
+      setSeverity("error");
+      setOpen(true);
+      setTimeout(() => navigate("/students"), 3000);
     }
   };
 
@@ -53,12 +76,14 @@ const EditStudentPage = () => {
       phone: "",
       code: "",
       mothername: "",
+      role: "",
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
+        const { role, ...dataToSend } = values;
         // @ts-ignore
-        await updateStudent(values);
+        await updateStudent(dataToSend);
         setMessage("Estudiante actualizado con éxito");
         setSeverity("success");
         setOpen(true);
