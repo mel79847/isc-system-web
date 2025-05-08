@@ -24,6 +24,7 @@ import dataGridLocaleText from "../../locales/datagridLocaleEs";
 import { SnackbarProps } from "../../models/SnackBarProps";
 import SnackBar from "../../components/common/SnackBar";
 import axios from "axios";
+import ProfessorModal from "../../components/common/ProfessorModal";
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
@@ -76,6 +77,9 @@ const ProfessorPage = () => {
   const hasViewPermission = HasPermission(viewProfessorReportPermission?.name || "");
   const hasEditPermission = HasPermission(editProfessorPermission?.name || "");
   const hasDeletePermission = HasPermission(deleteProfessorPermission?.name || "");
+
+  const [professorModalOpen, setProfessorModalOpen] = useState(false);
+  const [professorModalFunc, setProfessorModalFunc] = useState<"edit" | "create">("create");
 
   const columns: GridColDef[] = [
     {
@@ -254,22 +258,24 @@ const ProfessorPage = () => {
   ];
 
   const getResponsiveColumns = (): GridColDef[] => {
-    const visibleColumns = columns.filter(col => columnVisibilityModel[col.field] !== false && col.field !== 'actions');
+    const visibleColumns = columns.filter(
+      (col) => columnVisibilityModel[col.field] !== false && col.field !== "actions"
+    );
     const dynamicFlex = visibleColumns.length > 0 ? Math.floor(12 / visibleColumns.length) : 1;
 
-    return columns.map(col => {
-      if (col.field === 'actions' || columnVisibilityModel[col.field] === false) return col;
+    return columns.map((col) => {
+      if (col.field === "actions" || columnVisibilityModel[col.field] === false) return col;
       return {
-          ...col,
-          flex: dynamicFlex,
-          minWidth: 100,
-          maxWidth: 200,
+        ...col,
+        flex: dynamicFlex,
+        minWidth: 100,
+        maxWidth: 200,
       };
     });
   };
 
   const handleCreateTeacher = () => {
-    navigate("/create-professor");
+    handleProfessorModalOpen("create");
   };
 
   const fetchProfessors = async () => {
@@ -289,7 +295,8 @@ const ProfessorPage = () => {
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/edit-professor/${id}`);
+    setSelectedId(id);
+    handleProfessorModalOpen("edit");
   };
 
   const handleClickOpen = (id: number) => {
@@ -300,6 +307,16 @@ const ProfessorPage = () => {
   const handleClose = () => {
     setOpen(false);
     setSelectedId(null);
+  };
+
+  const handleProfessorModalOpen = (func: "edit" | "create") => {
+    setProfessorModalFunc(func);
+    setProfessorModalOpen(true);
+  };
+
+  const handleProfessorModalClose = () => {
+    fetchProfessors();
+    setProfessorModalOpen(false);
   };
 
   const handleCloseSnackbar = () => {
@@ -326,13 +343,11 @@ const ProfessorPage = () => {
         setProfessors(newProfessors);
         showSnackbar("El docente fue eliminado correctamente", "success");
       } catch (error) {
-
         if (axios.isAxiosError(error) && error.response?.data?.error) {
           showSnackbar(error.response.data.error, "error");
         } else {
           showSnackbar("Error al eliminar el docente", "error");
         }
-        
       } finally {
         handleClose();
       }
@@ -356,126 +371,131 @@ const ProfessorPage = () => {
           </Button>
         )
       }
-      children={
-        isLoading ? (
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "55%",
+    >
+      {isLoading ? (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "55%",
+          }}
+        >
+          <SpinModal />
+        </div>
+      ) : (
+        <div style={{ width: "100%", paddingBottom: 0 }}>
+          <DataGrid
+            rows={professors}
+            columns={getResponsiveColumns()}
+            localeText={dataGridLocaleText}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
             }}
-          >
-            <SpinModal />
-          </div>
-        ) : (
-          <div style={{ width: "100%", paddingBottom: 0 }}>
-            <DataGrid
-              rows={professors}
-              columns={getResponsiveColumns()}
-              localeText={dataGridLocaleText}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection={false}
-              disableRowSelectionOnClick
-              autoHeight
-              columnVisibilityModel={columnVisibilityModel}
-              onColumnVisibilityModelChange={(newModel) => {
-                const updatedModel = {
-                  ...newModel,
-                  code: true,
-                };
-                setColumnVisibilityModel(updatedModel);
-              }}
-              slotProps={{
-                columnsManagement: {
-                  autoFocusSearchField: false,
-                  searchInputProps: {
-                    sx: {
-                      "& .MuiOutlinedInput-root": {
-                        "&:hover fieldset": {
-                          borderColor: "secondary.main",
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "secondary.main",
-                        },
+            pageSizeOptions={[5, 10]}
+            checkboxSelection={false}
+            disableRowSelectionOnClick
+            autoHeight
+            columnVisibilityModel={columnVisibilityModel}
+            onColumnVisibilityModelChange={(newModel) => {
+              const updatedModel = {
+                ...newModel,
+                code: true,
+              };
+              setColumnVisibilityModel(updatedModel);
+            }}
+            slotProps={{
+              columnsManagement: {
+                autoFocusSearchField: false,
+                searchInputProps: {
+                  sx: {
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "secondary.main",
                       },
-                      "& input": {
-                        outline: "none !important",
-                        boxShadow: "none !important",
+                      "&.Mui-focused fieldset": {
+                        borderColor: "secondary.main",
                       },
+                    },
+                    "& input": {
+                      outline: "none !important",
+                      boxShadow: "none !important",
                     },
                   },
                 },
-              }}
-              classes={{
-                root: "bg-white dark:bg-gray-800",
-                columnHeader: "bg-gray-200 dark:bg-gray-800",
-                cell: "bg-white dark:bg-gray-800",
-                row: "bg-white dark:bg-gray-800",
-                columnHeaderTitle: "!font-bold text-center",
-                sortIcon: "bg-gray-200 dark:bg-gray-800",
-              }}
-              sx={{
-                "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
-                  outline: "none !important",
-                  border: "none !important",
-                  boxShadow: "none !important",
-                },
-                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
-                  outline: "none !important",
-                  border: "none !important",
-                  boxShadow: "none !important",
-                },
-                "& .MuiDataGrid-cell--editing": {
-                  boxShadow: "none !important",
-                },
-                "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
-                  outline: "none !important",
-                },
-                "& .MuiDataGrid-cell": {
-                  borderColor: "transparent",
-                },
-                "& .MuiDataGrid-row.Mui-selected": {
-                  backgroundColor: "inherit !important",
-                },
-              }}
-            />
+              },
+            }}
+            classes={{
+              root: "bg-white dark:bg-gray-800",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
+              cell: "bg-white dark:bg-gray-800",
+              row: "bg-white dark:bg-gray-800",
+              columnHeaderTitle: "!font-bold text-center",
+              sortIcon: "bg-gray-200 dark:bg-gray-800",
+            }}
+            sx={{
+              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                outline: "none !important",
+                border: "none !important",
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell--editing": {
+                boxShadow: "none !important",
+              },
+              "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
+                outline: "none !important",
+              },
+              "& .MuiDataGrid-cell": {
+                borderColor: "transparent",
+              },
+              "& .MuiDataGrid-row.Mui-selected": {
+                backgroundColor: "inherit !important",
+              },
+            }}
+          />
 
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  ¿Estás seguro de que quieres eliminar este docente?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose} color="primary">
-                  Cancelar
-                </Button>
-                <Button onClick={handleDelete} color="secondary" autoFocus>
-                  Eliminar
-                </Button>
-              </DialogActions>
-            </Dialog>
-            <SnackBar
-              open={snackbar.open}
-              message={snackbar.message}
-              severity={snackbar.severity}
-              onClose={handleCloseSnackbar}
-            />
-          </div>
-        )
-      }
-    />
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                ¿Estás seguro de que quieres eliminar este docente?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="primary">
+                Cancelar
+              </Button>
+              <Button onClick={handleDelete} color="secondary">
+                Eliminar
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <SnackBar
+            open={snackbar.open}
+            message={snackbar.message}
+            severity={snackbar.severity}
+            onClose={handleCloseSnackbar}
+          />
+          <ProfessorModal
+            open={professorModalOpen}
+            onClose={handleProfessorModalClose}
+            func={professorModalFunc}
+            id={selectedId}
+          />
+        </div>
+      )}
+    </ContainerPage>
   );
 };
 

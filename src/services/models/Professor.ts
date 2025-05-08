@@ -6,4 +6,6 @@ export interface ProfessorInterface {
   phone: string;
   degree: string;
   code?: string;
+  countryCode?: string;
+  phoneNumber?: string;
 }
