@@ -17,9 +17,9 @@ import ProcessForm from "../CreateGraduation/components/ProcessForm";
 const GraduationProcessPage = () => {
   const [filteredData, setFilteredData] = useState<Student[] | []>([]);
   const [search, setSearch] = useState("");
-  const [open,setOpen] = useState(false);
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const studentsResponse = useLoaderData() as {
     data: Student[];
     message: string;
@@ -59,7 +59,8 @@ const GraduationProcessPage = () => {
       align: "center",
       flex: 1,
       hideable: false,
-      minWidth: 120,
+      minWidth: 150,
+      maxWidth: 250,
     },
     {
       field: "period",
@@ -67,6 +68,8 @@ const GraduationProcessPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 120,
+      maxWidth: 200,
     },
     {
       field: "tutor_name",
@@ -74,6 +77,8 @@ const GraduationProcessPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 150,
+      maxWidth: 250,
     },
     {
       field: "reviewer_name",
@@ -81,6 +86,8 @@ const GraduationProcessPage = () => {
       headerAlign: "center",
       align: "center",
       flex: 1,
+      minWidth: 150,
+      maxWidth: 250,
     },
     {
       field: "actions",
@@ -90,6 +97,8 @@ const GraduationProcessPage = () => {
       flex: 1,
       filterable: false,
       sortable: false,
+      minWidth: 100,
+      resizable: false,
       renderCell: (params) => (
         <div>
           {
@@ -138,6 +147,20 @@ const GraduationProcessPage = () => {
             placeholder="Buscar por nombre de estudiante"
             value={search}
             onChange={handleSearchChange}
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '&:hover fieldset': {
+                              borderColor: 'secondary.main',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'secondary.main',
+                            },
+                          },
+                          '& input': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                          },
+                        }}
           />
         </div>
       </div>
@@ -189,14 +212,31 @@ const GraduationProcessPage = () => {
               row: "bg-white dark:bg-gray-800",
               columnHeaderTitle: "!font-bold text-center",
             }}
+            slotProps={{
+                columnsManagement: {
+                  autoFocusSearchField: false,
+                  searchInputProps: {
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        "&:hover fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                      },
+                      "& input": {
+                        outline: "none !important",
+                        boxShadow: "none !important",
+                      },
+                    },
+                  },
+                },
+              }}
           />
         </Paper>
       </Box>
-      <ProcessForm
-        isVisible={open}
-        isClosed={handleClose}
-      >
-      </ProcessForm>
+      <ProcessForm isVisible={open} isClosed={handleClose}></ProcessForm>
     </ContainerPage>
   );
 };
