@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
-import { Box, Grid, Button } from "@mui/material";
+import { Box, Grid, Button, Typography } from "@mui/material";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -40,7 +40,7 @@ const currentDate = dayjs();
 
 export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(false);
+  const [readOnly, setReadOnly] = useState<boolean>(true);
 
   const process = useProcessStore((state) => state.process);
   const setProcess = useProcessStore((state) => state.setProcess);
@@ -153,22 +153,31 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
   const isApproveButton = canApproveStage();
 
   const editForm = () => {
-    setEditMode(false);
+    setReadOnly(false);
   };
 
   const nextSubStage = () => {
     setSubStage(subStage + 1);
   };
+
+  const prevSubStage = () => {
+    if(subStage === 0)
+      onPrevious();
+    else
+      setSubStage(subStage - 1);
+  };
+
   return (
     <>
-      <div className="txt1">
-        Etapa 4: Defensa Interna <ModeEditIcon onClick={editForm} />
-      </div>
+      <Typography variant="h6" gutterBottom style={{ fontWeight: "bold" }}>
+        Etapa 4: Defensa Interna{" "}
+        {subStage == 1 && <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />}
+      </Typography>
       {subStage === 0 && (
         <>
           <EmailSender />
           <Box display="flex" justifyContent="space-between" pt={1} pb={0}>
-            <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
+            <Button type="button" onClick={prevSubStage} variant="contained" color="secondary">
               Anterior
             </Button>
             <Button onClick={nextSubStage} variant="contained" color="primary">
@@ -183,7 +192,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
             <Grid container spacing={2}>
               <Grid item xs={6} marginTop={5}>
                 <ProfessorAutocomplete
-                  disabled={editMode}
+                  disabled={readOnly}
                   value={String(formik.values.president)}
                   onChange={handlePresidentChange}
                   id="president"
@@ -196,7 +205,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
 
               <Grid item xs={6} marginTop={5}>
                 <ProfessorAutocomplete
-                  disabled={editMode}
+                  disabled={readOnly}
                   value={String(formik.values.firstJuror)}
                   onChange={handleFirstJurorChange}
                   id="firstJuror"
@@ -209,7 +218,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
 
               <Grid item xs={6} marginTop={5}>
                 <ProfessorAutocomplete
-                  disabled={editMode}
+                  disabled={readOnly}
                   value={String(formik.values.secondJuror)}
                   onChange={handleSecondJurorChange}
                   id="secondJuror"
@@ -223,6 +232,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
               <Grid item xs={12} sm={6} marginTop={5}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    disabled={readOnly}
                     label="Fecha de Defensa"
                     value={formik.values.date}
                     onChange={handleDateChange}
@@ -236,7 +246,7 @@ export const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious
           </Box>
 
           <Box display="flex" justifyContent="space-between" pt={5}>
-            <Button type="button" onClick={onPrevious} variant="contained" color="secondary">
+            <Button type="button" onClick={prevSubStage} variant="contained" color="secondary">
               Anterior
             </Button>
             <Button type="submit" variant="contained" color="primary">
