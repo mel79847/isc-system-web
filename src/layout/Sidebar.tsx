@@ -72,12 +72,12 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ open, setOpen }) => {
   const user = useUserStore((state) => state.user);
   const theme = useTheme();
-  const isSmallOrMediumScreen = useMediaQuery(theme.breakpoints.down("sm")); // Detect small and medium screens
+  const isSmallOrMediumScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isSmallOrMediumScreen) {
-      setOpen(false); 
+      setOpen(false);
     } else {
       setOpen(true);
     }
