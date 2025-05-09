@@ -1,7 +1,6 @@
 import { DataGrid, GridColDef, GridColumnVisibilityModel } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/ArrowBack";
 import {
   Button,
   IconButton,
@@ -13,6 +12,7 @@ import {
   Box,
   useMediaQuery,
   Container,
+  Modal,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ContainerPage from "../../components/common/ContainerPage";
@@ -163,6 +163,7 @@ const StudentPage = () => {
   ];
 
   const handleCreateStudent = () => setOpenCreateModal(true);
+  const handleCloseCreateStudent = () => setOpenCreateModal(false);
 
   const handleStudentCreated = () => {
     setOpenCreateModal(false);
@@ -263,13 +264,20 @@ const StudentPage = () => {
             onColumnVisibilityModelChange={(newModel) => {
               const updatedModel = {
                 ...newModel,
-                name: true,
+                code: true, 
               };
               const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
               if (visibleColumns === 0) {
                 return;
               }
               setColumnVisibilityModel(updatedModel);
+            }}
+            classes={{
+              root: "bg-white dark:bg-gray-800",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
+              cell: "bg-white dark:bg-gray-800",
+              row: "bg-white dark:bg-gray-800",
+              columnHeaderTitle: "!font-bold text-center",
             }}
             sx={{
               "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
@@ -316,36 +324,26 @@ const StudentPage = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          <Dialog
-            open={openCreateModal}
-            maxWidth="md"
-            PaperProps={{
-              sx: {
-                borderRadius: 3,
-                p: 0,
-                maxHeight: "100vh",
-                position: "relative",
-              },
-            }}
-          >
-          <IconButton
-            onClick={() => setOpenCreateModal(false)}
-            sx={{
-              position: "absolute",
-              left: 2,
-              top: 2,
-              "&:hover": {
-                bgcolor: "grey.200",
-              },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-
-            <DialogContent sx={{ p: 2, m: 1 }}>
+          <Modal open={openCreateModal} onClose={handleCloseCreateStudent}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: '80%',
+                maxWidth: '100vh',
+                maxHeight: "80vh",
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: 24,
+                overflowY: "auto",
+                p: 4
+              }}
+            >
               <CreateStudentForm onSuccess={handleStudentCreated} />
-            </DialogContent>
-          </Dialog>
+            </Box>
+          </Modal>
         </Box>
       }
     ></ContainerPage>
