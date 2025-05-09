@@ -29,8 +29,7 @@ import CreateStudentForm from "./CreateStudentForm";
 
 const StudentPage = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmallScreen = useMediaQuery(useTheme().breakpoints.down("sm"));
   const [,setIsSidebarVisible] = useState(true);
   const [students, setStudents] = useState([]);
   const [open, setOpen] = useState(false);
@@ -51,9 +50,9 @@ const StudentPage = () => {
 
   useEffect(() => {
     if (isSmallScreen) {
-      setIsSidebarVisible(false); // Hide sidebar on small screens
+      setIsSidebarVisible(false);
     } else {
-      setIsSidebarVisible(true); // Show sidebar on larger screens
+      setIsSidebarVisible(true);
     }
   }, [isSmallScreen]);
 
@@ -235,7 +234,7 @@ const StudentPage = () => {
               width: { xs: "120%", sm: "auto" },
               mb: { xs: 1, sm: 0 },
               mt: { xs: 5, sm: 0 },
-               fontSize: { xs: "0.5rem", sm: "1rem" }, // Adjust font size for small screens
+               fontSize: { xs: "0.5rem", sm: "1rem" },
               marginLeft: { xs: 2, sm: 2 },
             }}
           >
@@ -264,7 +263,7 @@ const StudentPage = () => {
             onColumnVisibilityModelChange={(newModel) => {
               const updatedModel = {
                 ...newModel,
-                code: true, 
+                code: true,
               };
               const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
               if (visibleColumns === 0) {
@@ -296,8 +295,8 @@ const StudentPage = () => {
               "& .MuiDataGrid-row.Mui-selected": {
                 backgroundColor: "inherit !important",
               },
-                fontSize: { xs: "0.8rem", sm: "1rem" }, // Adjust font size for small screens
-                marginLeft: { xs: "-40px", sm: "-40px" }, // Reduce margin-left for small screens
+                fontSize: { xs: "0.8rem", sm: "1rem" },
+                marginLeft: { xs: "-40px", sm: "-40px" },
             }}
             pageSizeOptions={[5, 10]}
             disableRowSelectionOnClick
