@@ -4,7 +4,7 @@ import InternalDefenseStage from "./stages/InternalDefenseStage";
 import { MentorStage } from "./stages/MentorStage";
 import { RegistrationStage } from "./stages/RegistrationStage";
 import { ReviewerStage } from "./stages/ReviewerStage";
-import { ExternalDefenseStage } from "./stages/ExternalDefenseStage";
+import ExternalDefenseStage from "./stages/ExternalDefenseStage";
 import { Seminar } from "../models/studentProcess";
 import { steps } from "../data/steps";
 import { useProcessStore } from "../store/store";
