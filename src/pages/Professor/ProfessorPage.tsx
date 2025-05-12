@@ -23,6 +23,7 @@ import { HasPermission } from "../../helper/permissions";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 import { SnackbarProps } from "../../models/SnackBarProps";
 import SnackBar from "../../components/common/SnackBar";
+import axios from "axios";
 
 const ProfessorPage = () => {
   const navigate = useNavigate();
@@ -262,7 +263,7 @@ const ProfessorPage = () => {
           ...col,
           flex: dynamicFlex,
           minWidth: 100,
-          maxWidth: undefined,
+          maxWidth: 200,
       };
     });
   };
@@ -325,8 +326,13 @@ const ProfessorPage = () => {
         setProfessors(newProfessors);
         showSnackbar("El docente fue eliminado correctamente", "success");
       } catch (error) {
-        console.log(error);
-        showSnackbar("Error al eliminar el docente", "error");
+
+        if (axios.isAxiosError(error) && error.response?.data?.error) {
+          showSnackbar(error.response.data.error, "error");
+        } else {
+          showSnackbar("Error al eliminar el docente", "error");
+        }
+        
       } finally {
         handleClose();
       }
