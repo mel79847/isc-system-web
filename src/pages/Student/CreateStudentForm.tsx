@@ -77,15 +77,25 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const { isIntern, total_hours, ...rest } = values;
+        const studentData = isIntern
+          ? {
+              ...rest,
+              is_scholarship: true,
+              total_hours,
+              completed_hours: 0,
+              pending_hours: total_hours,
+            }
+          : {
+              ...rest,
+              is_scholarship: false,
+            };
+
+        console.log("Payload being sent:", studentData);
+
         if (isIntern) {
-          await createIntern({
-            ...rest,
-            total_hours,
-            completed_hours: 0,
-            pending_hours: 0,
-          });
+          await createIntern(studentData);
         } else {
-          await createStudent(rest );
+          await createStudent(studentData);
         }
         setSuccessDialog(true);
         setTimeout(() => {
