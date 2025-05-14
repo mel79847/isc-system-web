@@ -67,7 +67,9 @@ const ProgressTracker: FC<ProgressTrackerProps> = ({ currentStepIndex, status })
         <Box className="flex items-center space-x-4 mx-5">
           <Typography variant="h6" className="font-semibold text-primary">
             {"Estado: "}
-            <span className="text-red-1 font-medium">{status}</span>
+            <span className="text-red-1 font-medium">
+            {steps[process?.stage_id ?? 0]}
+            </span>
           </Typography>
         </Box>
       </Box>
