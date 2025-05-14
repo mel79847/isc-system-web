@@ -10,8 +10,11 @@ import {
   DialogActions,
   DialogContentText,
   Box,
+  useMediaQuery,
+  Container,
   Modal,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ContainerPage from "../../components/common/ContainerPage";
 import { deleteStudent, getStudents } from "../../services/studentService";
 import AddIcon from "@mui/icons-material/Add";
@@ -26,6 +29,8 @@ import CreateStudentForm from "./CreateStudentForm";
 
 const StudentPage = () => {
   const navigate = useNavigate();
+  const isSmallScreen = useMediaQuery(useTheme().breakpoints.down("sm"));
+  const [,setIsSidebarVisible] = useState(true);
   const [students, setStudents] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -42,6 +47,14 @@ const StudentPage = () => {
     phone: true,
     actions: true,
   });
+
+  useEffect(() => {
+    if (isSmallScreen) {
+      setIsSidebarVisible(false);
+    } else {
+      setIsSidebarVisible(true);
+    }
+  }, [isSmallScreen]);
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -205,6 +218,12 @@ const StudentPage = () => {
   };
 
   return (
+    <Container
+      sx={{
+        marginLeft: { xs: -5, sm: 3 },
+      }}
+    >
+
     <ContainerPage
       title={"Estudiantes"}
       subtitle={"Lista de estudiantes"}
@@ -220,6 +239,8 @@ const StudentPage = () => {
               width: { xs: "120%", sm: "auto" },
               mb: { xs: 1, sm: 0 },
               mt: { xs: 5, sm: 0 },
+               fontSize: { xs: "0.5rem", sm: "1rem" },
+              marginLeft: { xs: 2, sm: 2 },
             }}
           >
             Agregar Estudiante
@@ -227,7 +248,13 @@ const StudentPage = () => {
         )
       }
       children={
-        <Box sx={{ width: "100%", height: { xs: "auto" } }}>
+          <Box
+            sx={{
+              width: "100%",
+              height: { xs: "auto", sm: "100%" },
+              ml: { xs: 5, sm: 0 },
+            }}
+          >
           <DataGrid
             rows={students}
             columns={columns}
@@ -241,7 +268,7 @@ const StudentPage = () => {
             onColumnVisibilityModelChange={(newModel) => {
               const updatedModel = {
                 ...newModel,
-                code: true, 
+                code: true,
               };
               const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
               if (visibleColumns === 0) {
@@ -267,18 +294,14 @@ const StudentPage = () => {
                 border: "none !important",
                 boxShadow: "none !important",
               },
-              "& .MuiDataGrid-cell--editing": {
-                boxShadow: "none !important",
-              },
-              "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
-                outline: "none !important",
-              },
               "& .MuiDataGrid-cell": {
                 borderColor: "transparent",
               },
               "& .MuiDataGrid-row.Mui-selected": {
                 backgroundColor: "inherit !important",
               },
+                fontSize: { xs: "0.8rem", sm: "1rem" },
+                marginLeft: { xs: "-40px", sm: "-40px" },
             }}
             pageSizeOptions={[5, 10]}
             disableRowSelectionOnClick
@@ -328,6 +351,7 @@ const StudentPage = () => {
         </Box>
       }
     ></ContainerPage>
+    </Container>
   );
 };
 
