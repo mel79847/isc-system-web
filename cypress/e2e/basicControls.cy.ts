@@ -24,7 +24,7 @@ describe('Login Admin Test', () => {
     cy.get('input[name=phone]').type('65555965');
     cy.get('input[name=isIntern]').click();
     cy.get('input[name=total_hours]').clear().type('40');
-    cy.contains('GUARDAR').click();
+    cy.contains('Estudiante').click();
     cy.get('[data-testid="DeleteIcon"]').eq(0).click(); 
     cy.contains('Cancelar').should('exist');
     cy.contains('Eliminar').should('exist');
