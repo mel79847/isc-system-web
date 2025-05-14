@@ -196,7 +196,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
           </Grid>
 
           <Grid item xs={12}>
-            <Grid container spacing={2} sx={{ padding: 1 }}>
+            <Grid container spacing={2}>
               <Grid item xs={3}>
                 <Typography variant="body2">Información Adicional</Typography>
               </Grid>
