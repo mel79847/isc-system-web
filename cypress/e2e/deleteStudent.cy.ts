@@ -1,7 +1,5 @@
-/// <reference types="cypress" />
-
 describe('Login Admin Test', () => {
-  const email = 'paulwilkerlf@gmail.com';
+  const email = 'alexismarechal@upb.edu';
   const password = '123456';
   const url = 'http://localhost:5173/login';
 
@@ -15,5 +13,14 @@ describe('Login Admin Test', () => {
 
     // Verifity successful login
     cy.get('Login').should('not.exist');
+
+    cy.contains('Estudiante').click();
+    cy.get('button[aria-label="Go to next page"]').click();
+    cy.get('[data-testid="DeleteIcon"]').eq(0).click();    		//Verificar que el usuario no tenga proceso de graduación
+    cy.contains('Cancelar').should('exist');
+    cy.contains('Eliminar').should('exist');
+
+    cy.contains('Eliminar').click;
+    
   });
 });
