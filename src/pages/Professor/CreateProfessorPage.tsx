@@ -36,7 +36,7 @@ const validationSchema = Yup.object({
  code: Yup.number()
    .typeError("El código debe ser numérico")
    .required("El código de docente es obligatorio"),
-
+});
 const CreateProfessorPage = () => {
  const [loading, setLoading] = useState(false);
  const [message, setMessage] = useState("");
@@ -159,7 +159,7 @@ const CreateProfessorPage = () => {
                      fullWidth
                      value={formik.values.mothername}
                      onChange={formik.handleChange}
-                     error={formik.touched.mothername &&  
+                     error={formik.touched.mothername &&
 Boolean(formik.errors.mothername)}
                      helperText={formik.touched.mothername && formik.errors.mothername}
                      margin="normal"
