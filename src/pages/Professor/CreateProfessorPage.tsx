@@ -38,7 +38,6 @@ const validationSchema = Yup.object({
    .required("El código de docente es obligatorio"),
 });   
 
- });
 const CreateProfessorPage = () => {
  const [loading, setLoading] = useState(false);
  const [message, setMessage] = useState("");

@@ -1,7 +1,8 @@
 /// <reference types="cypress" />
-import InputField from '../components/InputField'
 import SelectDropdown from '../components/SelectDropdown'
-import Button from '../components/Button'
+import { Button } from '../components/Button'
+import { Control } from '../components/control'
+import { TextBox } from '../components/textBox'
 
 export default class CreateStudentFormPage {
   abrirFormulario() {
@@ -9,28 +10,27 @@ export default class CreateStudentFormPage {
   }
 
   llenarFormularioDeGraduacion(data: any): void {
-    // Campos obligatorios del estudiante
-    InputField.fill('input[name="name"]', data.nombres)
-    InputField.fill('input[name="lastname"]', data.apellidoPaterno)
-    InputField.fill('input[name="mothername"]', data.apellidoMaterno)
-    InputField.fill('input[name="code"]', data.codigoEstudiante)
-    InputField.fill('input[name="email"]', data.correo)
-    InputField.fill('input[name="phone"]', data.telefono)
+    new TextBox('input[name="name"]').setText(data.nombres)
+    new TextBox('input[name="lastname"]').setText(data.apellidoPaterno)
+    new TextBox('input[name="mothername"]').setText(data.apellidoMaterno)
+    new TextBox('input[name="code"]').setText(data.codigoEstudiante)
+    new TextBox('input[name="email"]').setText(data.correo)
+    new TextBox('input[name="phone"]').setText(data.telefono)
 
-    // Activar switch de becario + seleccionar horas
     if (data.becario === "Sí") {
-  cy.contains('Becarios')
-    .parent()
-    .find('input[type="checkbox"]')
-    .check({ force: true })
+      cy.contains('Becarios')
+        .parent()
+        .find('input[type="checkbox"]')
+        .check({ force: true })
 
-  if (data.horasBecario) {
-    cy.get('#total_hours').should('be.visible')
-    InputField.fill('#total_hours', data.horasBecario)
-  }
-}
-    // Enviar formulario
-    Button.click('GUARDAR')
+      if (data.horasBecario) {
+        cy.get('#total_hours').should('be.visible')
+        new TextBox('#total_hours').setText(data.horasBecario)
+      }
+    }
+
+    cy.contains('button', 'GUARDAR').click()
+
   }
 
   verificarCreacionExitosa() {
