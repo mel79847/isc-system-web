@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Login Admin Test', () => {
-  const email = 'admin@gmail.com';
+  const email = 'paulwilkerlf@gmail.com';
   const password = '123456';
   const url = 'http://localhost:5173/login';
 
