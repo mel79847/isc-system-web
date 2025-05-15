@@ -90,8 +90,6 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
               is_scholarship: false,
             };
 
-        console.log("Payload being sent:", studentData);
-
         if (isIntern) {
           await createIntern({
             ...rest,
