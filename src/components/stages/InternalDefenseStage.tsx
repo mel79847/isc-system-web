@@ -67,6 +67,7 @@ const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNex
   });
 
   useEffect(() => {
+      console.log('xd', formik.values)
     if (defenseDetail) {
       formik.setValues({
         president: defenseDetail.president?.toString() || "",
