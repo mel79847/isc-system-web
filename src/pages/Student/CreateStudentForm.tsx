@@ -93,7 +93,12 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
         console.log("Payload being sent:", studentData);
 
         if (isIntern) {
-          await createIntern(studentData);
+          await createIntern({
+            ...rest,
+            total_hours,
+            completed_hours: 0,
+            pending_hours: 0,
+          });
         } else {
           await createStudent(studentData);
         }
