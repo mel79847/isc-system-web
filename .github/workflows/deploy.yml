@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - qa 
 
 jobs:
   deploy-develop:
@@ -29,9 +30,22 @@ jobs:
     steps:
       - run: echo "Esperando aprobación para merge a QA..."
 
+  # Aprobación manual 
+  manual-approval-qa:
+    name: Manual Approval for QA
+    needs: qa-approval
+    runs-on: ubuntu-latest
+    environment:
+      name: qa-deploy
+    steps:
+      - name: Manual Approval
+        run: |
+          echo "Se requiere aprobación manual antes de continuar con el despliegue en QA."
+          # Aquí es donde se requiere la intervención manual, es decir, una persona aprueba la acción antes de continuar.
+          
   promote-to-qa:
     name: Merge and Deploy QA
-    needs: qa-approval
+    needs: manual-approval-qa  # Solo se ejecuta después de la aprobación manual
     runs-on: ubuntu-latest
     steps:
       - name: Checkout QA branch
