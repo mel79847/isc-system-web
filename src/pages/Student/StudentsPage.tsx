@@ -313,8 +313,8 @@ const StudentPage = () => {
             rows={students}
             columns={columns.map(col => ({
                 ...col,
-                minWidth: col.field === "name" ? 180 : 120, // aumentado
-                maxWidth: col.field === "actions" ? 260 : col.maxWidth, // aumentado
+                minWidth: col.field === "name" ? 180 : 120,
+                maxWidth: col.field === "actions" ? 260 : col.maxWidth,
                 flex: 1,
                 headerAlign: "center",
                 align: "center",
