@@ -15,7 +15,7 @@ interface ProgressTrackerProps {
   studentProcess: Seminar;
 }
 
-const ProgressTracker: FC<ProgressTrackerProps> = ({ currentStepIndex, status }) => {
+const ProgressTracker: FC<ProgressTrackerProps> = ({ currentStepIndex }) => {
   const process = useProcessStore((state) => state.process);
   const [currentStage, setCurrentStage] = useState(currentStepIndex);
   const { stage_id: stageId } = process || { stage_id: 0 };
@@ -67,9 +67,7 @@ const ProgressTracker: FC<ProgressTrackerProps> = ({ currentStepIndex, status })
         <Box className="flex items-center space-x-4 mx-5">
           <Typography variant="h6" className="font-semibold text-primary">
             {"Estado: "}
-            <span className="text-red-1 font-medium">
-            {steps[process?.stage_id ?? 0]}
-            </span>
+            <span className="text-red-1 font-medium">{steps[process?.stage_id ?? 0]}</span>
           </Typography>
         </Box>
       </Box>
