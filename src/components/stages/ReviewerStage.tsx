@@ -22,7 +22,11 @@ const validationSchema = Yup.object({
   reviewer: Yup.string().required("* El revisor es obligatorio"),
   reviewerDesignationLetterSubmitted: Yup.boolean(),
   reviewerApprovalLetterSubmitted: Yup.boolean(),
-  date_reviewer_assignament: Yup.mixed().required("Debe seleccionar una fecha"),
+  date_reviewer_assignament: Yup.date()
+  .typeError("Debe seleccionar una fecha válida")
+  .max(new Date(), "La fecha no puede ser futura")
+  .min(dayjs().subtract(6, "month").toDate(), "La fecha es demasiado antigua")
+  .required("Debe seleccionar una fecha"),
 });
 
 interface ReviewerStageProps {
