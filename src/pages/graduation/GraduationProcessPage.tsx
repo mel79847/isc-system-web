@@ -130,43 +130,47 @@ const GraduationProcessPage = () => {
             onClick={goToCreateProcessPage}
             startIcon={<AddIcon />}
           >
-            {"Nuevo Proceso"}
+            {"Nuevo Proceso\r"}
           </Button>
         )
       }
     >
-      <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between mb-4">
-        <label htmlFor="table-search" className="sr-only">
-          {"Buscar"}
-        </label>
-        <div className="relative">
-          <TextField
-            type="text"
-            id="table-search"
-            className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            placeholder="Buscar por nombre de estudiante"
-            value={search}
-            onChange={handleSearchChange}
-            InputProps={{
-              startAdornment: <FaSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" />,
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "&:hover fieldset": {
-                  borderColor: "secondary.main",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "secondary.main",
-                },
-              },
-              "& input": {
-                outline: "none !important",
-                boxShadow: "none !important",
-              },
-            }}
-          />
-        </div>
-      </div>
+    <div className="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between mb-4">
+  <label htmlFor="table-search" className="sr-only">
+    {"Buscar\r"}
+  </label>
+  <div className="relative">
+    <TextField
+      type="text"
+      id="table-search"
+      className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+      placeholder="Buscar por nombre de estudiante"
+      value={search}
+      onChange={handleSearchChange}
+      InputProps={{
+        startAdornment: (
+          <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+            <FaSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </div>
+        ),
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          '&:hover fieldset': {
+            borderColor: 'secondary.main',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: 'secondary.main',
+          },
+        },
+        '& input': {
+          outline: 'none !important',
+          boxShadow: 'none !important',
+        },
+      }}
+    />
+  </div>
+</div>
 
       <Box sx={{ mb: 2 }}>
         <Paper>
