@@ -219,53 +219,14 @@ const StudentPage = () => {
 
   return (
     <Container
-      maxWidth={false}
-      disableGutters
       sx={{
-        px: { xs: 0, sm: 2, md: 4, lg: 8, xl: 16 },
-        py: { xs: 0, sm: 2, md: 3, lg: 4 },
-        width: "100%",
-        maxWidth: { xs: "100vw", sm: 1200, md: 1700, lg: 2100, xl: 2400 },
-        minHeight: "100vh",
-        backgroundColor: "background.default",
-        marginLeft: "auto",
-        marginRight: "auto",
-        overflowX: "hidden",
+        marginLeft: { xs: -5, sm: 3 },
       }}
     >
-      <ContainerPage
-        title={
-          <span
-            style={{
-              fontSize: window.innerWidth >= 1920
-                ? "2.8rem"
-                : window.innerWidth >= 1536
-                ? "2.2rem"
-                : "1.8rem",
-              fontWeight: 400,
-              lineHeight: 1.2,
-              display: "block"
-            }}
-          >
-            Estudiantes
-          </span>
-        }
-        subtitle={
-          <span
-            style={{
-              fontSize: window.innerWidth >= 1920
-                ? "2rem"
-                : window.innerWidth >= 1536
-                ? "1.5rem"
-                : "1.1rem",
-              fontWeight: 400,
-              lineHeight: 1.2,
-              display: "block"
-            }}
-          >
-            Lista de estudiantes
-          </span>
-        }
+
+    <ContainerPage
+      title={"Estudiantes"}
+      subtitle={"Lista de estudiantes"}
       actions={
         HasPermission(addStudentPermission?.name || "") && (
           <Button
@@ -275,22 +236,11 @@ const StudentPage = () => {
             startIcon={<AddIcon />}
             disabled={!addStudentPermission}
             sx={{
-              width: { xs: "100%", sm: "auto" },
+              width: { xs: "120%", sm: "auto" },
               mb: { xs: 1, sm: 0 },
-              mt: { xs: 2, sm: 0 },
-              fontSize: {
-                  xs: "1.1rem",
-                  sm: "1.2rem",
-                  md: "1.3rem",
-                  lg: window.innerWidth === 1920 ? "1.7rem" : "1.5rem"
-                },
-                padding: {
-                  xs: "8px 12px",
-                  sm: "10px 18px",
-                  md: "14px 28px",
-                  lg: window.innerWidth === 1920 ? "22px 44px" : "18px 36px"
-                },
-                marginLeft: 0,
+              mt: { xs: 5, sm: 0 },
+               fontSize: { xs: "0.5rem", sm: "1rem" },
+              marginLeft: { xs: 2, sm: 2 },
             }}
           >
             Agregar Estudiante
@@ -301,28 +251,17 @@ const StudentPage = () => {
           <Box
             sx={{
               width: "100%",
-              height: { xs: "calc(100vh - 200px)", sm: "calc(100vh - 220px)", lg: "calc(100vh - 250px)" },
-              minHeight: 350,
-              maxWidth: { xs: "100vw", sm: 1200, md: 1700, lg: 2100, xl: 2400 },
-              mx: "auto",
-              px: { xs: 0, sm: 1, md: 2 },
-              overflowX: "auto",
+              height: { xs: "auto", sm: "100%" },
+              ml: { xs: 5, sm: 0 },
             }}
           >
           <DataGrid
             rows={students}
-            columns={columns.map(col => ({
-                ...col,
-                minWidth: col.field === "name" ? 180 : 120,
-                maxWidth: col.field === "actions" ? 260 : col.maxWidth,
-                flex: 1,
-                headerAlign: "center",
-                align: "center",
-              }))}
+            columns={columns}
             localeText={dataGridLocaleText}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 8 },
+                paginationModel: { page: 0, pageSize: 5 },
               },
             }}
             columnVisibilityModel={columnVisibilityModel}
@@ -337,6 +276,13 @@ const StudentPage = () => {
               }
               setColumnVisibilityModel(updatedModel);
             }}
+            classes={{
+              root: "bg-white dark:bg-gray-800",
+              columnHeader: "bg-gray-200 dark:bg-gray-800",
+              cell: "bg-white dark:bg-gray-800",
+              row: "bg-white dark:bg-gray-800",
+              columnHeaderTitle: "!font-bold text-center",
+            }}
             sx={{
               "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
                 outline: "none !important",
@@ -350,49 +296,15 @@ const StudentPage = () => {
               },
               "& .MuiDataGrid-cell": {
                 borderColor: "transparent",
-                fontSize: {
-                  xs: "1.2rem",
-                  sm: "1.3rem",
-                  md: "1.4rem",
-                  lg: "1.7rem"
-                }, // aumentado
-                 py: { xs: 1, sm: 1.5, md: 2, lg: 1 },
-               },
-               "& .MuiDataGrid-columnHeaders": {
-                  fontSize: { xs: "1.1rem", sm: "1.2rem", md: "1.3rem", lg: "1.5rem" },
-                  py: { xs: 1, sm: 1.5, md: 2, lg: 2.5 },
-                },
-                "& .MuiDataGrid-row": {
-                  minHeight: { xs: 40, sm: 48, md: 56, lg: 64 },
-                  maxHeight: { xs: 40, sm: 48, md: 56, lg: 64 },
-                },
-                "& .MuiIconButton-root": {
-                  fontSize: {
-                    xs: "1.2rem",
-                    sm: "1.4rem",
-                    md: "1.7rem",
-                    lg: window.innerWidth === 1920 ? "2.3rem" : "2rem"
-                  },
-                  p: {
-                    xs: 0.5,
-                    sm: 1,
-                    md: 1.5,
-                    lg: window.innerWidth === 1920 ? 2.5 : 2
-                  },
-                },
-                width: "100%",
-                maxWidth: {
-                  xs: "100vw",
-                  sm: 1200,
-                  md: 1700,
-                  lg: window.innerWidth === 1920 ? 2000 : 2100,
-                  xl: window.innerWidth === 1920 ? 2200 : 2400
-                },
-                minWidth: 320,
-              }}
-              pageSizeOptions={[8, 16, 32]}
+              },
+              "& .MuiDataGrid-row.Mui-selected": {
+                backgroundColor: "inherit !important",
+              },
+                fontSize: { xs: "0.8rem", sm: "1rem" },
+                marginLeft: { xs: "-40px", sm: "-40px" },
+            }}
+            pageSizeOptions={[5, 10]}
             disableRowSelectionOnClick
-              autoHeight={false}
           />
           <Dialog
             open={open}
@@ -423,14 +335,14 @@ const StudentPage = () => {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: { xs: "98vw", sm: 700, md: 1200, lg: 1600, xl: 2000 },
-                maxWidth: { xs: "98vw", sm: 900, md: 1500, lg: 2000, xl: 2200 },
-                maxHeight: { xs: "95vh", sm: "85vh", md: "80vh" },
+                width: '80%',
+                maxWidth: '100vh',
+                maxHeight: "80vh",
                 bgcolor: "background.paper",
                 borderRadius: 2,
                 boxShadow: 24,
                 overflowY: "auto",
-                p: { xs: 2, sm: 4, md: 5 }
+                p: 4
               }}
             >
               <CreateStudentForm onSuccess={handleStudentCreated} />
