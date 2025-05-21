@@ -105,9 +105,9 @@ const DocumentCheckbox: FC<DocumentCheckboxProps> = ({ disabled, formik, carrer,
             ano: dayjs().format("YYYY"),
             title_project: process?.project_name || "",
             date: dayjs(formik.values.date_tutor_assignament).format("DD/MM/YYYY"),
-            isTesis: process?.modality_id === 3 ? "  X" : "",
-            isProject: process?.modality_id === 1 ? "  X" : "",
-            isJob: process?.modality_id === 2 ? "  X" : "",
+            isTesis: process?.modality_id.toString() === "3" ? "  X" : "",
+            isProject: process?.modality_id.toString() === "1" ? "  X" : "",
+            isJob: process?.modality_id.toString() === "2" ? "  X" : "",
           }}
           filename={`${TUTOR_APPROBAL.filename}_${formik.values.mentorName}.${TUTOR_APPROBAL.extention}`}
         />
