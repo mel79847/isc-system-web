@@ -76,7 +76,7 @@ const EmailSender = () => {
   };
 
     fetchStudentInfo();
-  }, [process, carrer?.shortName]);
+  }, []);
 
 
   const handleEmailContentChange = (content: string) => {
