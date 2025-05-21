@@ -6,6 +6,8 @@ import { styled } from "@mui/system";
 import { useCarrerStore } from "../../store/carrerStore";
 import { sendEmail } from "../../services/emailService";
 import { useProcessStore } from "../../store/store";
+import { getUserById } from "../../services/usersService";
+
 
 const Root = styled(Box)(({ theme }) => ({
   width: "100%",
@@ -45,10 +47,37 @@ const EmailSender = () => {
   `;
   const [emailContent, setEmailContent] = useState(defaultEmailContent);
 
+  const generateEmailContent = (process: any) => `
+    <p><strong><u>${process?.student_fullname?.toUpperCase() || "ALUMNO"}</u></strong></p>
+    <p><strong>Nombre:</strong> ${process?.student_fullname || "-"}</p>
+    <p><strong>Código:</strong> ${process?.student_code || "-"}</p>
+    <p><strong>Celular:</strong> ${process?.student_phone || "-"}</p>
+    <p><strong>Email:</strong> <a href="mailto:${process?.student_email}">${process?.student_email || "-"}</a></p>
+    <p><strong>Modalidad:</strong> ${process?.modality_name || "-"}</p>
+  `;
+
   useEffect(() => {
-    setEmailContent(defaultEmailContent);
-    setSubject(`Revision de Carpeta - ${carrer?.shortName} - ${process?.student_fullname}`);
-  }, [process, carrer?.shortName]);
+  const fetchStudentInfo = async () => {
+      if (!process?.student_id) return;
+
+      try {
+        const response = await getUserById(process.student_id);
+        const student = response.data;
+
+      setEmailContent(generateEmailContent({
+        ...process,
+        student_email: student.email,
+        student_phone: student.phone,
+        student_code: student.code,
+      }));
+    } catch (err) {
+      console.error("Error al obtener datos del estudiante:", err);
+    }
+  };
+
+    fetchStudentInfo();
+  }, []);
+
 
   const handleEmailContentChange = (content: string) => {
     setEmailContent(content);
