@@ -177,7 +177,7 @@ const StudentPage = () => {
   const fetchStudents = async () => {
     const students = await getStudents();
     setStudents(students.data);
-    console.log(students);
+    if (import.meta.env.DEV) console.log(students);
   };
 
   useEffect(() => {
@@ -186,7 +186,7 @@ const StudentPage = () => {
 
   const handleView = (id: number) => {
     navigate(`/profile/${id}`);
-    console.log(`Ver estudiante con id: ${id}`);
+    if (import.meta.env.DEV) console.log(`Ver estudiante con id: ${id}`);
   };
 
   const handleEdit = (id: number) => {
@@ -208,9 +208,9 @@ const StudentPage = () => {
       try {
         await deleteStudent(selectedId);
         fetchStudents();
-        console.log(`Eliminar estudiante con id: ${selectedId}`);
+        if (import.meta.env.DEV) console.log(`Eliminar estudiante con id: ${selectedId}`);
       } catch (error) {
-        console.log(error);
+        if (import.meta.env.DEV) console.log(error);
       } finally {
         handleClose();
       }

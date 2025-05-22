@@ -275,7 +275,7 @@ const ProfessorPage = () => {
   const fetchProfessors = async () => {
     const professors = await getMentors();
     setProfessors(professors.data);
-    console.log(professors);
+    if (import.meta.env.DEV) console.log(professors);
     setIsLoading(false);
   };
 
@@ -285,7 +285,7 @@ const ProfessorPage = () => {
 
   const handleView = (id: number) => {
     navigate(`/profile/${id}`);
-    console.log(`Ver docente con id: ${id}`);
+    if (import.meta.env.DEV) console.log(`Ver docente con id: ${id}`);
   };
 
   const handleEdit = (id: number) => {
