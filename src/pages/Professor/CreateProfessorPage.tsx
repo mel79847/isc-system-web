@@ -26,12 +26,9 @@ const validationSchema = Yup.object({
  email: Yup.string()
    .email("Ingrese un correo electrónico válido")
    .required("El correo electrónico es obligatorio"),
- phone: Yup.string()
-   .matches(
-     /^\+\d{1,3}\s\d+$/,
-      PHONE_ERROR_MESSAGE
-   )
-   .required("El número de teléfono es requerido"),
+  phone: Yup.string()
+    .matches(/^\d{1,8}$/, PHONE_ERROR_MESSAGE)
+    .required("El número de teléfono es requerido"),
  degree: Yup.string().required("El título académico es obligatorio"),
  code: Yup.number()
    .typeError("El código debe ser numérico")
@@ -85,13 +82,12 @@ const CreateProfessorPage = () => {
  });
 
 
- const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-   const { value } = event.target;
-   const formattedValue = value
-     .replace(/[^+\d\s]/g, "")
-     .replace(/(\+\d{1,3})\s?(\d{0,})/, "$1 $2");
-   formik.setFieldValue("phone", formattedValue);
- };
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    if (/^[0-9]*$/.test(value)) {
+      formik.setFieldValue("phone", value);
+    }
+  };
 
 
  const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,8 +234,8 @@ Boolean(formik.errors.mothername)}
                  error={formik.touched.phone && Boolean(formik.errors.phone)}
                  helperText={formik.touched.phone && formik.errors.phone}
                  margin="normal"
-                 inputProps={{ maxLength: 20 }}
-               />
+                  inputProps={{ maxLength: 8 }}
+                />
              </Grid>
            </Grid>
          </Grid>

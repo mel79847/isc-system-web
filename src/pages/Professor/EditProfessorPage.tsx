@@ -17,7 +17,7 @@ const validationSchema = Yup.object({
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
+    .matches(/^\d{1,8}$/, PHONE_ERROR_MESSAGE)
     .optional(),
   code: Yup.number().optional(),
 });
@@ -240,7 +240,7 @@ const EditProfessorPage = () => {
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
                   margin="normal"
-                  inputProps={{ maxLength: 20 }}
+                  inputProps={{ maxLength: 8 }}
                 />
               </Grid>
             </Grid>
