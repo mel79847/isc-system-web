@@ -6,18 +6,29 @@ import { useParams } from "react-router-dom";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import LoadingOverlay from "../../components/common/Loading";
 import { updateProfessor, getProfessorById } from "../../services/mentorsService";
-
-const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
+import {
+  PHONE_ERROR_MESSAGE,
+  PHONE_DIGITS,
+  LETTERS_REGEX,
+  EMAIL_REGEX,
+  PHONE_REGEX,
+} from "../../constants/validation";
 const validationSchema = Yup.object({
-  name: Yup.string().required("El nombre completo es obligatorio"),
-  lastname: Yup.string().required("El apellido es obligatorio"),
-  mothername: Yup.string().required("El apellido materno es obligatorio"),
+  name: Yup.string()
+    .matches(LETTERS_REGEX, "El nombre solo debe contener letras")
+    .required("El nombre completo es obligatorio"),
+  lastname: Yup.string()
+    .matches(LETTERS_REGEX, "El apellido paterno solo debe contener letras")
+    .required("El apellido es obligatorio"),
+  mothername: Yup.string()
+    .matches(LETTERS_REGEX, "El apellido materno solo debe contener letras")
+    .required("El apellido materno es obligatorio"),
   email: Yup.string()
-    .email("Ingrese un correo electrónico válido")
+    .matches(EMAIL_REGEX, "Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(/^\d{1,8}$/, PHONE_ERROR_MESSAGE)
-    .optional(),
+    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
+    .required("El número de teléfono es obligatorio"),
   code: Yup.number().optional(),
 });
 
@@ -241,7 +252,7 @@ const EditProfessorPage = () => {
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
                   margin="normal"
-                  inputProps={{ maxLength: 8 }}
+                  inputProps={{ maxLength: PHONE_DIGITS }}
                 />
               </Grid>
             </Grid>

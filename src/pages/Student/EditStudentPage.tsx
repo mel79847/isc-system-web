@@ -15,38 +15,43 @@ import { getUserById, updateStudent } from "../../services/studentService";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
-
-const lettersRegex = /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
+import {
+  PHONE_ERROR_MESSAGE,
+  CODE_DIGITS,
+  PHONE_DIGITS,
+  LETTERS_REGEX,
+  EMAIL_REGEX,
+  PHONE_REGEX,
+  CODE_REGEX,
+} from "../../constants/validation";
 
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(20, "Máximo 20 caracteres")
-    .matches(lettersRegex, "Solo letras y espacios")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
     .required("El nombre completo es obligatorio"),
 
   lastname: Yup.string()
     .max(20, "Máximo 20 caracteres")
-    .matches(lettersRegex, "Solo letras y espacios")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
     .required("El apellido paterno es obligatorio"),
 
   mothername: Yup.string()
     .max(20, "Máximo 20 caracteres")
-    .matches(lettersRegex, "Solo letras y espacios")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
     .required("El apellido materno es obligatorio"),
 
   email: Yup.string()
-    .matches(emailRegex, "Ingrese un correo electrónico válido")
+    .matches(EMAIL_REGEX, "Ingrese un correo electrónico válido")
     .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
   phone: Yup.string()
-    .matches(/^\d{8}$/, PHONE_ERROR_MESSAGE)
+    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
     .required("El número de teléfono es obligatorio"),
 
   code: Yup.string()
-    .matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos")
+    .matches(CODE_REGEX, `El código debe tener hasta ${CODE_DIGITS} dígitos`)
     .required("El código de estudiante es obligatorio"),
 });
 
@@ -233,7 +238,7 @@ const EditStudentPage = () => {
                         error={formik.touched.code && Boolean(formik.errors.code)}
                         helperText={formik.touched.code && formik.errors.code}
                         margin="normal"
-                        inputProps={{ maxLength: 8 }}
+                        inputProps={{ maxLength: CODE_DIGITS }}
                       />
                     </Grid>
                   </Grid>
@@ -272,7 +277,7 @@ const EditStudentPage = () => {
                     error={formik.touched.phone && Boolean(formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
                     margin="normal"
-                    inputProps={{ maxLength: 8 }}
+                    inputProps={{ maxLength: PHONE_DIGITS }}
                   />
                 </Grid>
               </Grid>
