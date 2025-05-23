@@ -274,7 +274,6 @@ const ProfessorPage = () => {
 
   const fetchProfessors = async () => {
     const professors = await getMentors();
-    debugger;
     setProfessors(professors.data);
     if (import.meta.env.DEV) console.log(professors);
     setIsLoading(false);
