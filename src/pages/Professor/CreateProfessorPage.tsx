@@ -8,26 +8,29 @@ import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import SuccessDialog from "../../components/common/SucessDialog";
 import LoadingOverlay from "../../components/common/Loading";
-
-const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
-const onlyLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+import {
+  PHONE_ERROR_MESSAGE,
+  PHONE_DIGITS,
+  LETTERS_REGEX,
+  PHONE_REGEX,
+} from "../../constants/validation";
 
 
 const validationSchema = Yup.object({
  name: Yup.string()
-   .matches(onlyLettersRegex, "El nombre solo debe contener letras")
+   .matches(LETTERS_REGEX, "El nombre solo debe contener letras")
    .required("El nombre completo es obligatorio"),
  lastname: Yup.string()
-   .matches(onlyLettersRegex, "El apellido paterno solo debe contener letras")
+   .matches(LETTERS_REGEX, "El apellido paterno solo debe contener letras")
    .required("El apellido es obligatorio"),
  mothername: Yup.string()
-   .matches(onlyLettersRegex, "El apellido materno solo debe contener letras")
+   .matches(LETTERS_REGEX, "El apellido materno solo debe contener letras")
    .required("El apellido materno es obligatorio"),
  email: Yup.string()
    .email("Ingrese un correo electrónico válido")
    .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(/^\d{1,8}$/, PHONE_ERROR_MESSAGE)
+    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
     .required("El número de teléfono es requerido"),
  degree: Yup.string().required("El título académico es obligatorio"),
  code: Yup.number()
@@ -234,7 +237,7 @@ Boolean(formik.errors.mothername)}
                  error={formik.touched.phone && Boolean(formik.errors.phone)}
                  helperText={formik.touched.phone && formik.errors.phone}
                  margin="normal"
-                  inputProps={{ maxLength: 8 }}
+                  inputProps={{ maxLength: PHONE_DIGITS }}
                 />
              </Grid>
            </Grid>
