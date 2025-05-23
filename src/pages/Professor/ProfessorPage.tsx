@@ -37,8 +37,8 @@ const ProfessorPage = () => {
     name: true,
     lastName: true,
     phone: true,
-    tutorias: true,
-    revisiones: true,
+    tutor_count: true,
+    reviewer_count: true,
     actions: true,
   });
 
@@ -143,7 +143,7 @@ const ProfessorPage = () => {
       ),
     },
     {
-      field: "tutorias",
+      field: "tutor_count",
       headerName: "Tutorías",
       headerAlign: "center",
       align: "center",
@@ -178,7 +178,7 @@ const ProfessorPage = () => {
       ),
     },
     {
-      field: "revisiones",
+      field: "reviewer_count",
       headerName: "Revisiones",
       headerAlign: "center",
       align: "center",
@@ -274,6 +274,7 @@ const ProfessorPage = () => {
 
   const fetchProfessors = async () => {
     const professors = await getMentors();
+    debugger;
     setProfessors(professors.data);
     if (import.meta.env.DEV) console.log(professors);
     setIsLoading(false);
