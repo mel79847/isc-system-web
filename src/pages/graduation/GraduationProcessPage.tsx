@@ -45,8 +45,11 @@ const GraduationProcessPage = () => {
   }, [search, students]);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  const value = e.target.value;
+  const sanitizedValue = value.replace(/[^a-zA-Z\s]/g, '');
+  const limitedValue = sanitizedValue.slice(0, 50);
+  setSearch(limitedValue);
+};
 
   const goToCreateProcessPage = () => {
     handleOpen();
@@ -153,6 +156,9 @@ const GraduationProcessPage = () => {
             <FaSearch className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </div>
         ),
+        sx: {
+      paddingLeft: '40px', 
+    },
       }}
       sx={{
         '& .MuiOutlinedInput-root': {
