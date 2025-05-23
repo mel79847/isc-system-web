@@ -195,8 +195,9 @@ Boolean(formik.errors.mothername)}
                >
                  <MenuItem value="">Seleccione un título</MenuItem>
                  <MenuItem value="Ing.">Ing.</MenuItem>
-                 <MenuItem value="Msc">Msc.</MenuItem>
-                 <MenuItem value="PhD">PhD.</MenuItem>
+                 <MenuItem value="M.Sc.">M.Sc.</MenuItem>
+                 <MenuItem value="PhD.">PhD.</MenuItem>
+                 <MenuItem value="M.Eng.">M.Eng.</MenuItem>
                </TextField>
              </Grid>
            </Grid>

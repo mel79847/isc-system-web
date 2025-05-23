@@ -1,12 +1,11 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getUserById } from "../../services/studentService";
 import { useParams } from "react-router-dom";
+import { FormContainer } from "../CreateGraduation/components/FormContainer";
 import LoadingOverlay from "../../components/common/Loading";
-import { updateProfessor } from "../../services/mentorsService";
+import { updateProfessor, getProfessorById } from "../../services/mentorsService";
 
 const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 const validationSchema = Yup.object({
@@ -31,14 +30,15 @@ const EditProfessorPage = () => {
   const { id } = useParams();
   const fetchProfessor = async () => {
     try {
-      const response = await getUserById(Number(id));
+      const response = await getProfessorById(Number(id));
       formik.setValues({
         ...response,
+        lastname: response.lastName,
+        mothername: response.motherName,
         roles: [2], 
         role_id: 2,
         isStudent: false,
         is_scholarship: false,
-        degree: response.degree || "",
       });
       setProfessor(response);
     } catch (error) {
@@ -202,8 +202,9 @@ const EditProfessorPage = () => {
                 >
                   <MenuItem value="">Seleccione un título</MenuItem>
                   <MenuItem value="Ing.">Ing.</MenuItem>
-                  <MenuItem value="Msc">Msc.</MenuItem>
-                  <MenuItem value="PhD">PhD.</MenuItem>
+                  <MenuItem value="M.Sc.">M.Sc.</MenuItem>
+                  <MenuItem value="PhD.">PhD.</MenuItem>
+                  <MenuItem value="M.Eng.">M.Eng.</MenuItem>
                 </TextField>
               </Grid>
             </Grid>

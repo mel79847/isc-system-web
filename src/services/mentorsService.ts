@@ -13,6 +13,16 @@ const getMentors = async () => {
   }
 };
 
+const getProfessorById = async (professorId: number) => {
+  try {
+    const response = await apiClient.get(`professor/${professorId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error al obtener el docente:',professorId, error);
+    throw error;
+  }
+};
+
 const createProfessor = async (professor: ProfessorInterface) => {
   try {
     const response = await apiClient.post(`professor`, professor);
@@ -39,4 +49,4 @@ const deleteProfessor = async (professorId: number) => {
   }
 };
 
-export { getMentors, createProfessor, deleteProfessor };
+export { getMentors, createProfessor, deleteProfessor, getProfessorById };
