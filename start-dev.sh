@@ -8,10 +8,10 @@ if ! command -v node &> /dev/null; then
 fi
 
 NODE_VERSION=$(node -v | sed 's/v//')
-REQUIRED_VERSION="18.0.0"
+REQUIRED_VERSION="20.0.0"
 
 if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$NODE_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
-    echo "Error: Se requiere Node.js versión 18.0.0 o superior. Versión detectada: $NODE_VERSION"
+    echo "Error: Se requiere Node.js versión 20.0.0 o superior. Versión detectada: $NODE_VERSION"
     exit 1
 fi
 
