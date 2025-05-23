@@ -42,9 +42,13 @@ const validationSchema = Yup.object({
     .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
 
-  phone: Yup.string().matches(/^\d{8}$/, PHONE_ERROR_MESSAGE),
+  phone: Yup.string()
+    .matches(/^\d{8}$/, PHONE_ERROR_MESSAGE)
+    .required("El número de teléfono es obligatorio"),
 
-  code: Yup.string().matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos"),
+  code: Yup.string()
+    .matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos")
+    .required("El código de estudiante es obligatorio"),
 
   isIntern: Yup.boolean(),
 
@@ -192,13 +196,15 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <TextField
+                  <TextField
                       name="code"
                       label="Código de Estudiante"
                       fullWidth
                       value={formik.values.code}
                       onChange={handleCodeChange}
                       margin="normal"
+                      error={formik.touched.code && Boolean(formik.errors.code)}
+                      helperText={formik.touched.code && formik.errors.code}
                       inputProps={{ maxLength: 8 }}
                     />
                   </Grid>

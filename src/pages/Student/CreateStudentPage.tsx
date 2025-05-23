@@ -31,8 +31,10 @@ const validationSchema = Yup.object({
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
     .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
-    .optional(),
-  code: Yup.string().optional(),
+    .required("El número de teléfono es obligatorio"),
+  code: Yup.string()
+    .matches(/^\d{1,8}$/, "El código debe tener hasta 8 dígitos")
+    .required("El código de estudiante es obligatorio"),
   isIntern: Yup.boolean(),
   total_hours: Yup.number().when("isIntern", (isIntern, schema) => {
     return isIntern ? schema.required("Las horas becarias son obligatorias") : schema.nullable();
@@ -205,7 +207,7 @@ const CreateStudentPage = () => {
                         error={formik.touched.code && Boolean(formik.errors.code)}
                         helperText={formik.touched.code && formik.errors.code}
                         margin="normal"
-                        inputProps={{ maxLength: 10 }}
+                        inputProps={{ maxLength: 8 }}
                       />
                     </Grid>
                   </Grid>
