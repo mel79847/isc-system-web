@@ -149,9 +149,9 @@ const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNex
   const canApproveStage = () =>
     Boolean(
       formik.values.president &&
-        formik.values.firstJuror &&
-        formik.values.secondJuror &&
-        formik.values.date
+      formik.values.firstJuror &&
+      formik.values.secondJuror &&
+      formik.values.date
     );
 
   const isApproveButton = canApproveStage();
@@ -175,8 +175,6 @@ const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNex
   return (
     <>
       <Typography variant="h6" gutterBottom style={{ fontWeight: "bold" }}>
-        {"Etapa 4: Defensa Interna"}{" "}
-        {subStage === 1 && <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />}
         {"Etapa 4: Defensa Interna"}{" "}
         {subStage === 1 && <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />}
       </Typography>
