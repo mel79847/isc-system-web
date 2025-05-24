@@ -10,12 +10,11 @@ import {
   Container,
 } from "@mui/material";
 import { updateStudent,  } from "../../services/studentService";
-import { getUserById,  } from "../../services/studentService";
+import { getUserById,} from "../../services/studentService";
 import axios from "axios";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import { getInternByUserIdService, getInternService, updateIntern } from "../../services/internService";
-import { formatMeridiem } from "@mui/x-date-pickers/internals";
 
 const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 const validationSchema = Yup.object({
@@ -63,16 +62,14 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
     onSubmit: async (values) => {
       try {
         const { role_id, ...dataToSend } = values;
-        
         if (role_id === 4) { 
-
         const internData = {
         ...dataToSend,
         code: dataToSend.code ? Number(dataToSend.code) : undefined
         };
           await updateIntern(values.id, internData);
         setMessage("Interno actualizado con éxito");
-        } else { // Estudiante
+        } else { 
         await updateStudent({
             ...dataToSend,
             id: values.id

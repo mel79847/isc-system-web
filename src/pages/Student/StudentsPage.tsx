@@ -35,6 +35,8 @@ const StudentPage = () => {
   const [students, setStudents] = useState([]);
   const [interns, setInterns] = useState([]);
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -74,7 +76,6 @@ const StudentPage = () => {
       setIsLoading(false);
     };
     fetchPermissions();
-    fetchStudents();
     fetchInterns();
   }, []);
 
@@ -266,19 +267,26 @@ const StudentPage = () => {
   };
 
   const handleDelete = async () => {
-    if (selectedId !== null) {
-      try {
+  if (selectedId !== null) {
+    try {
         await deleteStudent(selectedId);
         fetchStudents();
         fetchInterns();
         console.log(`Eliminar estudiante con id: ${selectedId}`);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        console.error(error);
+        if (error.response?.data?.message?.includes("proceso de graduación")) {
+          setErrorMessage("No se puede eliminar al estudiante ya que este se encuentra en un proceso de graduación.");
+        } else {
+          setErrorMessage("Este estudiante se encuentra en un proceso de graduación");
+        }
+        setErrorDialogOpen(true);
       } finally {
         handleClose();
       }
     }
   };
+
 
   return (
   <ContainerPage
@@ -453,6 +461,20 @@ const StudentPage = () => {
         </Modal>
       </div>
     )}
+    <Dialog
+      open={errorDialogOpen}
+      onClose={() => setErrorDialogOpen(false)}
+    >
+      <DialogTitle color={'red'}>Error al eliminar estudiante</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{errorMessage}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setErrorDialogOpen(false)} color="primary" autoFocus>
+          Cerrar
+        </Button>
+      </DialogActions>
+    </Dialog>
   </ContainerPage>
   );
 };
