@@ -222,7 +222,7 @@ const StudentPage = () => {
   const fetchStudents = async () => {
     const students = await getStudents();
     setStudents(students.data);
-    console.log(students);
+    if (import.meta.env.DEV) console.log(students);
   };
 
   const fetchInterns = async () => {
@@ -238,7 +238,7 @@ const StudentPage = () => {
 
   const handleView = (id: number) => {
     navigate(`/profile/${id}`);
-    console.log(`Ver estudiante con id: ${id}`);
+    if (import.meta.env.DEV) console.log(`Ver estudiante con id: ${id}`);
   };
 
   const handleEdit = (id: number) => {

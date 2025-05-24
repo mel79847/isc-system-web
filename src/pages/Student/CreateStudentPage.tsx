@@ -20,8 +20,13 @@ import { createStudent } from "../../services/studentService";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import { createIntern } from "../../services/internService";
-
-const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
+import {
+  PHONE_ERROR_MESSAGE,
+  CODE_DIGITS,
+  PHONE_DIGITS,
+  PHONE_REGEX,
+  CODE_REGEX,
+} from "../../constants/validation";
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
   lastname: Yup.string().required("El apellido es obligatorio"),
@@ -30,9 +35,11 @@ const validationSchema = Yup.object({
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
-    .optional(),
-  code: Yup.string().optional(),
+    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
+    .required("El número de teléfono es obligatorio"),
+  code: Yup.string()
+    .matches(CODE_REGEX, `El código debe tener hasta ${CODE_DIGITS} dígitos`)
+    .required("El código de estudiante es obligatorio"),
   isIntern: Yup.boolean(),
   total_hours: Yup.number().when("isIntern", (isIntern, schema) => {
     return isIntern ? schema.required("Las horas becarias son obligatorias") : schema.nullable();
@@ -205,7 +212,7 @@ const CreateStudentPage = () => {
                         error={formik.touched.code && Boolean(formik.errors.code)}
                         helperText={formik.touched.code && formik.errors.code}
                         margin="normal"
-                        inputProps={{ maxLength: 10 }}
+                        inputProps={{ maxLength: CODE_DIGITS }}
                       />
                     </Grid>
                   </Grid>
@@ -244,7 +251,7 @@ const CreateStudentPage = () => {
                     error={formik.touched.phone && Boolean(formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
                     margin="normal"
-                    inputProps={{ maxLength: 8 }}
+                    inputProps={{ maxLength: PHONE_DIGITS }}
                   />
                 </Grid>
               </Grid>
