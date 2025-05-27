@@ -4,7 +4,7 @@ import Divider from "@mui/material/Divider";
 import { useFormik } from "formik";
 
 import { Student } from "../../../models/studentInterface";
-import { getInterns, getInternsForGraduation, getStudentsForGraduation } from "../../../services/studentService";
+import { getStudentsForGraduation } from "../../../services/studentService";
 import { getModes } from "../../../services/modesService";
 import { Modes } from "../../../models/modeInterface";
 import { createGraduationProcess } from "../../../services/processServicer";
@@ -60,11 +60,9 @@ function ProcessForm({isVisible, isClosed}: ProcessFormProps) {
   const fetchData = useCallback(async () => {
     try {
       const responseStudents = await getStudentsForGraduation();
-      const responseInterns = await getInterns()
       const responseModes = await getModes();
       setModes(responseModes.data);
-
-      setStudents([...responseStudents.data,...responseInterns.data]);
+      setStudents([...responseStudents.data]);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
       setError("Failed to load data, please try again.");
