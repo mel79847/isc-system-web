@@ -62,7 +62,7 @@ function ProcessForm({isVisible, isClosed}: ProcessFormProps) {
       const responseStudents = await getStudentsForGraduation();
       const responseModes = await getModes();
       setModes(responseModes.data);
-      setStudents(responseStudents.data);
+      setStudents([...responseStudents.data]);
     } catch (error) {
       console.error("Failed to fetch data: ", error);
       setError("Failed to load data, please try again.");

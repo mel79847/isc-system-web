@@ -11,12 +11,11 @@ import {
   DialogContentText,
   Box,
   useMediaQuery,
-  Container,
   Modal,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import ContainerPage from "../../components/common/ContainerPage";
-import { deleteStudent, getStudents } from "../../services/studentService";
+import { deleteStudent, getInterns, getStudents } from "../../services/studentService";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -26,13 +25,21 @@ import { HasPermission } from "../../helper/permissions";
 import { Permission } from "../../models/permissionInterface";
 import dataGridLocaleText from "../../locales/datagridLocaleEs";
 import CreateStudentForm from "./CreateStudentForm";
+import SpinModal from "../../components/common/SpinModal";
+import EditStudentForm from "./EditStudentForm";
 
 const StudentPage = () => {
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(useTheme().breakpoints.down("sm"));
   const [,setIsSidebarVisible] = useState(true);
   const [students, setStudents] = useState([]);
+  const [interns, setInterns] = useState([]);
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [addStudentPermission, setAddStudentPermission] = useState<Permission>();
   const [editStudentPermission, setEditStudentPermission] = useState<Permission>();
@@ -66,9 +73,10 @@ const StudentPage = () => {
       setEditStudentPermission(editStudentResponse.data[0]);
       const viewStudentReportResponse = await getPermissionById(16);
       setViewStudentReportPermission(viewStudentReportResponse.data[0]);
+      setIsLoading(false);
     };
     fetchPermissions();
-    fetchStudents();
+    fetchInterns();
   }, []);
 
   const columns: GridColDef[] = [
@@ -166,12 +174,49 @@ const StudentPage = () => {
     },
   ];
 
+  const getResponsiveColumns = (): GridColDef[] => {
+  const visibleColumns = columns.filter(
+    (col) => columnVisibilityModel[col.field] !== false && col.field !== "actions"
+  );
+  const dynamicFlex = visibleColumns.length > 0 ? Math.floor(12 / visibleColumns.length) : 1;
+
+  return columns.map((col) => {
+    const isVisible = columnVisibilityModel[col.field] !== false;
+
+    if (!isVisible) {
+      return {
+        ...col,
+        flex: 0,
+        minWidth: 0,
+        maxWidth: 0,
+        hide: true, 
+      };
+    }
+    if (col.field === "actions") {
+      return {
+        ...col,
+        flex: 4,
+        minWidth: 150,
+        maxWidth: 300,
+      };
+    }
+
+    return {
+      ...col,
+      flex: dynamicFlex,
+      minWidth: 100,
+      maxWidth: 300,
+    };
+  });
+};
+
   const handleCreateStudent = () => setOpenCreateModal(true);
   const handleCloseCreateStudent = () => setOpenCreateModal(false);
 
   const handleStudentCreated = () => {
     setOpenCreateModal(false);
     fetchStudents();
+    fetchInterns();
   };
 
   const fetchStudents = async () => {
@@ -180,8 +225,14 @@ const StudentPage = () => {
     if (import.meta.env.DEV) console.log(students);
   };
 
+  const fetchInterns = async () => {
+    const interns = await getInterns();
+    setInterns(interns.data);
+  };
+
   useEffect(() => {
     fetchStudents();
+    fetchInterns();
   }, []);
 
   const handleView = (id: number) => {
@@ -190,7 +241,8 @@ const StudentPage = () => {
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/edit-student/${id}`);
+    setSelectedStudentId(id);
+    setOpenEditModal(true);
   };
 
   const handleClickOpen = (id: number) => {
@@ -203,155 +255,224 @@ const StudentPage = () => {
     setSelectedId(null);
   };
 
+  const handleCloseEditModal = () => {
+  setOpenEditModal(false);
+  setSelectedStudentId(null);
+  };
+
+  const handleStudentUpdated = () => {
+  fetchStudents();
+  fetchInterns();
+  };
+
   const handleDelete = async () => {
-    if (selectedId !== null) {
-      try {
+  if (selectedId !== null) {
+    try {
         await deleteStudent(selectedId);
         fetchStudents();
-        if (import.meta.env.DEV) console.log(`Eliminar estudiante con id: ${selectedId}`);
-      } catch (error) {
-        if (import.meta.env.DEV) console.log(error);
+        fetchInterns();
+      } catch (error: any) {
+        if (error.response?.data?.message?.includes("proceso de graduación")) {
+          setErrorMessage("No se puede eliminar al estudiante ya que este se encuentra en un proceso de graduación.");
+        } else {
+          setErrorMessage("Este estudiante se encuentra en un proceso de graduación");
+        }
+        setErrorDialogOpen(true);
       } finally {
         handleClose();
       }
     }
   };
 
-  return (
-    <Container
-      sx={{
-        marginLeft: { xs: -5, sm: 3 },
-      }}
-    >
 
-    <ContainerPage
-      title={"Estudiantes"}
-      subtitle={"Lista de estudiantes"}
-      actions={
-        HasPermission(addStudentPermission?.name || "") && (
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleCreateStudent}
-            startIcon={<AddIcon />}
-            disabled={!addStudentPermission}
-            sx={{
-              width: { xs: "120%", sm: "auto" },
-              mb: { xs: 1, sm: 0 },
-              mt: { xs: 5, sm: 0 },
-               fontSize: { xs: "0.5rem", sm: "1rem" },
-              marginLeft: { xs: 2, sm: 2 },
-            }}
-          >
-            Agregar Estudiante
-          </Button>
-        )
-      }
-      children={
+  return (
+  <ContainerPage
+    title="Estudiantes"
+    subtitle="Lista de estudiantes"
+    actions={
+      HasPermission(addStudentPermission?.name || "") && (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCreateStudent}
+          startIcon={<AddIcon />}
+          style={{ display: "inline-flex" }}
+        >
+          Agregar Estudiante
+        </Button>
+      )
+    }
+  >
+    {isLoading ? (
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "55%",
+        }}
+      >
+        <SpinModal />
+      </div>
+    ) : (
+      <div style={{ width: "100%", paddingBottom: 0 }}>
+        <DataGrid
+          rows={[...students, ...interns]}
+          columns={getResponsiveColumns()}
+          localeText={dataGridLocaleText}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection={false}
+          disableRowSelectionOnClick
+          autoHeight
+          columnVisibilityModel={columnVisibilityModel}
+          onColumnVisibilityModelChange={(newModel) => {
+            const updatedModel = { 
+              ...newModel, 
+              code: true 
+            };
+            setColumnVisibilityModel(updatedModel);
+          }}
+          slotProps={{
+                columnsManagement: {
+                  autoFocusSearchField: false,
+                  searchInputProps: {
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        "&:hover fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "secondary.main",
+                        },
+                      },
+                      "& input": {
+                        outline: "none !important",
+                        boxShadow: "none !important",
+                      },
+                    },
+                  },
+                },
+              }}
+          classes={{
+                root: "bg-white dark:bg-gray-800",
+                columnHeader: "bg-gray-200 dark:bg-gray-800",
+                cell: "bg-white dark:bg-gray-800",
+                row: "bg-white dark:bg-gray-800",
+                columnHeaderTitle: "!font-bold text-center",
+                sortIcon: "bg-gray-200 dark:bg-gray-800",
+              }}
+              sx={{
+                "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
+                  outline: "none !important",
+                  border: "none !important",
+                  boxShadow: "none !important",
+                },
+                "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
+                  outline: "none !important",
+                  border: "none !important",
+                  boxShadow: "none !important",
+                },
+                "& .MuiDataGrid-cell--editing": {
+                  boxShadow: "none !important",
+                },
+                "& .MuiDataGrid-cell.MuiDataGrid-cell--editing": {
+                  outline: "none !important",
+                },
+                "& .MuiDataGrid-cell": {
+                  borderColor: "transparent",
+                },
+                "& .MuiDataGrid-row.Mui-selected": {
+                  backgroundColor: "inherit !important",
+                },
+              }}
+        />
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede
+              deshacer.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">Cancelar</Button>
+            <Button onClick={handleDelete} color="secondary" autoFocus>Eliminar</Button>
+          </DialogActions>
+        </Dialog>
+        <Modal open={openCreateModal} onClose={handleCloseCreateStudent}>
           <Box
             sx={{
-              width: "100%",
-              height: { xs: "auto", sm: "100%" },
-              ml: { xs: 5, sm: 0 },
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "80%",
+              maxWidth: "100vh",
+              maxHeight: "80vh",
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 24,
+              overflowY: "auto",
+              p: 2,
             }}
           >
-          <DataGrid
-            rows={students}
-            columns={columns}
-            localeText={dataGridLocaleText}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            columnVisibilityModel={columnVisibilityModel}
-            onColumnVisibilityModelChange={(newModel) => {
-              const updatedModel = {
-                ...newModel,
-                code: true,
-              };
-              const visibleColumns = Object.values(updatedModel).filter(Boolean).length;
-              if (visibleColumns === 0) {
-                return;
-              }
-              setColumnVisibilityModel(updatedModel);
-            }}
-            classes={{
-              root: "bg-white dark:bg-gray-800",
-              columnHeader: "bg-gray-200 dark:bg-gray-800",
-              cell: "bg-white dark:bg-gray-800",
-              row: "bg-white dark:bg-gray-800",
-              columnHeaderTitle: "!font-bold text-center",
-            }}
+            <CreateStudentForm
+              onSuccess={handleStudentCreated}
+            />
+          </Box>
+        </Modal>
+        <Modal open={openEditModal} onClose={handleCloseEditModal}>
+          <Box
             sx={{
-              "& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within": {
-                outline: "none !important",
-                border: "none !important",
-                boxShadow: "none !important",
-              },
-              "& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within": {
-                outline: "none !important",
-                border: "none !important",
-                boxShadow: "none !important",
-              },
-              "& .MuiDataGrid-cell": {
-                borderColor: "transparent",
-              },
-              "& .MuiDataGrid-row.Mui-selected": {
-                backgroundColor: "inherit !important",
-              },
-                fontSize: { xs: "0.8rem", sm: "1rem" },
-                marginLeft: { xs: "-40px", sm: "-40px" },
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "80%",
+              maxWidth: "100vh",
+              maxHeight: "80vh",
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 24,
+              overflowY: "auto",
+              p: 2,
             }}
-            pageSizeOptions={[5, 10]}
-            disableRowSelectionOnClick
-          />
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Confirmar eliminación"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                ¿Estás seguro de que deseas eliminar este estudiante? Esta acción no se puede
-                deshacer.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancelar
-              </Button>
-              <Button onClick={handleDelete} color="secondary" autoFocus>
-                Eliminar
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Modal open={openCreateModal} onClose={handleCloseCreateStudent}>
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: '80%',
-                maxWidth: '100vh',
-                maxHeight: "80vh",
-                bgcolor: "background.paper",
-                borderRadius: 2,
-                boxShadow: 24,
-                overflowY: "auto",
-                p: 4
-              }}
-            >
-              <CreateStudentForm onSuccess={handleStudentCreated} />
-            </Box>
-          </Modal>
-        </Box>
-      }
-    ></ContainerPage>
-    </Container>
+            {selectedStudentId && (
+              <EditStudentForm
+                id={selectedStudentId}
+                onSuccess={handleStudentUpdated}
+                onClose={handleCloseEditModal}
+              />
+            )}
+          </Box>
+        </Modal>
+      </div>
+    )}
+    <Dialog
+      open={errorDialogOpen}
+      onClose={() => setErrorDialogOpen(false)}
+    >
+      <DialogTitle color={'red'}>Error al eliminar estudiante</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{errorMessage}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setErrorDialogOpen(false)} color="primary" autoFocus>
+          Cerrar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </ContainerPage>
   );
 };
 
