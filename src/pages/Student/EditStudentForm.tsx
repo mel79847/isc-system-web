@@ -9,14 +9,16 @@ import {
   Typography,
   Container,
 } from "@mui/material";
-import { updateStudent,  } from "../../services/studentService";
-import { getUserById,} from "../../services/studentService";
+import { updateStudent, getUserById, getStudents, getInterns } from "../../services/studentService";
+import { getInternByUserIdService, getInternService, updateIntern} from "../../services/internService";
 import axios from "axios";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
-import { getInternByUserIdService, getInternService, updateIntern } from "../../services/internService";
 
 const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
+const CODE_EXISTS_MESSAGE = "Ya existe un estudiante con este código.";
+const PHONE_EXISTS_MESSAGE = "Ya existe un estudiante con este número de teléfono.";
+
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
   lastname: Yup.string().required("El apellido es obligatorio"),
@@ -26,8 +28,47 @@ const validationSchema = Yup.object({
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
     .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
-    .optional(),
-  code: Yup.string().optional(),
+    .optional()
+    .test("unique-phone", PHONE_EXISTS_MESSAGE, async function (value) {
+      if (!value) return true; 
+      try {
+        const [studentsResponse, internsResponse] = await Promise.all([getStudents(), getInterns()]);
+        const students = Array.isArray(studentsResponse?.data) ? studentsResponse.data : studentsResponse?.data?.data || [];
+        const interns = Array.isArray(internsResponse?.data) ? internsResponse.data : internsResponse?.data?.data || [];
+        const allUsers = [...students, ...interns];
+        const isDuplicate = allUsers.some(
+          (user) =>
+            user &&
+            user.phone != null && 
+            String(user.phone) === String(value) &&
+            user.id !== this.parent.id
+        );
+        return !isDuplicate;
+      } catch (error) {
+        return false; 
+      }
+    }),
+  code: Yup.string()
+    .optional()
+    .test("unique-code", CODE_EXISTS_MESSAGE, async function (value) {
+      if (!value) return true;
+      try {
+        const [studentsResponse, internsResponse] = await Promise.all([getStudents(), getInterns()]);
+        const students = Array.isArray(studentsResponse?.data) ? studentsResponse.data : studentsResponse?.data?.data || [];
+        const interns = Array.isArray(internsResponse?.data) ? internsResponse.data : internsResponse?.data?.data || [];
+        const allUsers = [...students, ...interns];
+        const isDuplicate = allUsers.some(
+          (user) =>
+            user &&
+            user.code != null && 
+            String(user.code) === String(value) &&
+            user.id !== this.parent.id
+        );
+        return !isDuplicate;
+      } catch (error) {
+        return false; 
+      }
+    }),
 });
 
 interface EditStudentFormProps {
@@ -57,21 +98,21 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
     onSubmit: async (values) => {
       try {
         const { role_id, ...dataToSend } = values;
-        if (role_id === 4) { 
-        const internData = {
-        ...dataToSend,
-        code: dataToSend.code ? Number(dataToSend.code) : undefined
-        };
-          await updateIntern(values.id, internData);
-        setMessage("Interno actualizado con éxito");
-        } else { 
-        await updateStudent({
+        if (role_id === 4) {
+          const internData = {
             ...dataToSend,
-            id: values.id
-        });
-        setMessage("Estudiante actualizado con éxito");
+            code: dataToSend.code ? Number(dataToSend.code) : undefined,
+          };
+          await updateIntern(values.id, internData);
+          setMessage("Interno actualizado con éxito");
+        } else {
+          await updateStudent({
+            ...dataToSend,
+            id: values.id,
+          });
+          setMessage("Estudiante actualizado con éxito");
         }
-        
+
         setSuccessDialog(true);
         setTimeout(() => {
           onSuccess();
@@ -96,8 +137,8 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
           const studentResponse = await getUserById(id);
           if (studentResponse) {
             formik.setValues({
-            ...studentResponse,
-            role_id: 3 
+              ...studentResponse,
+              role_id: 3,
             });
             setIsIntern(false);
             return;
@@ -106,19 +147,19 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
           return;
         }
         try {
-        let internResponse = await getInternService(id);
+          let internResponse = await getInternService(id);
           if (internResponse.error) {
-          internResponse = await getInternByUserIdService(id);
-        }
-
-        if (internResponse && !internResponse.error) {
-          formik.setValues({
-            ...internResponse,
-            role_id: 4 
-          });
-          setIsIntern(true);
-          return;
-        }
+            internResponse = await getInternByUserIdService(id);
+          }
+          if (internResponse && !internResponse.error) {
+            console.log("Fetched intern:", internResponse); 
+            formik.setValues({
+              ...internResponse,
+              role_id: 4,
+            });
+            setIsIntern(true);
+            return;
+          }
         } catch (e) {
           return;
         }
@@ -126,6 +167,7 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
         setMessage("Usuario no encontrado");
         setErrorDialog(true);
       } catch (error) {
+        console.error("Error al cargar los datos:", error);
         setMessage("Error al cargar los datos");
         setErrorDialog(true);
       }
@@ -212,6 +254,8 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
                       fullWidth
                       value={formik.values.code}
                       onChange={handleCodeChange}
+                      error={formik.touched.code && Boolean(formik.errors.code)}
+                      helperText={formik.touched.code && formik.errors.code}
                       margin="normal"
                     />
                   </Grid>
@@ -283,4 +327,4 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
   );
 };
 
-export default EditStudentForm;
+export default EditStudentForm; 
