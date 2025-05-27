@@ -228,7 +228,6 @@ const StudentPage = () => {
   const fetchInterns = async () => {
     const interns = await getInterns();
     setInterns(interns.data);
-    console.log(interns);
   };
 
   useEffect(() => {
@@ -272,9 +271,7 @@ const StudentPage = () => {
         await deleteStudent(selectedId);
         fetchStudents();
         fetchInterns();
-        console.log(`Eliminar estudiante con id: ${selectedId}`);
       } catch (error: any) {
-        console.error(error);
         if (error.response?.data?.message?.includes("proceso de graduación")) {
           setErrorMessage("No se puede eliminar al estudiante ya que este se encuentra en un proceso de graduación.");
         } else {

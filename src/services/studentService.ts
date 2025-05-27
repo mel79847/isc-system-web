@@ -16,6 +16,11 @@ export const getStudentsForGraduation = async () => {
   return response.data;
 };
 
+export const getInternsForGraduation = async () => {
+  const response = await apiClient.get('/intern/graduation');
+  return response.data;
+};
+
 export const deleteStudent = async (id: number) => {
   const response = await apiClient.delete(`/student/${id}`);
   return response.data;

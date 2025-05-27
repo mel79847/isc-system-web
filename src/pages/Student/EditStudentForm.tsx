@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -41,11 +41,6 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
   const [errorDialog, setErrorDialog] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [isIntern, setIsIntern] = React.useState(false);
-
-  useEffect(()=>{
-    console.log(formik.values)
-
-  })
 
   const formik = useFormik({
     initialValues: {
@@ -108,11 +103,10 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
             return;
           }
         } catch (e) {
-          console.log("No es estudiante, probando como interno...");
+          return;
         }
         try {
         let internResponse = await getInternService(id);
-        console.log(internResponse)
           if (internResponse.error) {
           internResponse = await getInternByUserIdService(id);
         }
@@ -126,7 +120,7 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
           return;
         }
         } catch (e) {
-          console.log("No es interno");
+          return;
         }
 
         setMessage("Usuario no encontrado");
