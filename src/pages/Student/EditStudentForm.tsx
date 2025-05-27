@@ -152,7 +152,6 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
             internResponse = await getInternByUserIdService(id);
           }
           if (internResponse && !internResponse.error) {
-            console.log("Fetched intern:", internResponse); 
             formik.setValues({
               ...internResponse,
               role_id: 4,
@@ -167,7 +166,6 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
         setMessage("Usuario no encontrado");
         setErrorDialog(true);
       } catch (error) {
-        console.error("Error al cargar los datos:", error);
         setMessage("Error al cargar los datos");
         setErrorDialog(true);
       }
