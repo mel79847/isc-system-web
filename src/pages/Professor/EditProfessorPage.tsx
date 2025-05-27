@@ -29,7 +29,11 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
     .required("El número de teléfono es obligatorio"),
-  code: Yup.number().optional(),
+  degree: Yup.string().required("El título académico es obligatorio"),
+  code: Yup.number()
+    .typeError("El código debe ser numérico")
+    .required("El código de docente es obligatorio"),
+  
 });
 
 const EditProfessorPage = () => {
