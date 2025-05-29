@@ -11,7 +11,7 @@ export const downloadFile = async (file: Blob, fileName: string) => {
 
 export const loadFile = async (url: string) => {
   try {
-    console.log('Loading file:', url);
+    if (import.meta.env.DEV) console.log('Loading file:', url);
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Network response was not ok ${response.statusText}`);
@@ -40,7 +40,7 @@ export const generateDocument = async (
   try {
     doc.render();
   } catch (error) {
-    console.log(JSON.stringify({ error }));
+    if (import.meta.env.DEV) console.log(JSON.stringify({ error }));
     throw error;
   }
 

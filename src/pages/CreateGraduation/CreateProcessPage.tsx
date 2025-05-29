@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { FormContainer } from "./components/FormContainer";
 import ProcessForm from "./components/ProcessForm";
-import React, { useState } from "react";
 
 const CreateProcessPage = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -14,11 +14,8 @@ const CreateProcessPage = () => {
   };
   return (
     <FormContainer>
-      <button onClick={handleOpenModal}>Abrir proceso</button>
-      <ProcessForm
-        isVisible={openModal}
-        isClosed={handleCloseModal}
-      />
+      <button onClick={handleOpenModal}>{"Abrir proceso"}</button>
+      <ProcessForm isVisible={openModal} isClosed={handleCloseModal} />
     </FormContainer>
   );
 };

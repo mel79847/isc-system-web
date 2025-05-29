@@ -96,9 +96,9 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
   const canApproveStage = () => {
     return Boolean(
       formik.values.reviewer &&
-        formik.values.reviewerDesignationLetterSubmitted &&
-        formik.values.reviewerApprovalLetterSubmitted &&
-        formik.values.date_reviewer_assignament
+      formik.values.reviewerDesignationLetterSubmitted &&
+      formik.values.reviewerApprovalLetterSubmitted &&
+      formik.values.date_reviewer_assignament
     );
   };
 
@@ -176,12 +176,11 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
               month: dayjs().format("MMMM"),
               year: dayjs().format("YYYY"),
             }}
-            filename={`${REVIEWER_ASSIGNMENT.filename}_${
-              process?.reviewer_fullname || ""
-            }.${REVIEWER_ASSIGNMENT.extention}`}
+            filename={`${REVIEWER_ASSIGNMENT.filename}_${process?.reviewer_fullname || ""
+              }.${REVIEWER_ASSIGNMENT.extention}`}
           />
           {formik.touched.reviewerDesignationLetterSubmitted &&
-          formik.errors.reviewerDesignationLetterSubmitted ? (
+            formik.errors.reviewerDesignationLetterSubmitted ? (
             <div className="text-red-1 text-xs mt-1">
               {formik.errors.reviewerDesignationLetterSubmitted}
             </div>
@@ -224,7 +223,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
             filename={`${TUTOR_APPROBAL.filename}_${formik.values.reviewer}.${TUTOR_APPROBAL.extention}`}
           />
           {formik.touched.reviewerApprovalLetterSubmitted &&
-          formik.errors.reviewerApprovalLetterSubmitted ? (
+            formik.errors.reviewerApprovalLetterSubmitted ? (
             <div className="text-red-1 text-xs mt-1">
               {formik.errors.reviewerApprovalLetterSubmitted}
             </div>
@@ -235,7 +234,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
             Anterior
           </Button>
           <Button type="submit" variant="contained" color="primary"
-          disabled={
+            disabled={
               !formik.values.reviewerDesignationLetterSubmitted ||
               !formik.values.reviewerApprovalLetterSubmitted
             }

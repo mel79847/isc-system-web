@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -7,117 +7,121 @@ import {
   Grid,
   TextField,
   Typography,
-  Switch,
-  FormControlLabel,
   Container,
 } from "@mui/material";
-import { createStudent } from "../../services/studentService";
-import { createIntern } from "../../services/internService";
+import { updateStudent, getUserById, getStudents, getInterns } from "../../services/studentService";
+import { getInternByUserIdService, getInternService, updateIntern} from "../../services/internService";
 import axios from "axios";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
-import {
-  PHONE_ERROR_MESSAGE,
-  CODE_DIGITS,
-  PHONE_DIGITS,
-  LETTERS_REGEX,
-  EMAIL_REGEX,
-  PHONE_REGEX,
-  CODE_REGEX,
-} from "../../constants/validation";
+
+const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
+const CODE_EXISTS_MESSAGE = "Ya existe un estudiante con este código.";
+const PHONE_EXISTS_MESSAGE = "Ya existe un estudiante con este número de teléfono.";
 
 const validationSchema = Yup.object({
-  name: Yup.string()
-    .max(20, "Máximo 20 caracteres")
-    .matches(LETTERS_REGEX, "Solo letras y espacios")
-    .required("El nombre completo es obligatorio"),
-
-  lastname: Yup.string()
-    .max(20, "Máximo 20 caracteres")
-    .matches(LETTERS_REGEX, "Solo letras y espacios")
-    .required("El apellido paterno es obligatorio"),
-
-  mothername: Yup.string()
-    .max(20, "Máximo 20 caracteres")
-    .matches(LETTERS_REGEX, "Solo letras y espacios")
-    .required("El apellido materno es obligatorio"),
-
+  name: Yup.string().required("El nombre completo es obligatorio"),
+  lastname: Yup.string().required("El apellido es obligatorio"),
+  mothername: Yup.string().required("El apellido materno es obligatorio"),
   email: Yup.string()
-    .matches(EMAIL_REGEX,"Ingrese un correo electrónico válido")
-    .max(50, "Máximo 50 caracteres")
+    .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
-
   phone: Yup.string()
-    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
-    .required("El número de teléfono es obligatorio"),
-
+    .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
+    .optional()
+    .test("unique-phone", PHONE_EXISTS_MESSAGE, async function (value) {
+      if (!value) return true; 
+      try {
+        const [studentsResponse, internsResponse] = await Promise.all([getStudents(), getInterns()]);
+        const students = Array.isArray(studentsResponse?.data) ? studentsResponse.data : studentsResponse?.data?.data || [];
+        const interns = Array.isArray(internsResponse?.data) ? internsResponse.data : internsResponse?.data?.data || [];
+        const allUsers = [...students, ...interns];
+        const isDuplicate = allUsers.some(
+          (user) =>
+            user &&
+            user.phone != null && 
+            String(user.phone) === String(value) &&
+            user.id !== this.parent.id
+        );
+        return !isDuplicate;
+      } catch (error) {
+        return false; 
+      }
+    }),
   code: Yup.string()
-    .matches(CODE_REGEX, `El código debe tener hasta ${CODE_DIGITS} dígitos`)
-    .required("El código de estudiante es obligatorio"),
-
-  isIntern: Yup.boolean(),
-
-  total_hours: Yup.number()
-    .min(0, "Las horas no pueden ser negativas.")
-    .when("isIntern",{
-      is: true,
-      then: (schema) => schema.required("Las horas becarias son obligatorias."),
-      otherwise: (schema) => schema.nullable(),
+    .optional()
+    .test("unique-code", CODE_EXISTS_MESSAGE, async function (value) {
+      if (!value) return true;
+      try {
+        const [studentsResponse, internsResponse] = await Promise.all([getStudents(), getInterns()]);
+        const students = Array.isArray(studentsResponse?.data) ? studentsResponse.data : studentsResponse?.data?.data || [];
+        const interns = Array.isArray(internsResponse?.data) ? internsResponse.data : internsResponse?.data?.data || [];
+        const allUsers = [...students, ...interns];
+        const isDuplicate = allUsers.some(
+          (user) =>
+            user &&
+            user.code != null && 
+            String(user.code) === String(value) &&
+            user.id !== this.parent.id
+        );
+        return !isDuplicate;
+      } catch (error) {
+        return false; 
+      }
     }),
 });
 
-const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [successDialog, setSuccessDialog] = useState(false);
-  const [errorDialog, setErrorDialog] = useState(false);
-  const [message, setMessage] = useState("");
+interface EditStudentFormProps {
+  id: number;
+  onSuccess: () => void;
+  onClose: () => void;
+}
+
+const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
+  const [successDialog, setSuccessDialog] = React.useState(false);
+  const [errorDialog, setErrorDialog] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [isIntern, setIsIntern] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
+      id: 0,
       name: "",
       lastname: "",
       mothername: "",
       email: "",
       phone: "",
       code: "",
-      isIntern: false,
-      total_hours: 0,
+      role_id: 0,
     },
     validationSchema,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       try {
-        const { isIntern, total_hours, ...rest } = values;
-        const studentData = isIntern
-          ? {
-              ...rest,
-              is_scholarship: true,
-              total_hours,
-              completed_hours: 0,
-              pending_hours: total_hours,
-            }
-          : {
-              ...rest,
-              is_scholarship: false,
-            };
-
-        if (isIntern) {
-          await createIntern({
-            ...rest,
-            total_hours,
-            completed_hours: 0,
-            pending_hours: 0,
-          });
+        const { role_id, ...dataToSend } = values;
+        if (role_id === 4) {
+          const internData = {
+            ...dataToSend,
+            code: dataToSend.code ? Number(dataToSend.code) : undefined,
+          };
+          await updateIntern(values.id, internData);
+          setMessage("Interno actualizado con éxito");
         } else {
-          await createStudent(studentData);
+          await updateStudent({
+            ...dataToSend,
+            id: values.id,
+          });
+          setMessage("Estudiante actualizado con éxito");
         }
+
         setSuccessDialog(true);
         setTimeout(() => {
           onSuccess();
-          resetForm();
+          onClose();
         }, 2000);
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const backendMessage = error?.response?.data?.error;
-          setMessage(backendMessage || "Error al crear estudiante");
+          setMessage(backendMessage || "Error al actualizar");
         } else {
           setMessage("Error inesperado. Por favor, inténtelo de nuevo.");
         }
@@ -125,6 +129,50 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
       }
     },
   });
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        try {
+          const studentResponse = await getUserById(id);
+          if (studentResponse) {
+            formik.setValues({
+              ...studentResponse,
+              role_id: 3,
+            });
+            setIsIntern(false);
+            return;
+          }
+        } catch (e) {
+          return;
+        }
+        try {
+          let internResponse = await getInternService(id);
+          if (internResponse.error) {
+            internResponse = await getInternByUserIdService(id);
+          }
+          if (internResponse && !internResponse.error) {
+            formik.setValues({
+              ...internResponse,
+              role_id: 4,
+            });
+            setIsIntern(true);
+            return;
+          }
+        } catch (e) {
+          return;
+        }
+
+        setMessage("Usuario no encontrado");
+        setErrorDialog(true);
+      } catch (error) {
+        setMessage("Error al cargar los datos");
+        setErrorDialog(true);
+      }
+    };
+
+    fetchUser();
+  }, [id]);
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -142,12 +190,12 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <Container>
-      <form onSubmit={formik.handleSubmit} style={{ marginLeft: -20}}>
+      <form onSubmit={formik.handleSubmit} style={{ marginLeft: -20 }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Typography variant="h4">Crear Nuevo Estudiante</Typography>
+            <Typography variant="h4">Editar {isIntern ? "Becario" : "Estudiante"}</Typography>
             <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
-              Ingrese los datos del estudiante a continuación.
+              Modifique los datos del {isIntern ? "becario" : "estudiante"} a continuación.
             </Typography>
             <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           </Grid>
@@ -155,7 +203,7 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <Grid item xs={12}>
             <Grid container spacing={2}>
               <Grid item xs={3}>
-                <Typography variant="body2">Información del Estudiante</Typography>
+                <Typography variant="body2">Información del {isIntern ? "Becario" : "Estudiante"}</Typography>
               </Grid>
               <Grid item xs={9}>
                 <Grid container spacing={2}>
@@ -164,7 +212,6 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="name"
                       label="Nombres"
                       fullWidth
-                      inputProps={{ maxLength: 20 }}
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       error={formik.touched.name && Boolean(formik.errors.name)}
@@ -177,7 +224,6 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="lastname"
                       label="Apellido Paterno"
                       fullWidth
-                      inputProps={{ maxLength: 20 }}
                       value={formik.values.lastname}
                       onChange={formik.handleChange}
                       error={formik.touched.lastname && Boolean(formik.errors.lastname)}
@@ -192,7 +238,6 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="mothername"
                       label="Apellido Materno"
                       fullWidth
-                      inputProps={{ maxLength: 20 }}
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
                       error={formik.touched.mothername && Boolean(formik.errors.mothername)}
@@ -201,16 +246,15 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                     />
                   </Grid>
                   <Grid item xs={6}>
-                  <TextField
+                    <TextField
                       name="code"
-                      label="Código de Estudiante"
+                      label="Código"
                       fullWidth
                       value={formik.values.code}
                       onChange={handleCodeChange}
-                      margin="normal"
                       error={formik.touched.code && Boolean(formik.errors.code)}
                       helperText={formik.touched.code && formik.errors.code}
-                      inputProps={{ maxLength: CODE_DIGITS }}
+                      margin="normal"
                     />
                   </Grid>
                 </Grid>
@@ -231,7 +275,6 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   fullWidth
                   value={formik.values.email}
                   onChange={formik.handleChange}
-                  inputProps={{ maxLength: 50 }}
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                   margin="normal"
@@ -245,53 +288,18 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
                   margin="normal"
-                  inputProps={{ maxLength: PHONE_DIGITS }}
-                />
-              </Grid>
-            </Grid>
-            <Divider flexItem sx={{ mt: 2, mb: 2 }} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Grid container spacing={2} sx={{ padding: 0 }}>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formik.values.isIntern}
-                      onChange={(e) => formik.setFieldValue("isIntern", e.target.checked)}
-                      name="isIntern"
-                    />
-                  }
-                  label=<Typography variant="body2">¿Es Becario?</Typography>
+                  inputProps={{ maxLength: 8 }}
                 />
               </Grid>
             </Grid>
           </Grid>
-
-          {formik.values.isIntern && (
-            <Grid item xs={12}>
-              <Grid container spacing={2} sx={{ padding: 0 }}>
-                <Grid item xs={6}>
-                  <TextField
-                    name="total_hours"
-                    label="Horas Becario"
-                    type="number"
-                    fullWidth
-                    value={formik.values.total_hours}
-                    onChange={formik.handleChange}
-                    error={formik.touched.total_hours && Boolean(formik.errors.total_hours)}
-                    helperText={formik.touched.total_hours && formik.errors.total_hours}
-                    margin="normal"
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-          )}
 
           <Grid item xs={12}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Grid item>
+                <Button variant="contained" onClick={onClose} sx={{ mr: 2 }}>
+                  CANCELAR
+                </Button>
                 <Button variant="contained" color="primary" type="submit">
                   GUARDAR
                 </Button>
@@ -304,17 +312,17 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
       <SuccessDialog
         open={successDialog}
         onClose={() => setSuccessDialog(false)}
-        title="¡Estudiante Creado!"
-        subtitle="El estudiante ha sido creado con éxito."
+        title={`¡${isIntern ? 'Becario' : 'Estudiante'} Actualizado!`}
+        subtitle={`El ${isIntern ? 'becario' : 'estudiante'} ha sido actualizado con éxito.`}
       />
       <ErrorDialog
         open={errorDialog}
         onClose={() => setErrorDialog(false)}
-        title="¡Vaya!"
+        title="¡Error!"
         subtitle={message}
       />
     </Container>
   );
 };
 
-export default CreateStudentForm;
+export default EditStudentForm; 

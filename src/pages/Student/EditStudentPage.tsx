@@ -1,26 +1,58 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { getUserById, updateStudent } from "../../services/studentService";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
+import {
+  PHONE_ERROR_MESSAGE,
+  CODE_DIGITS,
+  PHONE_DIGITS,
+  LETTERS_REGEX,
+  EMAIL_REGEX,
+  PHONE_REGEX,
+  CODE_REGEX,
+} from "../../constants/validation";
 
-
-const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 const validationSchema = Yup.object({
-  name: Yup.string().required("El nombre completo es obligatorio"),
-  lastname: Yup.string().required("El apellido es obligatorio"),
-  mothername: Yup.string().required("El apellido materno es obligatorio"),
+  name: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
+    .required("El nombre completo es obligatorio"),
+
+  lastname: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
+    .required("El apellido paterno es obligatorio"),
+
+  mothername: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
+    .required("El apellido materno es obligatorio"),
+
   email: Yup.string()
-    .email("Ingrese un correo electrónico válido")
+    .matches(EMAIL_REGEX, "Ingrese un correo electrónico válido")
+    .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
+
   phone: Yup.string()
-    .matches(/^[0-9]{8}$/, PHONE_ERROR_MESSAGE)
-    .optional(),
-  code: Yup.number().optional(),
+    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
+    .required("El número de teléfono es obligatorio"),
+
+  code: Yup.string()
+    .matches(CODE_REGEX, `El código debe tener hasta ${CODE_DIGITS} dígitos`)
+    .required("El código de estudiante es obligatorio"),
 });
 
 const EditStudentPage = () => {
@@ -159,6 +191,7 @@ const EditStudentPage = () => {
                         error={formik.touched.name && Boolean(formik.errors.name)}
                         helperText={formik.touched.name && formik.errors.name}
                         margin="normal"
+                        inputProps={{ maxLength: 20 }}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -173,6 +206,7 @@ const EditStudentPage = () => {
                         error={formik.touched.lastname && Boolean(formik.errors.lastname)}
                         helperText={formik.touched.lastname && formik.errors.lastname}
                         margin="normal"
+                        inputProps={{ maxLength: 20 }}
                       />
                     </Grid>
                   </Grid>
@@ -189,6 +223,7 @@ const EditStudentPage = () => {
                         error={formik.touched.mothername && Boolean(formik.errors.mothername)}
                         helperText={formik.touched.mothername && formik.errors.mothername}
                         margin="normal"
+                        inputProps={{ maxLength: 20 }}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -203,7 +238,7 @@ const EditStudentPage = () => {
                         error={formik.touched.code && Boolean(formik.errors.code)}
                         helperText={formik.touched.code && formik.errors.code}
                         margin="normal"
-                        inputProps={{ maxLength: 10 }}
+                        inputProps={{ maxLength: CODE_DIGITS }}
                       />
                     </Grid>
                   </Grid>
@@ -242,7 +277,7 @@ const EditStudentPage = () => {
                     error={formik.touched.phone && Boolean(formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
                     margin="normal"
-                    inputProps={{ maxLength: 8 }}
+                    inputProps={{ maxLength: PHONE_DIGITS }}
                   />
                 </Grid>
               </Grid>

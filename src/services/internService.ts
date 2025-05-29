@@ -1,6 +1,6 @@
 import axios from 'axios';
 import apiClient from './apiInstance';
-import { Interns } from '../models/internsInterface';
+import { Interns, InternsInformation } from '../models/internsInterface';
 
 export const getInternService = async (intern_id: number) => {
   try {
@@ -87,7 +87,7 @@ export const getInternInformation = async (user_id: number) => {
   }
 };
 
-export const getAllCompleteInternService = async () => {
+export const getAllCompleteInternService = async (userId: number) => {
   try {
     const response = await apiClient.get(`/interns/full-info`);
     if (response.status === 200) {
@@ -154,3 +154,21 @@ export const getInternHistoryByIdService = async (internId: number) => {
     }
   }
 };
+
+export const updateIntern = async (intern_id: number, internData: Partial<InternsInformation>) => {
+  try {
+    const response = await apiClient.put(`/interns/${intern_id}`, internData);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return { error: 'Failed to update intern' };
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return { error: error.response?.data.message || 'Network error' };
+    } else {
+      return { error: 'An unexpected error occurred' };
+    }
+  }
+};
+

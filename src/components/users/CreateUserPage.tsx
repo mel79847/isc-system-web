@@ -97,13 +97,13 @@ const CreateUserPage = ({ handleClose, openCreate, user = null }: UserFormProps)
       };
       try {
         if (!user) {
-          console.log(formUser);
+          if (import.meta.env.DEV) console.log(formUser);
           await createUserWIthRoles(formUser);
         } else await putUser(user.id || 0, formUser);
         setIsSuccessOpen(true);
         resetForm();
       } catch (error) {
-        console.log(error);
+        if (import.meta.env.DEV) console.log(error);
         setIsErrorOpen(true);
       }
     },

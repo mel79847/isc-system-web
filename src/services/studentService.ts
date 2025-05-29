@@ -6,8 +6,18 @@ export const getStudents = async () => {
   return response.data;
 };
 
+export const getInterns = async () => {
+  const response = await apiClient.get('/interns');
+  return response.data;
+};
+
 export const getStudentsForGraduation = async () => {
   const response = await apiClient.get('/student/graduation');
+  return response.data;
+};
+
+export const getInternsForGraduation = async () => {
+  const response = await apiClient.get('/intern/graduation');
   return response.data;
 };
 
