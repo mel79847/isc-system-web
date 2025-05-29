@@ -1,42 +1,44 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, Divider, Grid, TextField, Typography, MenuItem } from "@mui/material";
+import { Button, Divider, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { ProfessorInterface } from "../../services/models/Professor";
 import { createProfessor } from "../../services/mentorsService";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
-import LoadingOverlay from "../../components/common/Loading";
-import { COUNTRY_CODES } from "../../constants/countryCodes";
+import SuccessDialog from "../../components/common/SucessDialog";
+import {
+  PHONE_ERROR_MESSAGE,
+  PHONE_DIGITS,
+  LETTERS_REGEX,
+  PHONE_REGEX,
+} from "../../constants/validation";
 
-const onlyLettersRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .matches(onlyLettersRegex, "El nombre solo debe contener letras")
+    .matches(LETTERS_REGEX, "El nombre solo debe contener letras")
     .required("El nombre completo es obligatorio"),
   lastname: Yup.string()
-    .matches(onlyLettersRegex, "El apellido paterno solo debe contener letras")
+    .matches(LETTERS_REGEX, "El apellido paterno solo debe contener letras")
     .required("El apellido es obligatorio"),
   mothername: Yup.string()
-    .matches(onlyLettersRegex, "El apellido materno solo debe contener letras")
+    .matches(LETTERS_REGEX, "El apellido materno solo debe contener letras")
     .required("El apellido materno es obligatorio"),
   email: Yup.string()
     .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
-  countryCode: Yup.string().required("Seleccione un código de país"),
-  phoneNumber: Yup.string()
-    .matches(/^\d{7,15}$/, "Número inválido, solo dígitos entre 7 y 15")
-    .required("El número de teléfono es obligatorio"),
+  phone: Yup.string()
+    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
+    .required("El número de teléfono es requerido"),
   degree: Yup.string().required("El título académico es obligatorio"),
   code: Yup.number()
     .typeError("El código debe ser numérico")
     .required("El código de docente es obligatorio"),
+
 });
 
-const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [loading, setLoading] = useState(false);
+
+const CreateProfessorForm = () => {
   const [message, setMessage] = useState("");
   const [successDialog, setSuccessDialog] = useState(false);
   const [errorDialog, setErrorDialog] = useState(false);
@@ -44,7 +46,6 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const sucessDialogClose = () => {
     setSuccessDialog(false);
     formik.resetForm();
-    onSuccess();
   };
 
   const errorDialogClose = () => {
@@ -60,28 +61,27 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
       phone: "",
       degree: "",
       code: "",
-      countryCode: "+591",
-      phoneNumber: "",
     },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
       try {
-        const payload = {
-          ...values,
-          phone: `${values.countryCode} ${values.phoneNumber}`,
-        };
-        await createProfessor(payload);
+        await createProfessor(values);
         setMessage("Profesor creado con éxito");
         setSuccessDialog(true);
       } catch (error) {
         setMessage("Error al crear el docente");
         setErrorDialog(true);
-      } finally {
-        setLoading(false);
       }
     },
   });
+
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    if (/^[0-9]*$/.test(value)) {
+      formik.setFieldValue("phone", value);
+    }
+  };
+
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -90,9 +90,9 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
     }
   };
 
+
   return (
-    <FormContainer>
-      {loading && <LoadingOverlay message="Creando Docente..." />}
+    <>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
@@ -102,6 +102,7 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
             </Typography>
             <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           </Grid>
+
 
           <Grid item xs={12}>
             <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -149,7 +150,8 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       fullWidth
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
-                      error={formik.touched.mothername && Boolean(formik.errors.mothername)}
+                      error={formik.touched.mothername &&
+                        Boolean(formik.errors.mothername)}
                       helperText={formik.touched.mothername && formik.errors.mothername}
                       margin="normal"
                     />
@@ -185,13 +187,15 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 >
                   <MenuItem value="">Seleccione un título</MenuItem>
                   <MenuItem value="Ing.">Ing.</MenuItem>
-                  <MenuItem value="Msc">Msc.</MenuItem>
-                  <MenuItem value="PhD">PhD.</MenuItem>
+                  <MenuItem value="M.Sc.">M.Sc.</MenuItem>
+                  <MenuItem value="M.Eng.">M.Eng.</MenuItem>
+                  <MenuItem value="PhD.">PhD.</MenuItem>
                 </TextField>
               </Grid>
             </Grid>
             <Divider flexItem sx={{ my: 2 }} />
           </Grid>
+
 
           <Grid item xs={12}>
             <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -212,47 +216,19 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   margin="normal"
                   inputProps={{ maxLength: 50 }}
                 />
-                <Grid container spacing={2}>
-                  <Grid item xs={4}>
-                    <TextField
-                      select
-                      id="countryCode"
-                      name="countryCode"
-                      label="Código País"
-                      variant="outlined"
-                      fullWidth
-                      value={formik.values.countryCode}
-                      onChange={formik.handleChange}
-                      error={formik.touched.countryCode && Boolean(formik.errors.countryCode)}
-                      helperText={formik.touched.countryCode && formik.errors.countryCode}
-                      margin="normal"
-                    >
-                      {COUNTRY_CODES.map((c) => (
-                        <MenuItem key={c.code} value={c.code}>
-                          {c.flag} {c.code} ({c.name})
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <TextField
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      label="Número de Teléfono"
-                      variant="outlined"
-                      fullWidth
-                      value={formik.values.phoneNumber}
-                      onChange={(e) => {
-                        const cleaned = e.target.value.replace(/\D/g, "");
-                        formik.setFieldValue("phoneNumber", cleaned);
-                      }}
-                      error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-                      helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                      margin="normal"
-                      inputProps={{ maxLength: 15 }}
-                    />
-                  </Grid>
-                </Grid>
+                <TextField
+                  id="phone"
+                  name="phone"
+                  label="Número de Teléfono"
+                  variant="outlined"
+                  fullWidth
+                  value={formik.values.phone}
+                  onChange={handlePhoneChange}
+                  error={formik.touched.phone && Boolean(formik.errors.phone)}
+                  helperText={formik.touched.phone && formik.errors.phone}
+                  margin="normal"
+                  inputProps={{ maxLength: PHONE_DIGITS }}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -279,7 +255,9 @@ const CreateProfessorForm = ({ onSuccess }: { onSuccess: () => void }) => {
         title={"¡Vaya!"}
         subtitle={message}
       />
-    </FormContainer>
+    </>
   );
 };
+
+
 export default CreateProfessorForm;
