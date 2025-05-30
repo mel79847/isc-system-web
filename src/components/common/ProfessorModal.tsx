@@ -2,6 +2,7 @@ import React from "react";
 import { Modal as MuiModal, Box } from "@mui/material";
 import EditProfessorComponent from "./EditProfessorComponent";
 import CreateProfessorForm from "../../pages/Professor/CreateProfessorForm";
+import EditProfessorPage from "../../pages/Professor/EditProfessorPage";
 
 type funcType = "edit" | "create";
 interface ModalProps {
@@ -30,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, func, id }) => {
         }}
       >
         {func == "create" && <CreateProfessorForm onSuccess={onClose} />}
-        {func == "edit" && <EditProfessorComponent id={id ?? -1} onClose={onClose} />}
+        {func == "edit" && <EditProfessorPage id={id ?? -1}/>}
       </Box>
     </MuiModal>
   );

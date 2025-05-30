@@ -3,8 +3,6 @@ import * as Yup from "yup";
 import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FormContainer } from "../CreateGraduation/components/FormContainer";
-import LoadingOverlay from "../../components/common/Loading";
 import { updateProfessor, getProfessorById } from "../../services/mentorsService";
 import {
   PHONE_ERROR_MESSAGE,
@@ -36,16 +34,18 @@ const validationSchema = Yup.object({
   
 });
 
-const EditProfessorPage = () => {
+interface EditProfessorProps {
+  id: number;
+}
+
+const EditProfessorPage = ({ id }:EditProfessorProps) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
-  const [loading] = useState(false);
   const [, setProfessor] = useState<any>();
-  const { id } = useParams();
   const fetchProfessor = async () => {
     try {
-      const response = await getProfessorById(Number(id));
+      const response = await getProfessorById(id);
       formik.setValues({
         ...response,
         lastname: response.lastName,
@@ -123,8 +123,7 @@ const EditProfessorPage = () => {
     }
   };
   return (
-    <FormContainer>
-      {loading && <LoadingOverlay message="Actializando Docente..." />}
+    <>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
@@ -282,7 +281,7 @@ const EditProfessorPage = () => {
             {message}
           </Alert>
         </Snackbar>
-      </FormContainer>
+      </>
     );
   };
 export default EditProfessorPage;
