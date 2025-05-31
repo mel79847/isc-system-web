@@ -1,6 +1,5 @@
 import React from "react";
 import { Modal as MuiModal, Box } from "@mui/material";
-import EditProfessorComponent from "./EditProfessorComponent";
 import CreateProfessorForm from "../../pages/Professor/CreateProfessorForm";
 import EditProfessorPage from "../../pages/Professor/EditProfessorPage";
 
@@ -30,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, func, id }) => {
           overflowY: "auto",
         }}
       >
-        {func == "create" && <CreateProfessorForm onSuccess={onClose} />}
+        {func == "create" && <CreateProfessorForm/>}
         {func == "edit" && <EditProfessorPage id={id ?? -1}/>}
       </Box>
     </MuiModal>

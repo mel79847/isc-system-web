@@ -25,7 +25,7 @@ const EditStudentComponent: React.FC<{ id: number; onClose: () => void }> = ({ i
 
   const fetchStudent = async () => {
     try {
-      const response = await getUserById(Number(id));
+      const response = await getUserById(id);
       formik.setValues(response);
     } catch (error) {
       console.error("Error al obtener el estudiante:", error);
@@ -48,7 +48,6 @@ const EditStudentComponent: React.FC<{ id: number; onClose: () => void }> = ({ i
     validationSchema,
     onSubmit: async (values) => {
       try {
-        // @ts-expect-error: Código de estudiante se está pasando como string y no como numero
         await updateStudent(values);
         setMessage("Estudiante actualizado con éxito");
         setSeverity("success");
