@@ -91,9 +91,9 @@ const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNex
       const [year, month, day] = values.date.format("YYYY-MM-DD").split("-");
 
       const data: PDFInsertData[] = [
-        { x: 195, y: 204.1, size: 10, text: day },
-        { x: 222, y: 204.1, size: 10, text: month },
-        { x: 245, y: 204.1, size: 10, text: year },
+        { x: 195, y: 204.1, size: 10, text: `${day}` },
+        { x: 222, y: 204.1, size: 10, text: `${month}` },
+        { x: 245, y: 204.1, size: 10, text: `${year}` },
         { x: 222, y: 293, size: 10, text: values.president },
       ];
 
