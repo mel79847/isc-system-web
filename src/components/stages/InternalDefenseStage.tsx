@@ -21,6 +21,7 @@ import { useDefenseInternalDetail } from "../../hooks/useDefenseInternalDetail";
 import ProfessorAutocomplete from "../selects/ProfessorAutoComplete";
 import { Mentor } from "../../models/mentorInterface";
 import EmailSender from "../common/EmailArea";
+import { getProfessorById } from "../../services/mentorsService";
 
 const DEFENSE_INTERNAL = "internal";
 
@@ -89,12 +90,13 @@ const InternalDefenseStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNex
   const downloadEditedPDF = async (values: any) => {
     try {
       const [year, month, day] = values.date.format("YYYY-MM-DD").split("-");
-
+      const response = await getProfessorById(parseInt(values.president));
+      const fullName = response.fullname;
       const data: PDFInsertData[] = [
-        { x: 195, y: 204.1, size: 10, text: day },
-        { x: 222, y: 204.1, size: 10, text: month },
-        { x: 245, y: 204.1, size: 10, text: year },
-        { x: 222, y: 293, size: 10, text: values.president },
+        { x: 195, y: 204.1, size: 10, text: `${day}` },
+        { x: 222, y: 204.1, size: 10, text: `${month}` },
+        { x: 245, y: 204.1, size: 10, text: `${year}` },
+        { x: 222, y: 293, size: 10, text: fullName },
       ];
 
       const pdfArrayBuffer = await fetch(pdfFile).then((res) => res.arrayBuffer());
