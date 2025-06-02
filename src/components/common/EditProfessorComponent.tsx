@@ -1,65 +1,57 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
-import { updateProfessor, getProfessorById } from "../../services/mentorsService";
+import { FormContainer } from "../../pages/CreateGraduation/components/FormContainer";
 import {
-  PHONE_ERROR_MESSAGE,
-  PHONE_DIGITS,
-  LETTERS_REGEX,
-  EMAIL_REGEX,
-  PHONE_REGEX,
-} from "../../constants/validation";
+  Button,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+  Snackbar,
+  Alert,
+  MenuItem,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { getUserById } from "../../services/studentService";
+import LoadingOverlay from "../../components/common/Loading";
+import { updateProfessor } from "../../services/mentorsService";
+
 const validationSchema = Yup.object({
-  name: Yup.string()
-    .matches(LETTERS_REGEX, "El nombre solo debe contener letras")
-    .required("El nombre completo es obligatorio"),
-  lastname: Yup.string()
-    .matches(LETTERS_REGEX, "El apellido paterno solo debe contener letras")
-    .required("El apellido es obligatorio"),
-  mothername: Yup.string()
-    .matches(LETTERS_REGEX, "El apellido materno solo debe contener letras")
-    .required("El apellido materno es obligatorio"),
+  name: Yup.string().required("El nombre completo es obligatorio"),
+  lastname: Yup.string().required("El apellido es obligatorio"),
+  mothername: Yup.string().required("El apellido materno es obligatorio"),
   email: Yup.string()
-    .matches(EMAIL_REGEX, "Ingrese un correo electrónico válido")
+    .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
-    .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
-    .required("El número de teléfono es obligatorio"),
-  degree: Yup.string().required("El título académico es obligatorio"),
-  code: Yup.number()
-    .typeError("El código debe ser numérico")
-    .required("El código de docente es obligatorio"),
-  
+    .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
+    .optional(),
+  code: Yup.number().optional(),
 });
 
-interface EditProfessorProps {
-  id: number;
-}
-
-const EditProfessorPage = ({ id }:EditProfessorProps) => {
+const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({ id, onClose }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+  const [loading] = useState(false);
   const [, setProfessor] = useState<any>();
   const fetchProfessor = async () => {
     try {
-      const response = await getProfessorById(id);
+      const response = await getUserById(Number(id));
       formik.setValues({
+        ...formik.initialValues,
         ...response,
-        lastname: response.lastName,
-        mothername: response.motherName,
-        roles: [2], 
-        role_id: 2,
+        roles: response.roles || [3],
+        role_id: response.role_id || 3,
         isStudent: false,
         is_scholarship: false,
+        degree: response.degree || "",
       });
       setProfessor(response);
     } catch (error) {
       console.error("Error al obtener docente:", error);
     }
   };
-
   useEffect(() => {
     fetchProfessor();
   }, [id]);
@@ -81,18 +73,13 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const updatedValues = {
-          ...values,
-          id: Number(id),
-          role_id: 2,
-          roles: [2],
-          isStudent: false,
-          is_scholarship: false
-        };
-        // @ts-ignore
-        await updateProfessor(updatedValues);
+        // @ts-expect-error: Código de docente se está pasando como string y no como numero
+        await updateProfessor(values);
         setMessage("Docente actualizado con éxito");
         setSeverity("success");
+        setTimeout(() => {
+          onClose();
+        }, 4000);
       } catch (error) {
         setMessage("Error al actualizar");
         setSeverity("error");
@@ -121,8 +108,10 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
       formik.setFieldValue("code", value);
     }
   };
+
   return (
-    <>
+    <FormContainer>
+      {loading && <LoadingOverlay message="Actializando Docente..." />}
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
@@ -215,9 +204,8 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
                 >
                   <MenuItem value="">Seleccione un título</MenuItem>
                   <MenuItem value="Ing.">Ing.</MenuItem>
-                  <MenuItem value="M.Sc.">M.Sc.</MenuItem>
-                  <MenuItem value="PhD.">PhD.</MenuItem>
-                  <MenuItem value="M.Eng.">M.Eng.</MenuItem>
+                  <MenuItem value="Msc">Msc.</MenuItem>
+                  <MenuItem value="PhD">PhD.</MenuItem>
                 </TextField>
               </Grid>
             </Grid>
@@ -254,7 +242,7 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
                   error={formik.touched.phone && Boolean(formik.errors.phone)}
                   helperText={formik.touched.phone && formik.errors.phone}
                   margin="normal"
-                  inputProps={{ maxLength: PHONE_DIGITS }}
+                  inputProps={{ maxLength: 20 }}
                 />
               </Grid>
             </Grid>
@@ -265,22 +253,23 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
                 <Button variant="contained" color="primary" type="submit">
                   GUARDAR
                 </Button>
-                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
       </form>
       <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
-            {message}
-          </Alert>
-        </Snackbar>
-      </>
-    );
-  };
-export default EditProfessorPage;
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
+    </FormContainer>
+  );
+};
+
+export default EditProfessorComponent;

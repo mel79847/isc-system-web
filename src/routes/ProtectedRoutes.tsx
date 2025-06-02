@@ -10,7 +10,6 @@ import UpdateEventForm from "../pages/Events/UpdateEventForm";
 import GraduationProcessPage from "../pages/graduation/GraduationProcessPage";
 import ProcessInfoPage from "../pages/graduation/ProcessInfoPage";
 import InternsListPage from "../pages/interns/InternsListPage";
-import CreateProfessorPage from "../pages/Professor/CreateProfessorPage";
 import ProfessorPage from "../pages/Professor/ProfessorPage";
 import Profile from "../pages/profile/Profile";
 import CreateStudentPage from "../pages/Student/CreateStudentPage";
@@ -28,7 +27,6 @@ import ViewInternSupervisor from "../pages/supervisor/ViewInternSupervisor";
 import EventsByInternsPage from "../pages/interns/EventsByInterns";
 import { roles } from "../constants/roles";
 import EventRegisterPage from "../pages/Events/EventRegisterPage";
-import EditProfessorPage from "../pages/Professor/EditProfessorPage";
 
 function loader() {
   return getProcess();
@@ -93,23 +91,6 @@ const protectedRoutes = [
         element: (
           <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
             <EditStudentPage />
-          </RoleGuard>
-        ),
-      },
-      {
-        path: "/edit-professor/:id",
-        element: (
-          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
-            <EditProfessorPage />
-          </RoleGuard>
-        ),
-      },
-      {
-        path: "/create-professor",
-        loader: loader,
-        element: (
-          <RoleGuard allowedRoles={[ADMIN, PROFESSOR]}>
-            <CreateProfessorPage />
           </RoleGuard>
         ),
       },

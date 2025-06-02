@@ -1,15 +1,19 @@
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, Divider, Grid, TextField, Typography, Snackbar, Alert, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
-import { updateProfessor, getProfessorById } from "../../services/mentorsService";
+import { Button, Divider, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { ProfessorInterface } from "../../services/models/Professor";
+import { createProfessor } from "../../services/mentorsService";
+import ErrorDialog from "../../components/common/ErrorDialog";
+import SuccessDialog from "../../components/common/SucessDialog";
 import {
   PHONE_ERROR_MESSAGE,
   PHONE_DIGITS,
   LETTERS_REGEX,
-  EMAIL_REGEX,
   PHONE_REGEX,
 } from "../../constants/validation";
+
+
 const validationSchema = Yup.object({
   name: Yup.string()
     .matches(LETTERS_REGEX, "El nombre solo debe contener letras")
@@ -21,99 +25,63 @@ const validationSchema = Yup.object({
     .matches(LETTERS_REGEX, "El apellido materno solo debe contener letras")
     .required("El apellido materno es obligatorio"),
   email: Yup.string()
-    .matches(EMAIL_REGEX, "Ingrese un correo electrónico válido")
+    .email("Ingrese un correo electrónico válido")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
     .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
-    .required("El número de teléfono es obligatorio"),
+    .required("El número de teléfono es requerido"),
   degree: Yup.string().required("El título académico es obligatorio"),
   code: Yup.number()
     .typeError("El código debe ser numérico")
     .required("El código de docente es obligatorio"),
-  
+
 });
 
-interface EditProfessorProps {
-  id: number;
-}
 
-const EditProfessorPage = ({ id }:EditProfessorProps) => {
-  const [open, setOpen] = useState(false);
+const CreateProfessorForm = () => {
   const [message, setMessage] = useState("");
-  const [severity, setSeverity] = useState<"success" | "error">("success");
-  const [, setProfessor] = useState<any>();
-  const fetchProfessor = async () => {
-    try {
-      const response = await getProfessorById(id);
-      formik.setValues({
-        ...response,
-        lastname: response.lastName,
-        mothername: response.motherName,
-        roles: [2], 
-        role_id: 2,
-        isStudent: false,
-        is_scholarship: false,
-      });
-      setProfessor(response);
-    } catch (error) {
-      console.error("Error al obtener docente:", error);
-    }
+  const [successDialog, setSuccessDialog] = useState(false);
+  const [errorDialog, setErrorDialog] = useState(false);
+
+  const sucessDialogClose = () => {
+    setSuccessDialog(false);
+    formik.resetForm();
   };
 
-  useEffect(() => {
-    fetchProfessor();
-  }, [id]);
+  const errorDialogClose = () => {
+    setErrorDialog(false);
+  };
 
-  const formik = useFormik({
+  const formik = useFormik<ProfessorInterface>({
     initialValues: {
       name: "",
       lastname: "",
+      mothername: "",
       email: "",
       phone: "",
-      code: "",
-      mothername: "",
       degree: "",
-      roles: [3],
-      role_id: 3,
-      isStudent: false,
-      is_scholarship: false,
+      code: "",
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const updatedValues = {
-          ...values,
-          id: Number(id),
-          role_id: 2,
-          roles: [2],
-          isStudent: false,
-          is_scholarship: false
-        };
-        // @ts-ignore
-        await updateProfessor(updatedValues);
-        setMessage("Docente actualizado con éxito");
-        setSeverity("success");
+        await createProfessor(values);
+        setMessage("Profesor creado con éxito");
+        setSuccessDialog(true);
       } catch (error) {
-        setMessage("Error al actualizar");
-        setSeverity("error");
-      } finally {
-        setOpen(true);
+        setMessage("Error al crear el docente");
+        setErrorDialog(true);
       }
     },
   });
-  const handleClose = (_event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const { value } = event.target;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("phone", value);
     }
   };
+
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -121,17 +89,20 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
       formik.setFieldValue("code", value);
     }
   };
+
+
   return (
     <>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid item xs={12}>
-            <Typography variant="h4">Editar Docente</Typography>
+            <Typography variant="h4">Crear Nuevo Docente</Typography>
             <Typography variant="body2" sx={{ fontSize: 14, color: "gray" }}>
               Ingrese los datos del docente a continuación.
             </Typography>
             <Divider flexItem sx={{ mt: 2, mb: 2 }} />
           </Grid>
+
 
           <Grid item xs={12}>
             <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -179,7 +150,8 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
                       fullWidth
                       value={formik.values.mothername}
                       onChange={formik.handleChange}
-                      error={formik.touched.mothername && Boolean(formik.errors.mothername)}
+                      error={formik.touched.mothername &&
+                        Boolean(formik.errors.mothername)}
                       helperText={formik.touched.mothername && formik.errors.mothername}
                       margin="normal"
                     />
@@ -216,13 +188,14 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
                   <MenuItem value="">Seleccione un título</MenuItem>
                   <MenuItem value="Ing.">Ing.</MenuItem>
                   <MenuItem value="M.Sc.">M.Sc.</MenuItem>
-                  <MenuItem value="PhD.">PhD.</MenuItem>
                   <MenuItem value="M.Eng.">M.Eng.</MenuItem>
+                  <MenuItem value="PhD.">PhD.</MenuItem>
                 </TextField>
               </Grid>
             </Grid>
             <Divider flexItem sx={{ my: 2 }} />
           </Grid>
+
 
           <Grid item xs={12}>
             <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -262,25 +235,29 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
           <Grid item xs={12}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Grid item>
-                <Button variant="contained" color="primary" type="submit">
+                <Button variant="contained" color="primary" type="submit" sx={{ mr: 3 }}>
                   GUARDAR
                 </Button>
-                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
       </form>
-      <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
-            {message}
-          </Alert>
-        </Snackbar>
-      </>
-    );
-  };
-export default EditProfessorPage;
+      <SuccessDialog
+        open={successDialog}
+        onClose={sucessDialogClose}
+        title={"Docente Creado!"}
+        subtitle={"El docente ha sido creado con éxito."}
+      />
+      <ErrorDialog
+        open={errorDialog}
+        onClose={errorDialogClose}
+        title={"¡Vaya!"}
+        subtitle={message}
+      />
+    </>
+  );
+};
+
+
+export default CreateProfessorForm;
