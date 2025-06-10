@@ -1,0 +1,11 @@
+{
+  "validTeacher": {
+    "name": "Juan",
+    "lastname": "Pérez",
+    "mothername": "García",
+    "code": "34282",
+    "email": "juan.perez@upb.edu",
+    "phone": "76543210",
+    "degree": "Ing."
+  }
+}
