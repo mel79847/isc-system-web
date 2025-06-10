@@ -3,9 +3,18 @@
     "name": "Juan",
     "lastname": "Pérez",
     "mothername": "García",
+    "degree": "Ing.",
     "code": "34282",
     "email": "juan.perez@upb.edu",
-    "phone": "76543210",
-    "degree": "Ing."
+    "phone": "76543210"
+  },
+  "updatedTeacher": {
+    "name": "Carlos",
+    "lastname": "Navarro",
+    "mothername": "Zapata",
+    "degree": "M.Sc.",
+    "code": "34282",
+    "email": "carlos.navarro@example.com",
+    "phone": "71234567"
   }
 }
