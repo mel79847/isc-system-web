@@ -27,3 +27,37 @@ Cypress.Commands.add("createTeacher", (teacher) => {
 
   cy.contains("button", "GUARDAR").click();
 });
+
+// searchTeacher
+Cypress.Commands.add('searchTeacher', (codigo) => {
+  cy.get('.MuiDataGrid-root', { timeout: 15000 }).should('be.visible');
+
+  let encontrado = false;
+
+  const buscarEnPagina = () => {
+    if (encontrado) return;
+
+    cy.get('.MuiDataGrid-virtualScrollerRenderZone', { timeout: 8000 })
+      .should('exist')
+      .then(($renderZone) => {
+        if ($renderZone.text().includes(codigo)) {
+          encontrado = true;
+          cy.contains('.MuiDataGrid-cell', codigo).should('be.visible');
+        } else {
+          cy.get('button[aria-label="Go to next page"]')
+            .then($boton => {
+              const disabled = $boton.prop('disabled');
+              if (!disabled) {
+                cy.wrap($boton).click();
+                cy.wait(500);       
+                buscarEnPagina();   
+              } else if (!encontrado) {
+                throw new Error(`Docente con código ${codigo} no encontrado en todas las páginas`);
+              }
+            });
+        }
+      });
+  };
+
+  buscarEnPagina();
+});
