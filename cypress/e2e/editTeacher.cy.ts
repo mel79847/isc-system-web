@@ -13,6 +13,8 @@ describe("Módulo Docentes - Edición", () => {
       cy.get('body').type('{esc}');
       cy.searchTeacher(updatedTeacher.code).then(($row) => {
         // verificar datos
+        cy.wrap($row).should('contain', updatedTeacher.code);
+        cy.wrap($row).should('contain', updatedTeacher.degree);
         cy.wrap($row).should('contain', updatedTeacher.name);
         cy.wrap($row).should('contain', updatedTeacher.lastname);
         cy.wrap($row).should('contain', updatedTeacher.phone);
