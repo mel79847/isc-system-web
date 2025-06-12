@@ -29,8 +29,8 @@ Cypress.Commands.add("createTeacher", (teacher) => {
   cy.contains("button", "GUARDAR").click();
 });
 
-// findTeacherRow
-Cypress.Commands.add("findTeacherRow", (code: string) => {
+// searchTeacher
+Cypress.Commands.add("searchTeacher", (code: string) => {
   const searchPage = (): Cypress.Chainable<JQuery<HTMLElement>> => {
     return cy
       .get('[role="rowgroup"] [role="row"]')
@@ -41,9 +41,8 @@ Cypress.Commands.add("findTeacherRow", (code: string) => {
         if (found) {
           return cy.wrap(found);
         }
-        // advance page
         return cy
-          .get('button[aria-label="Go to next page"], button[aria-label="Siguiente página"]')
+          .get('button[aria-label="Go to next page"]')
           .then($btn => {
             if (!$btn.prop("disabled")) {
               cy.wrap($btn).click();
@@ -59,36 +58,13 @@ Cypress.Commands.add("findTeacherRow", (code: string) => {
 });
 
 // editTeacher
-Cypress.Commands.add("editTeacher", (originalCode, teacher) => {
+Cypress.Commands.add("searchAndEditTeacher", (originalCode, teacher) => {
   cy.get('[data-testid="SupervisorAccountIcon"]').click();
-  
-  // locate row and click edit across pages
-  const searchAndClick = (): void => {
-    cy.get('[role="row"]')
-      .contains(originalCode)
-      .parents('[role="row"]')
-      .within(() => {
-        cy.get('button[aria-label="editar"]').click();
-      })
-      .then($row => {
-        if (!$row.length) {
-          cy.get('button[aria-label="Go to next page"], button[aria-label="Siguiente página"]')
-            .then($btn => {
-              if (!$btn.prop("disabled")) {
-                cy.wrap($btn).click();
-                cy.wait(300);
-                searchAndClick();
-              } else {
-                throw new Error(`Fila con código ${originalCode} no encontrada.`);
-              }
-            });
-        }
-      });
-  };
-  
-  searchAndClick();
 
-  // edit modal
+  cy.searchTeacher(originalCode).within(() => {
+    cy.get('[data-testid="EditIcon"]').click({ force: true });
+  });
+
   cy.get('form').should('be.visible');
   cy.get('input[name="name"]').clear().type(teacher.name);
   cy.get('input[name="lastname"]').clear().type(teacher.lastname);
@@ -98,6 +74,5 @@ Cypress.Commands.add("editTeacher", (originalCode, teacher) => {
   cy.get('input[name="email"]').clear().type(teacher.email);
   cy.get('input[name="phone"]').clear().type(teacher.phone);
 
-  // save
   cy.contains("button", "GUARDAR").click();
 });

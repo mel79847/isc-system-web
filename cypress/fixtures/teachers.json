@@ -4,7 +4,7 @@
     "lastname": "Pérez",
     "mothername": "García",
     "degree": "Ing.",
-    "code": "34282",
+    "code": "77162",
     "email": "juan.perez@upb.edu",
     "phone": "76543210"
   },
@@ -16,5 +16,5 @@
     "code": "34282",
     "email": "carlos.navarro@example.com",
     "phone": "71234567"
-  }
+}
 }
