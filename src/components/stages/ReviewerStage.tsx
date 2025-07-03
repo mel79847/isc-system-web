@@ -1,21 +1,22 @@
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Box, Button, Checkbox, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Grid, Paper, Tooltip, Typography } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import ConfirmModal from "../common/ConfirmModal";
 import { steps } from "../../data/steps";
 import { useProcessStore } from "../../store/store";
 import { updateProcess } from "../../services/processServicer";
 import { Mentor } from "../../models/mentorInterface";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ProfessorAutocomplete from "../selects/ProfessorAutoComplete";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DownloadButton from "../common/DownloadButton";
 import { letters } from "../../constants/letters";
 import { useCarrerStore } from "../../store/carrerStore";
+
 const { TUTOR_APPROBAL, REVIEWER_ASSIGNMENT } = letters;
 
 const validationSchema = Yup.object({
@@ -34,7 +35,7 @@ const program = "Ingeniería de Sistemas Computacionales";
 const headOfDepartment = "Alexis Marechal Marin PhD";
 const CURRENT_STAGE = 2;
 
-export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
+const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
   const process = useProcessStore((state) => state.process);
   const carrer = useCarrerStore((state) => state.carrer);
   const setProcess = useProcessStore((state) => state.setProcess);
@@ -56,10 +57,20 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
       setShowModal(true);
     },
   });
+  const canApproveStage = () =>
+    Boolean(
+      formik.values.reviewer &&
+        formik.values.reviewerDesignationLetterSubmitted &&
+        formik.values.reviewerApprovalLetterSubmitted &&
+        formik.values.date_reviewer_assignament
+    );
 
+  const isApproveButton = canApproveStage();
+  const hasReviewer = Boolean(formik.values.reviewer);
   const saveStage = async () => {
     if (process) {
-      const { reviewer, reviewerDesignationLetterSubmitted, reviewerApprovalLetterSubmitted } = formik.values;
+      const { reviewer, reviewerDesignationLetterSubmitted, reviewerApprovalLetterSubmitted } =
+        formik.values;
       process.reviewer_approval = reviewerApprovalLetterSubmitted;
       process.reviewer_letter = reviewerDesignationLetterSubmitted;
       process.reviewer_id = Number(reviewer);
@@ -93,17 +104,6 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
     formik.setFieldValue("date_reviewer_assignament", value);
   };
 
-  const canApproveStage = () => {
-    return Boolean(
-      formik.values.reviewer &&
-      formik.values.reviewerDesignationLetterSubmitted &&
-      formik.values.reviewerApprovalLetterSubmitted &&
-      formik.values.date_reviewer_assignament
-    );
-  };
-
-  const isApproveButton = canApproveStage();
-
   const editForm = () => {
     setEditMode(false);
   };
@@ -111,7 +111,8 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
   return (
     <>
       <div className="txt1 pb-3">
-        Etapa 3: Seleccionar Revisor <ModeEditIcon onClick={editForm} />
+        {"Etapa 3: Seleccionar Revisor "}
+        <ModeEditIcon onClick={editForm} />
       </div>
 
       <form onSubmit={formik.handleSubmit} className="mt-5 mx-16">
@@ -122,7 +123,7 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
               value={String(formik.values.reviewer)}
               onChange={handleMentorChange}
               id="reviewer"
-              label={"Seleccionar Revisor"}
+              label="Seleccionar Revisor"
             />
             {formik.touched.reviewer && formik.errors.reviewer ? (
               <div className="text-red-1 text-xs mt-1">{formik.errors.reviewer}</div>
@@ -159,28 +160,36 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
             disabled={editMode}
           />
           <Typography variant="body2" sx={{ flexGrow: 1 }}>
-            Carta de Designación de Revisor Presentada
+            {"Carta de Designación de Revisor Presentada\r"}
           </Typography>
-          <DownloadButton
-            url={REVIEWER_ASSIGNMENT.path}
-            data={{
-              student: process?.student_fullname || "",
-              number: 1,
-              reviewer: process?.reviewer_fullname || "",
-              degree: process?.reviewer_degree || "",
-              jefe_carrera: headOfDepartment,
-              carrera: carrer?.fullName || "",
-              project_title: process?.project_name || "",
-              carrer_abre: carrer?.shortName || "",
-              day: dayjs().format("DD"),
-              month: dayjs().format("MMMM"),
-              year: dayjs().format("YYYY"),
-            }}
-            filename={`${REVIEWER_ASSIGNMENT.filename}_${process?.reviewer_fullname || ""
-              }.${REVIEWER_ASSIGNMENT.extention}`}
-          />
+          <Tooltip
+            title={!hasReviewer ? "Debe seleccionar un revisor para habilitar esta descarga" : ""}
+          >
+            <span>
+              <DownloadButton
+                disabled={!hasReviewer}
+                url={REVIEWER_ASSIGNMENT.path}
+                data={{
+                  student: process?.student_fullname || "",
+                  number: 1,
+                  reviewer: process?.reviewer_fullname || "",
+                  degree: process?.reviewer_degree || "",
+                  jefe_carrera: headOfDepartment,
+                  carrera: carrer?.fullName || "",
+                  project_title: process?.project_name || "",
+                  carrer_abre: carrer?.shortName || "",
+                  day: dayjs().format("DD"),
+                  month: dayjs().format("MMMM"),
+                  year: dayjs().format("YYYY"),
+                }}
+                filename={`${REVIEWER_ASSIGNMENT.filename}_${
+                  process?.reviewer_fullname || ""
+                }.${REVIEWER_ASSIGNMENT.extention}`}
+              />
+            </span>
+          </Tooltip>
           {formik.touched.reviewerDesignationLetterSubmitted &&
-            formik.errors.reviewerDesignationLetterSubmitted ? (
+          formik.errors.reviewerDesignationLetterSubmitted ? (
             <div className="text-red-1 text-xs mt-1">
               {formik.errors.reviewerDesignationLetterSubmitted}
             </div>
@@ -205,25 +214,32 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
             disabled={editMode}
           />
           <Typography variant="body2" sx={{ flexGrow: 1 }}>
-            Carta de Aprobación de Revisor Presentada
+            {"Carta de Aprobación de Revisor Presentada\r"}
           </Typography>
-          <DownloadButton
-            url={TUTOR_APPROBAL.path}
-            data={{
-              student: process?.student_name || "",
-              tutor: process?.tutor_name || "",
-              jefe_carrera: headOfDepartment,
-              carrera: program,
-              dia: dayjs().format("DD"),
-              mes: dayjs().format("MMMM"),
-              ano: dayjs().format("YYYY"),
-              title_project: process?.project_name || "",
-              date: dayjs(formik.values.date_reviewer_assignament).format("DD/MM/YYYY"),
-            }}
-            filename={`${TUTOR_APPROBAL.filename}_${formik.values.reviewer}.${TUTOR_APPROBAL.extention}`}
-          />
+          <Tooltip
+            title={!hasReviewer ? "Debe seleccionar un revisor para habilitar esta descarga" : ""}
+          >
+            <span>
+              <DownloadButton
+                disabled={!hasReviewer}
+                url={TUTOR_APPROBAL.path}
+                data={{
+                  student: process?.student_name || "",
+                  tutor: process?.tutor_name || "",
+                  jefe_carrera: headOfDepartment,
+                  carrera: program,
+                  dia: dayjs().format("DD"),
+                  mes: dayjs().format("MMMM"),
+                  ano: dayjs().format("YYYY"),
+                  title_project: process?.project_name || "",
+                  date: dayjs(formik.values.date_reviewer_assignament).format("DD/MM/YYYY"),
+                }}
+                filename={`${TUTOR_APPROBAL.filename}_${formik.values.reviewer}.${TUTOR_APPROBAL.extention}`}
+              />
+            </span>
+          </Tooltip>
           {formik.touched.reviewerApprovalLetterSubmitted &&
-            formik.errors.reviewerApprovalLetterSubmitted ? (
+          formik.errors.reviewerApprovalLetterSubmitted ? (
             <div className="text-red-1 text-xs mt-1">
               {formik.errors.reviewerApprovalLetterSubmitted}
             </div>
@@ -231,9 +247,12 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
         </Paper>
         <Box display="flex" justifyContent="space-between" mt={4}>
           <Button type="button" variant="contained" color="secondary" onClick={onPrevious}>
-            Anterior
+            {"Anterior\r"}
           </Button>
-          <Button type="submit" variant="contained" color="primary"
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
             disabled={
               !formik.values.reviewerDesignationLetterSubmitted ||
               !formik.values.reviewerApprovalLetterSubmitted
@@ -255,3 +274,4 @@ export const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) =>
     </>
   );
 };
+export default ReviewerStage;
