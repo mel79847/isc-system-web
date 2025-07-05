@@ -19,6 +19,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import WarningIcon from "@mui/icons-material/Warning";
+import ErrorIcon from "@mui/icons-material/Error";
 import ConfirmModal from "../common/ConfirmModal";
 import { steps } from "../../data/steps";
 import { useProcessStore } from "../../store/store";
@@ -32,7 +33,17 @@ import { useCarrerStore } from "../../store/carrerStore";
 const { TUTOR_APPROBAL, REVIEWER_ASSIGNMENT } = letters;
 
 const validationSchema = Yup.object({
-  reviewer: Yup.string().required("* El revisor es obligatorio"),
+  reviewer: Yup.string()
+    .required("* El revisor es obligatorio")
+    .test(
+      "different-from-tutor",
+      "* El revisor no puede ser el mismo docente que el tutor",
+      function (value) {
+        const { parent } = this;
+        const { tutorId } = parent;
+        return !value || !tutorId || value !== tutorId.toString();
+      }
+    ),
   reviewerDesignationLetterSubmitted: Yup.boolean(),
   reviewerApprovalLetterSubmitted: Yup.boolean(),
   date_reviewer_assignament: Yup.mixed().required("Debe seleccionar una fecha"),
@@ -54,6 +65,7 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showWarningSnackbar, setShowWarningSnackbar] = useState<boolean>(false);
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState<boolean>(false);
   const [originalReviewerId, setOriginalReviewerId] = useState<number | undefined>(undefined);
 
   const isReadOnlyMode = () => {
@@ -73,6 +85,16 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
   const wasReviewerApproved = () =>
     Boolean(process?.reviewer_approval && process?.stage_id > CURRENT_STAGE);
 
+  const [currentReviewerId, setCurrentReviewerId] = useState<string>(
+    process?.reviewer_id?.toString() || ""
+  );
+
+  const isDuplicateSelection = (reviewerId?: string) => {
+    const tutorId = process?.tutor_id;
+    const selectedReviewer = reviewerId || currentReviewerId;
+    return tutorId && selectedReviewer && tutorId.toString() === selectedReviewer;
+  };
+
   const formik = useFormik({
     initialValues: {
       reviewerDesignationLetterSubmitted: process?.reviewer_letter || false,
@@ -81,9 +103,15 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
         : dayjs(),
       reviewer: process?.reviewer_id?.toString() || "",
       reviewerApprovalLetterSubmitted: process?.reviewer_approval || false,
+      tutorId: process?.tutor_id,
     },
     validationSchema,
     onSubmit: () => {
+      if (isDuplicateSelection(formik.values.reviewer)) {
+        setShowDuplicateWarning(true);
+        return;
+      }
+
       if (wasReviewerApproved() && originalReviewerId !== Number(formik.values.reviewer)) {
         setShowWarningSnackbar(true);
         return;
@@ -100,13 +128,16 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
 
   useEffect(() => {
     if (process) {
+      const reviewerId = process.reviewer_id?.toString() || "";
+      setCurrentReviewerId(reviewerId);
       formik.setValues({
         reviewerDesignationLetterSubmitted: process.reviewer_letter || false,
         date_reviewer_assignament: process.date_reviewer_assignament
           ? dayjs(process.date_reviewer_assignament)
           : dayjs(),
-        reviewer: process.reviewer_id?.toString() || "",
+        reviewer: reviewerId,
         reviewerApprovalLetterSubmitted: process.reviewer_approval || false,
+        tutorId: process.tutor_id,
       });
       setEditMode(isReadOnlyMode());
     }
@@ -117,7 +148,8 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
       formik.values.reviewer &&
         formik.values.reviewerDesignationLetterSubmitted &&
         formik.values.reviewerApprovalLetterSubmitted &&
-        formik.values.date_reviewer_assignament
+        formik.values.date_reviewer_assignament &&
+        !isDuplicateSelection(formik.values.reviewer)
     );
 
   const isApproveButton = canApproveStage();
@@ -125,6 +157,11 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
 
   const saveStage = async () => {
     if (!process) {
+      return;
+    }
+
+    if (isDuplicateSelection(formik.values.reviewer)) {
+      setShowDuplicateWarning(true);
       return;
     }
 
@@ -177,7 +214,15 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
   };
 
   const handleMentorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
-    formik.setFieldValue("reviewer", value?.id?.toString() || "");
+    const selectedId = value?.id?.toString() || "";
+
+    if (selectedId && process?.tutor_id && selectedId === process.tutor_id.toString()) {
+      setShowDuplicateWarning(true);
+      return;
+    }
+
+    setCurrentReviewerId(selectedId);
+    formik.setFieldValue("reviewer", selectedId);
     if (process) {
       process.reviewer_fullname = value?.fullname || "";
       process.reviewer_degree = value?.degree || "";
@@ -198,6 +243,10 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
 
   const handleWarningSnackbarClose = () => {
     setShowWarningSnackbar(false);
+  };
+
+  const handleDuplicateWarningClose = () => {
+    setShowDuplicateWarning(false);
   };
 
   return (
@@ -233,6 +282,26 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
           </Alert>
         )}
 
+      {isDuplicateSelection(formik.values.reviewer) && (
+        <Alert severity="error" sx={{ mb: 2 }} icon={<ErrorIcon />}>
+          <AlertTitle>{"Docente Duplicado"}</AlertTitle>
+          {"El docente seleccionado ya está asignado como tutor. Por favor, seleccione un \r"}
+          {"docente diferente para el rol de revisor.\r"}
+        </Alert>
+      )}
+
+      {process?.tutor_fullname && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          <AlertTitle>{"Tutor Asignado"}</AlertTitle>
+          {"Tutor actual: "}
+          <strong>
+            {process.tutor_degree} {process.tutor_fullname}
+          </strong>
+          <br />
+          <em>{"Recuerde que el revisor debe ser un docente diferente al tutor."}</em>
+        </Alert>
+      )}
+
       <form onSubmit={formik.handleSubmit} className="mt-5 mx-16">
         <Grid container spacing={3}>
           <Grid item xs={6}>
@@ -242,6 +311,7 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
               onChange={handleMentorChange}
               id="reviewer"
               label="Seleccionar Revisor"
+              excludeId={process?.tutor_id}
             />
             {formik.touched.reviewer && formik.errors.reviewer ? (
               <div className="text-red-1 text-xs mt-1">{formik.errors.reviewer}</div>
@@ -365,7 +435,8 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
             disabled={
               editMode ||
               !formik.values.reviewerDesignationLetterSubmitted ||
-              !formik.values.reviewerApprovalLetterSubmitted
+              !formik.values.reviewerApprovalLetterSubmitted ||
+              isDuplicateSelection(formik.values.reviewer)
             }
           >
             {isApproveButton ? "Aprobar Etapa" : "Guardar"}
@@ -392,6 +463,19 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
         <Alert onClose={handleWarningSnackbarClose} severity="warning" sx={{ width: "100%" }}>
           {"No se puede editar el revisor porque la fase ya ha sido registrada o aprobada.\r"}
           {"Cualquier cambio requerirá reiniciar el proceso de aprobación.\r"}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={showDuplicateWarning}
+        autoHideDuration={8000}
+        onClose={handleDuplicateWarningClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleDuplicateWarningClose} severity="error" sx={{ width: "100%" }}>
+          <AlertTitle>{"Docente Duplicado"}</AlertTitle>
+          {"No se puede asignar el mismo docente como tutor y revisor. \r"}
+          {"Por favor, seleccione un docente diferente.\r"}
         </Alert>
       </Snackbar>
     </>
