@@ -115,13 +115,9 @@ function ProcessForm({ isVisible, isClosed }: ProcessFormProps) {
       } catch (error) {
         console.error("Error al crear proceso:", error);
 
-        if (error.response?.status === 409) {
-          setTitleError(
-            "Este título ya ha sido registrado por otro estudiante. Por favor, ingrese un título diferente."
-          );
-        } else {
-          setTitleError("Ocurrió un error al crear el proceso. Por favor, intente nuevamente.");
-        }
+        setTitleError(
+          "Este título ya ha sido registrado por otro estudiante. Por favor, ingrese un título diferente."
+        );
       } finally {
         setLoading(false);
       }
