@@ -59,6 +59,7 @@ function ProcessForm({ isVisible, isClosed }: ProcessFormProps) {
       .min(5, "El título debe tener al menos 5 caracteres")
       .max(80, "El título no debe superar los 80 caracteres")
       .matches(/^[a-zA-Z0-9\s]+$/, "El título solo debe contener letras y números")
+      .matches(/[a-zA-Z]/, "El título debe contener texto descriptivo.")
       .required("Campo requerido"),
   });
 
