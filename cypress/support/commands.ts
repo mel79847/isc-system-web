@@ -1,3 +1,4 @@
+/// <reference types="cypress" />
 //login asHeadOfDepartment
 Cypress.Commands.add("loginAsHeadOfDepartment", () => {
   const email = Cypress.env("HEAD_OF_DEPARTMENT_EMAIL");
@@ -29,35 +30,49 @@ Cypress.Commands.add("createTeacher", (teacher) => {
 });
 
 // searchTeacher
-Cypress.Commands.add('searchTeacher', (codigo) => {
-  cy.get('.MuiDataGrid-root', { timeout: 15000 }).should('be.visible');
-
-  let encontrado = false;
-
-  const buscarEnPagina = () => {
-    if (encontrado) return;
-
-    cy.get('.MuiDataGrid-virtualScrollerRenderZone', { timeout: 8000 })
-      .should('exist')
-      .then(($renderZone) => {
-        if ($renderZone.text().includes(codigo)) {
-          encontrado = true;
-          cy.contains('.MuiDataGrid-cell', codigo).should('be.visible');
-        } else {
-          cy.get('button[aria-label="Go to next page"]')
-            .then($boton => {
-              const disabled = $boton.prop('disabled');
-              if (!disabled) {
-                cy.wrap($boton).click();
-                cy.wait(500);       
-                buscarEnPagina();   
-              } else if (!encontrado) {
-                throw new Error(`Docente con código ${codigo} no encontrado en todas las páginas`);
-              }
-            });
+Cypress.Commands.add("searchTeacher", (code: string) => {
+  const searchPage = (): Cypress.Chainable<JQuery<HTMLElement>> => {
+    return cy
+      .get('[role="rowgroup"] [role="row"]')
+      .then($rows => {
+        const found = Cypress._.find($rows.toArray(), row =>
+          row.innerText.includes(code)
+        );
+        if (found) {
+          return cy.wrap(found);
         }
+        return cy
+          .get('button[aria-label="Go to next page"]')
+          .then($btn => {
+            if (!$btn.prop("disabled")) {
+              cy.wrap($btn).click();
+              cy.wait(300);
+              return searchPage();
+            }
+            throw new Error(`Fila con código ${code} no encontrada.`);
+          });
       });
   };
 
-  buscarEnPagina();
+  return searchPage();
+});
+
+// editTeacher
+Cypress.Commands.add("searchAndEditTeacher", (originalCode, teacher) => {
+  cy.get('[data-testid="SupervisorAccountIcon"]').click();
+
+  cy.searchTeacher(originalCode).within(() => {
+    cy.get('[data-testid="EditIcon"]').click({ force: true });
+  });
+
+  cy.get('form').should('be.visible');
+  cy.get('input[name="name"]').clear().type(teacher.name);
+  cy.get('input[name="lastname"]').clear().type(teacher.lastname);
+  cy.get('input[name="mothername"]').clear().type(teacher.mothername);
+  cy.get('#degree').click();
+  cy.get("ul[role='listbox']").contains(teacher.degree).click();
+  cy.get('input[name="email"]').clear().type(teacher.email);
+  cy.get('input[name="phone"]').clear().type(teacher.phone);
+
+  cy.contains("button", "GUARDAR").click();
 });

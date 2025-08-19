@@ -33,6 +33,7 @@
     "requiredTitle": "El título académico es obligatorio",
     "requiredEmail": "El correo electrónico es obligatorio",
     "requiredPhone": "El número de teléfono es requerido",
+    "obligatoryPhone": "El número de teléfono es obligatorio",
     "onlyLettersName": "El nombre solo debe contener letras",
     "onlyLettersPaternal": "El apellido paterno solo debe contener letras",
     "onlyLettersMaternal": "El apellido materno solo debe contener letras",
