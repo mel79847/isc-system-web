@@ -76,3 +76,74 @@ Cypress.Commands.add("searchAndEditTeacher", (originalCode, teacher) => {
 
   cy.contains("button", "GUARDAR").click();
 });
+
+// createGraduationProcess
+Cypress.Commands.add('createGraduationProcess', (student, process) => {
+  cy.get('[data-testid="ChecklistOutlinedIcon"]').click();
+  
+  cy.contains('Nuevo Proceso').click();
+  
+  const fullName = `${student.name} ${student.lastname} ${student.mothername}`;
+  
+  cy.selectAutocompleteOption('Nombre Estudiante', fullName);
+  
+  cy.get('input[name="studentCode"]').should('have.value', student.code);
+  
+  cy.selectMenuItem('Seleccionar Modalidad', process.modality);
+  
+  cy.get('input[name="titleProject"]').clear().type(process.title);
+  
+  cy.selectMenuItem('Seleccionar Período', process.period);
+  
+  cy.get('button').contains('GUARDAR').click({ force: true });
+
+  cy.url({ timeout: 15000 }).should('include', '/studentProfile');
+});
+
+// Comando para seleccionar opciones en autocompletado
+Cypress.Commands.add('selectAutocompleteOption', (labelText, optionText) => {
+  cy.contains('label', labelText).click({ force: true });
+  cy.focused().type(optionText.substring(0, 3), { delay: 100 });
+  cy.wait(500);
+  cy.focused().type('{downArrow}{enter}');
+});
+
+// Comando para seleccionar en menús
+Cypress.Commands.add('selectMenuItem', (labelText, optionText) => {
+  cy.contains('label', labelText).click({ force: true });
+  cy.focused().type('{downArrow}');
+  cy.contains('li.MuiMenuItem-root', optionText).click({ force: true });
+});
+
+// searchGraduationProcess
+Cypress.Commands.add('searchGraduationProcess', (student) => {
+  
+  cy.get('input[placeholder="Buscar por nombre de estudiante"]')
+    .first()
+    .clear()
+    .type(student.name);
+  cy.wait(1000);
+
+  return cy.get('[role="rowgroup"] [role="row"]').first();
+});
+
+// handleExistingTitleError
+Cypress.Commands.add('handleExistingTitleError', (student, process) => {
+  cy.get('[data-testid="ChecklistOutlinedIcon"]').click();
+  
+  cy.contains('Nuevo Proceso').click();
+  
+  const fullName = `${student.name} ${student.lastname} ${student.mothername}`;
+
+  cy.selectAutocompleteOption('Nombre Estudiante', fullName);
+  
+  cy.selectMenuItem('Seleccionar Modalidad', process.modality);
+  
+  cy.get('input[name="titleProject"]').clear().type(process.existingTitle);
+  
+  cy.selectMenuItem('Seleccionar Período', process.period);
+  
+  cy.contains('button', 'GUARDAR').click();
+
+  cy.url().should("not.include", "/studentProfile");
+});
