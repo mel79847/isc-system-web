@@ -166,8 +166,19 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
     const { reviewer, reviewerDesignationLetterSubmitted, reviewerApprovalLetterSubmitted } =
       formik.values;
 
-    const reviewerChanged = originalReviewerId !== Number(reviewer);
+    const currentReviewerId = Number(reviewer);
+    const reviewerChanged = originalReviewerId !== currentReviewerId;
     const wasApproved = process.reviewer_approval;
+    const shouldAdvanceToNextStage = isApproveButton && !reviewerChanged;
+
+    console.log("SaveStage Debug:", {
+      originalReviewerId,
+      currentReviewerId,
+      reviewerChanged,
+      isApproveButton,
+      shouldAdvanceToNextStage,
+      wasApproved
+    });
 
     const updatedProcess = { ...process };
 
@@ -185,30 +196,39 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
     }
 
     updatedProcess.reviewer_letter = reviewerDesignationLetterSubmitted;
-    updatedProcess.reviewer_id = Number(reviewer);
+    updatedProcess.reviewer_id = currentReviewerId;
     updatedProcess.date_reviewer_assignament = formik.values.date_reviewer_assignament;
 
-    if (isApproveButton && !reviewerChanged) {
+    if (shouldAdvanceToNextStage) {
       updatedProcess.stage_id = 3;
     }
 
     try {
+      await updateProcess(updatedProcess);
       setProcess(updatedProcess);
 
-      await updateProcess(updatedProcess);
-
-      if (isApproveButton && !reviewerChanged) {
+      // Only proceed to next stage if approving and conditions are met
+      if (shouldAdvanceToNextStage) {
+        console.log("Advancing to next stage");
         onNext();
+      } else {
+        console.log("Not advancing to next stage:", { shouldAdvanceToNextStage });
       }
     } catch (error) {
       console.error("Error al actualizar el proceso:", error);
+      // Revert any local state changes on error
       setProcess(process);
     }
   };
 
   const handleModalAction = async () => {
-    await saveStage();
-    setShowModal(false);
+    try {
+      await saveStage();
+    } catch (error) {
+      console.error("Error en handleModalAction:", error);
+    } finally {
+      setShowModal(false);
+    }
   };
 
   const handleMentorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
