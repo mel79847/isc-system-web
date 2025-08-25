@@ -27,7 +27,6 @@ const ErrorPage = () => {
       const homeRoute = getDefaultHomeRoute(user.roles);
       navigate(homeRoute, { replace: true });
     } else {
-      // If no user or roles, redirect to login
       navigate("/login", { replace: true });
     }
   }, [user, navigate]);
