@@ -96,9 +96,17 @@ export const MentorStage: FC<InternalDefenseStageProps> = ({ onPrevious, onNext 
   return (
     <>
       <Typography variant="h6"  gutterBottom style={{ fontWeight: 'bold' }}>
-        Etapa 2: Seleccionar Tutor <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
+        Etapa 2: Seleccionar Tutor{" "}
+        <ModeEditIcon
+          onClick={process?.tutor_approval ? editForm : undefined}
+          style={{
+            cursor: process?.tutor_approval ? "pointer" : "not-allowed",
+            color: process?.tutor_approval ? "inherit" : "#ccc",
+          }}
+        />
       </Typography>
 
+        
       <form onSubmit={formik.handleSubmit} className="mx-16">
         <Grid container spacing={3}>
           <MentorSelection
