@@ -166,8 +166,10 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
     const { reviewer, reviewerDesignationLetterSubmitted, reviewerApprovalLetterSubmitted } =
       formik.values;
 
-    const reviewerChanged = originalReviewerId !== Number(reviewer);
+    const currentReviewerId = Number(reviewer);
+    const reviewerChanged = originalReviewerId !== currentReviewerId;
     const wasApproved = process.reviewer_approval;
+    const shouldAdvanceToNextStage = isApproveButton && !reviewerChanged;
 
     const updatedProcess = { ...process };
 
@@ -185,30 +187,34 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
     }
 
     updatedProcess.reviewer_letter = reviewerDesignationLetterSubmitted;
-    updatedProcess.reviewer_id = Number(reviewer);
+    updatedProcess.reviewer_id = currentReviewerId;
     updatedProcess.date_reviewer_assignament = formik.values.date_reviewer_assignament;
 
-    if (isApproveButton && !reviewerChanged) {
+    if (shouldAdvanceToNextStage) {
       updatedProcess.stage_id = 3;
     }
 
     try {
+      await updateProcess(updatedProcess);
       setProcess(updatedProcess);
 
-      await updateProcess(updatedProcess);
-
-      if (isApproveButton && !reviewerChanged) {
+      // Only proceed to next stage if approving and conditions are met
+      if (shouldAdvanceToNextStage) {
         onNext();
       }
     } catch (error) {
-      console.error("Error al actualizar el proceso:", error);
       setProcess(process);
     }
   };
 
   const handleModalAction = async () => {
-    await saveStage();
-    setShowModal(false);
+    try {
+      await saveStage();
+    } catch (error) {
+      // Handle error silently
+    } finally {
+      setShowModal(false);
+    }
   };
 
   const handleMentorChange = (_event: React.ChangeEvent<unknown>, value: Mentor | null) => {
@@ -223,7 +229,6 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
     formik.setFieldValue("reviewer", selectedId);
     if (process) {
       process.reviewer_fullname = value?.fullname || "";
-      process.reviewer_degree = value?.degree || "";
     }
   };
 
@@ -304,11 +309,11 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
         <Grid container spacing = {3}>
           <Grid item xs = {6}>
             <ProfessorAutocomplete
-              disabled = {editMode}
-              value = {formik.values.reviewer}
-              onChange = {handleMentorChange}
-              id = "reviewer"
-              label = "Seleccionar Revisor"
+              disabled={editMode}
+              value={formik.values.reviewer}
+              onChange={handleMentorChange}
+              id="reviewer"
+              label="Seleccionar Revisor"
             />
             {formik.touched.reviewer && formik.errors.reviewer ? (
               <div className = "text-red-1 text-xs mt-1">{formik.errors.reviewer}</div>
@@ -435,12 +440,12 @@ const ReviewerStage: FC<ReviewerStageProps> = ({ onPrevious, onNext }) => {
             type = "submit"
             variant = "contained"
             color = "primary"
-            disabled = {Boolean(
+            disabled={
               editMode ||
               !formik.values.reviewerDesignationLetterSubmitted ||
               !formik.values.reviewerApprovalLetterSubmitted ||
-              isDuplicateSelection(formik.values.reviewer)
-            )}
+              Boolean(isDuplicateSelection(formik.values.reviewer))
+            }
           >
             {isApproveButton ? "Aprobar Etapa" : "Guardar"}
           </Button>
