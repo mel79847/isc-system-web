@@ -43,7 +43,7 @@ const rootLoader: LoaderFunction = async () => {
   } catch (error) {
     // Si hay un error 401, redirigir al login
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       throw new Response("Unauthorized", { status: 401 });
     }
     throw error;
@@ -54,9 +54,8 @@ const studentLoader: LoaderFunction = async ({ params }) => {
   try {
     return await getStudentById(Number(params.id));
   } catch (error) {
-    // Si hay un error 401, redirigir al login
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       throw new Response("Unauthorized", { status: 401 });
     }
     throw error;
@@ -73,7 +72,7 @@ interface AppRoute {
 }
 
 const routes: AppRoute[] = [
-  { path: "/", element: <Navigate to = "/login" replace /> },
+  { path: "/", element: <Navigate to="/login" replace /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/forgotPassword", element: <LoginPage /> },
   { path: "/signup", element: <LoginPage /> },
@@ -88,12 +87,12 @@ const routes: AppRoute[] = [
         element: <Layout />,
         errorElement: <AppErrorBoundary />,
         children: [
-          { index: true, element: <Navigate to = "/dashboard" replace /> },
+          { index: true, element: <Navigate to="/dashboard" replace /> },
 
           {
             path: "/dashboard",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <DashboardPage />
               </RoleGuard>
             ),
@@ -104,7 +103,7 @@ const routes: AppRoute[] = [
             loader: rootLoader,
             errorElement: <AppErrorBoundary />,
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR, STUDENT]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR, STUDENT]}>
                 <GraduationProcessPage />
               </RoleGuard>
             ),
@@ -114,7 +113,7 @@ const routes: AppRoute[] = [
             loader: rootLoader,
             errorElement: <AppErrorBoundary />,
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <CreateProcessPage />
               </RoleGuard>
             ),
@@ -124,7 +123,7 @@ const routes: AppRoute[] = [
             loader: studentLoader,
             errorElement: <AppErrorBoundary />,
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, INTERN, SUPERVISOR, PROFESSOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR, PROFESSOR]}>
                 <ProcessInfoPage />
               </RoleGuard>
             ),
@@ -133,7 +132,7 @@ const routes: AppRoute[] = [
           {
             path: "/professors",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, PROGRAM_DIRECTOR, PROFESSOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, PROGRAM_DIRECTOR, PROFESSOR]}>
                 <ProfessorPage />
               </RoleGuard>
             ),
@@ -143,7 +142,7 @@ const routes: AppRoute[] = [
             path: "/students",
             loader: rootLoader,
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <StudentPage />
               </RoleGuard>
             ),
@@ -152,7 +151,7 @@ const routes: AppRoute[] = [
             path: "/create-student",
             loader: rootLoader,
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <CreateStudentPage />
               </RoleGuard>
             ),
@@ -160,7 +159,7 @@ const routes: AppRoute[] = [
           {
             path: "/edit-student/:id",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <EditStudentPage />
               </RoleGuard>
             ),
@@ -169,7 +168,7 @@ const routes: AppRoute[] = [
           {
             path: "/profile",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
                 <Profile />
               </RoleGuard>
             ),
@@ -178,7 +177,7 @@ const routes: AppRoute[] = [
             path: "/profile/:id",
             element: (
               <RoleGuard
-                allowedRoles = {[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR, INTERN, SUPERVISOR]}
+                allowedRoles={[ADMIN, STUDENT, PROFESSOR, PROGRAM_DIRECTOR, INTERN, SUPERVISOR]}
               >
                 <Profile />
               </RoleGuard>
@@ -188,7 +187,7 @@ const routes: AppRoute[] = [
           {
             path: "/events",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
                 <EventsPage />
               </RoleGuard>
             ),
@@ -196,7 +195,7 @@ const routes: AppRoute[] = [
           {
             path: "/events/create",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <CreateEventPage />
               </RoleGuard>
             ),
@@ -204,7 +203,7 @@ const routes: AppRoute[] = [
           {
             path: "/editEvent/:id_event",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <UpdateEventForm />
               </RoleGuard>
             ),
@@ -212,7 +211,7 @@ const routes: AppRoute[] = [
           {
             path: "/interns/:id_event",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <InternsListPage />
               </RoleGuard>
             ),
@@ -220,7 +219,7 @@ const routes: AppRoute[] = [
           {
             path: "/EventHistory/:id_event",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, INTERN, SUPERVISOR]}>
+              <RoleGuard allowedRoles={[ADMIN, INTERN, SUPERVISOR]}>
                 <EventHistory />
               </RoleGuard>
             ),
@@ -228,7 +227,7 @@ const routes: AppRoute[] = [
           {
             path: "/eventsByInterns",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <EventsByInternsPage />
               </RoleGuard>
             ),
@@ -236,7 +235,7 @@ const routes: AppRoute[] = [
           {
             path: "/eventRegisters/:id_event",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <EventRegisterPage />
               </RoleGuard>
             ),
@@ -245,7 +244,7 @@ const routes: AppRoute[] = [
           {
             path: "/scholarshipHours",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
                 <HoursPage />
               </RoleGuard>
             ),
@@ -253,7 +252,7 @@ const routes: AppRoute[] = [
           {
             path: "/CompleteScholarshipHour",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, PROGRAM_DIRECTOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, PROGRAM_DIRECTOR]}>
                 <CompleteScholarshipHourPage />
               </RoleGuard>
             ),
@@ -261,7 +260,7 @@ const routes: AppRoute[] = [
           {
             path: "/myEvents",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR]}>
                 <MyEventsTable />
               </RoleGuard>
             ),
@@ -270,7 +269,7 @@ const routes: AppRoute[] = [
           {
             path: "/administration",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN]}>
+              <RoleGuard allowedRoles={[ADMIN]}>
                 <AdministratorPage />
               </RoleGuard>
             ),
@@ -278,7 +277,7 @@ const routes: AppRoute[] = [
           {
             path: "/users",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN]}>
+              <RoleGuard allowedRoles={[ADMIN]}>
                 <UsersPage />
               </RoleGuard>
             ),
@@ -287,7 +286,7 @@ const routes: AppRoute[] = [
           {
             path: "/supervisor",
             element: (
-              <RoleGuard allowedRoles = {[ADMIN, STUDENT, SUPERVISOR]}>
+              <RoleGuard allowedRoles={[ADMIN, STUDENT, SUPERVISOR]}>
                 <ViewInternSupervisor />
               </RoleGuard>
             ),
