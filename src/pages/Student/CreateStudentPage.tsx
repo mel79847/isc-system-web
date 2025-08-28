@@ -42,9 +42,13 @@ const validationSchema = Yup.object({
     .matches(CODE_REGEX, `El código debe tener hasta ${CODE_DIGITS} dígitos`)
     .required("El código de estudiante es obligatorio"),
   isIntern: Yup.boolean(),
-  total_hours: Yup.number().when("isIntern", (isIntern, schema) => {
-    return isIntern ? schema.required("Las horas becarias son obligatorias") : schema.nullable();
-  }),
+  total_hours: Yup.number()
+    .min(0, "Las horas no pueden ser negativas.")
+    .when("isIntern", {
+      is: true,
+      then: (schema) => schema.required("Las horas becarias son obligatorias."),
+      otherwise: (schema) => schema.nullable(),
+    }),
 });
 
 const CreateStudentPage = () => {
