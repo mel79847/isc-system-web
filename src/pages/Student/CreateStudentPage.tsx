@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
@@ -16,7 +16,7 @@ import {
   FormControlLabel,
   IconButton,
 } from "@mui/material";
-import { createStudent } from "../../services/studentService";
+import { createStudent, getStudents } from "../../services/studentService";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import { createIntern } from "../../services/internService";
@@ -27,6 +27,7 @@ import {
   PHONE_REGEX,
   CODE_REGEX,
 } from "../../constants/validation";
+
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
   lastname: Yup.string().required("El apellido es obligatorio"),
@@ -52,8 +53,22 @@ const CreateStudentPage = () => {
   const [errorDialog, setErrorDialog] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+  const [studentCodes, setStudentCodes] = useState<Set<string>>(new Set());
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const students = await getStudents();
+        const codes = new Set<string>(students.map((s: any) => s.code.toString()));
+        setStudentCodes(codes);
+      } catch (error) {
+        console.error("Error cargando estudiantes:", error);
+      }
+    };
+    fetchStudents();
+  }, []);
 
   const handleBackNavigate = () => {
     navigate("/students");
@@ -81,6 +96,15 @@ const CreateStudentPage = () => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
+        const codeStr = values.code.toString();
+
+        if (studentCodes.has(codeStr)) {
+          setMessage("El código de estudiante ya está en uso");
+          setSeverity("error");
+          setErrorDialog(true);
+          return;
+        }
+
         const { isIntern, total_hours, ...rest } = values;
         if (isIntern) {
           await createIntern({
@@ -93,13 +117,28 @@ const CreateStudentPage = () => {
           // @ts-ignore
           await createStudent(rest);
         }
+
+        setStudentCodes(new Set(studentCodes).add(codeStr));
+
         setMessage("Estudiante creado con éxito");
         setSeverity("success");
         setSuccessDialog(true);
         resetForm();
-      } catch (error) {
-        // @ts-ignore
-        setMessage(error.response.data.message);
+      } catch (error: any) {
+        let errorMessage = "Ocurrió un error inesperado. Por favor, inténtelo de nuevo.";
+        if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+          if (
+            errorMessage.toLowerCase().includes("código") &&
+            errorMessage.toLowerCase().includes("ya está en uso")
+          ) {
+            setMessage("El código de estudiante ya está en uso");
+          } else {
+            setMessage(errorMessage);
+          }
+        } else {
+          setMessage(errorMessage);
+        }
         setSeverity("error");
         setErrorDialog(true);
       }
