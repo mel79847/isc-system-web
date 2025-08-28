@@ -55,7 +55,12 @@ const validationSchema = Yup.object({
       }
     }),
   code: Yup.string()
-    .matches(CODE_REGEX, CODE_ERROR_MESSAGE)
+    .test('code-validation', CODE_ERROR_MESSAGE, function(value) {
+      if (!value || value.trim() === '') {
+        return true; 
+      }
+      return CODE_REGEX.test(value);
+    })
     .optional()
     .test("unique-code", CODE_EXISTS_MESSAGE, async function (value) {
       if (!value) return true;
@@ -107,16 +112,34 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
         const { role_id, ...dataToSend } = values;
         if (role_id === 4) {
           const internData = {
-            ...dataToSend,
-            code: dataToSend.code ? Number(dataToSend.code) : undefined,
+            username: (dataToSend as any).username,  
+            password: (dataToSend as any).password,  
+            name: dataToSend.name,
+            lastname: dataToSend.lastname,
+            mothername: dataToSend.mothername,
+            email: dataToSend.email,
+            phone: dataToSend.phone,
+            code: dataToSend.code, // Mantener como string
           };
-          await updateIntern(values.id, internData);
+          await updateIntern(values.id, internData as any);
           setMessage("Interno actualizado con éxito");
         } else {
+         
+          const dataToSendToAPI = {
+            username: (dataToSend as any).username,  
+            password: (dataToSend as any).password,  
+            name: dataToSend.name,
+            lastname: dataToSend.lastname,
+            mothername: dataToSend.mothername,
+            email: dataToSend.email,
+            phone: dataToSend.phone,
+            code: dataToSend.code, // Como string
+          };
+          
           await updateStudent({
-            ...dataToSend,
-            id: values.id,
-          });
+            id: values.id, 
+            ...dataToSendToAPI
+          } as any);
           setMessage("Estudiante actualizado con éxito");
         }
 
@@ -192,6 +215,7 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
     const value = event.target.value;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("code", value);
+      formik.setFieldTouched("code", true); // Activar validación
     }
   };
 

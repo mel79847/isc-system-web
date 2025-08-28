@@ -22,8 +22,13 @@ const validationSchema = Yup.object({
     .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
     .optional(),
   code: Yup.string()
-    .matches(CODE_REGEX, CODE_ERROR_MESSAGE)
-    .optional(),
+    .optional()
+    .test('code-validation', CODE_ERROR_MESSAGE, function(value) {
+      if (value === undefined || value === null || value === '') {
+        return true; 
+      }
+      return CODE_REGEX.test(value);
+    }),
 });
 
 const EditStudentComponent: React.FC<{ id: number; onClose: () => void }> = ({ id, onClose }) => {
@@ -89,6 +94,7 @@ const EditStudentComponent: React.FC<{ id: number; onClose: () => void }> = ({ i
     const value = event.target.value;
     if (/^[0-9]*$/.test(value)) {
       formik.setFieldValue("code", value);
+      formik.setFieldTouched("code", true);
     }
   };
 

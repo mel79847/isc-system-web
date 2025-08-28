@@ -107,9 +107,13 @@ const CreateStudentForm = ({ onSuccess }: { onSuccess: () => void }) => {
             total_hours,
             completed_hours: 0,
             pending_hours: 0,
-          });
+          } as any);
         } else {
-          await createStudent(studentData);
+          await createStudent({
+            ...studentData,
+            // Mantener como string
+            code: rest.code,
+          });
         }
         setSuccessDialog(true);
         setTimeout(() => {

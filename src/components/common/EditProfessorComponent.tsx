@@ -33,11 +33,35 @@ const validationSchema = Yup.object({
     .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
     .optional(),
   code: Yup.string()
-    .matches(CODE_REGEX, CODE_ERROR_MESSAGE)
-    .optional(),
+    .test('code-validation', CODE_ERROR_MESSAGE, function(value) {
+      console.log('=== VALIDACIÓN SCHEMA YUP ===');
+      console.log('Schema validación - valor recibido:', value);
+      console.log('Tipo de valor:', typeof value);
+      
+      if (!value || value.trim() === '') {
+        console.log('✅ Valor vacío, permitiendo...');
+        return true; // Allow empty values
+      }
+      
+      const isValidRegex = CODE_REGEX.test(value);
+      const isValidLength = value.length >= CODE_MIN_DIGITS && value.length <= CODE_DIGITS;
+      
+      console.log('Validaciones:');
+      console.log('- CODE_REGEX.test(value):', isValidRegex);
+      console.log('- Longitud valor:', value.length);
+      console.log('- CODE_MIN_DIGITS:', CODE_MIN_DIGITS);
+      console.log('- CODE_DIGITS:', CODE_DIGITS);
+      console.log('- Longitud válida:', isValidLength);
+      console.log('- Resultado final:', isValidRegex && isValidLength);
+      console.log('============================');
+      
+      return isValidRegex && isValidLength;
+    }),
 });
 
 const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({ id, onClose }) => {
+  console.log(' COMPONENTE EditProfessorComponent CARGADO - ID:', id);
+  
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
@@ -80,8 +104,42 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
     },
     validationSchema,
     onSubmit: async (values) => {
+     
+      const errors = await formik.validateForm();
+      console.log('Errores de validación:', errors);
+      
+  
+      console.log('Validando código:', values.code);
+      if (values.code && values.code.trim() !== '') {
+        if (!CODE_REGEX.test(values.code)) {
+          console.log('Código inválido:', values.code, 'Regex:', CODE_REGEX);
+          formik.setFieldError('code', CODE_ERROR_MESSAGE);
+          formik.setFieldTouched('code', true);
+          setMessage("El código debe tener entre 5 y 8 dígitos");
+          setSeverity("error");
+          setOpen(true);
+          return;
+        }
+        if (values.code.length < CODE_MIN_DIGITS || values.code.length > CODE_DIGITS) {
+          console.log('Longitud inválida:', values.code.length);
+          formik.setFieldError('code', CODE_ERROR_MESSAGE);
+          formik.setFieldTouched('code', true);
+          setMessage("El código debe tener entre 5 y 8 dígitos");
+          setSeverity("error");
+          setOpen(true);
+          return;
+        }
+      }
+
+      if (Object.keys(errors).length > 0) {
+        console.log('Formulario tiene errores, no enviando:', errors);
+        setMessage("Por favor corrija los errores antes de continuar");
+        setSeverity("error");
+        setOpen(true);
+        return;
+      }
+      
       try {
-        // @ts-expect-error: Código de docente se está pasando como string y no como numero
         await updateProfessor(values);
         setMessage("Docente actualizado con éxito");
         setSeverity("success");
@@ -112,9 +170,37 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    console.log('=== HANDLE CODE CHANGE ===');
+    console.log('Valor ingresado:', value);
+    console.log('Test numérico /^[0-9]*$/:', /^[0-9]*$/.test(value));
+    
     if (/^[0-9]*$/.test(value)) {
+      console.log('Valor es numérico, actualizando formik...');
       formik.setFieldValue("code", value);
+      formik.setFieldTouched("code", true); 
+      
+      console.log('Validando inmediatamente...');
+      console.log('Valor trim:', value.trim());
+      console.log('Valor trim !== "":', value.trim() !== '');
+      
+     
+      if (value.trim() !== '' && !CODE_REGEX.test(value)) {
+        console.log('❌ CÓDIGO INVÁLIDO - Estableciendo error');
+        console.log('CODE_REGEX.test(value):', CODE_REGEX.test(value));
+        formik.setFieldError("code", CODE_ERROR_MESSAGE);
+      } else if (value.trim() === '' || CODE_REGEX.test(value)) {
+        console.log('✅ CÓDIGO VÁLIDO - Limpiando error');
+        formik.setFieldError("code", undefined);
+      }
+      
+      console.log('Estado formik después del cambio:');
+      console.log('- formik.values.code:', formik.values.code);
+      console.log('- formik.errors.code:', formik.errors.code);
+      console.log('- formik.touched.code:', formik.touched.code);
+    } else {
+      console.log('❌ Valor no es numérico, ignorando cambio');
     }
+    console.log('========================');
   };
 
   return (
@@ -261,7 +347,12 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
           <Grid item xs={12}>
             <Grid container spacing={2} justifyContent="flex-end">
               <Grid item>
-                <Button variant="contained" color="primary" type="submit">
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  type="submit"
+                  disabled={!formik.isValid || Object.keys(formik.errors).length > 0}
+                >
                   GUARDAR
                 </Button>
               </Grid>

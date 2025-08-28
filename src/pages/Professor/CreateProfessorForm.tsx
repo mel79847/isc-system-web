@@ -69,7 +69,12 @@ const CreateProfessorForm = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        await createProfessor(values);
+      
+        const professorData = {
+          ...values,
+          code: values.code,
+        };
+        await createProfessor(professorData as any);
         setMessage("Profesor creado con éxito");
         setSuccessDialog(true);
       } catch (error) {
