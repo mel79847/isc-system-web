@@ -15,6 +15,12 @@ import { useEffect, useState } from "react";
 import { getUserById } from "../../services/studentService";
 import LoadingOverlay from "../../components/common/Loading";
 import { updateProfessor } from "../../services/mentorsService";
+import {
+  CODE_ERROR_MESSAGE,
+  CODE_DIGITS,
+  CODE_MIN_DIGITS,
+  CODE_REGEX,
+} from "../../constants/validation";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("El nombre completo es obligatorio"),
@@ -26,7 +32,9 @@ const validationSchema = Yup.object({
   phone: Yup.string()
     .matches(/^[0-9]{8}$/, "Ingrese un número de teléfono válido")
     .optional(),
-  code: Yup.number().optional(),
+  code: Yup.string()
+    .matches(CODE_REGEX, CODE_ERROR_MESSAGE)
+    .optional(),
 });
 
 const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({ id, onClose }) => {
@@ -185,7 +193,10 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
                       error={formik.touched.code && Boolean(formik.errors.code)}
                       helperText={formik.touched.code && formik.errors.code}
                       margin="normal"
-                      inputProps={{ maxLength: 10 }}
+                      inputProps={{ 
+                        maxLength: CODE_DIGITS,
+                        minLength: CODE_MIN_DIGITS
+                      }}
                     />
                   </Grid>
                 </Grid>

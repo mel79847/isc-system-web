@@ -14,6 +14,12 @@ import { getInternByUserIdService, getInternService, updateIntern} from "../../s
 import axios from "axios";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
+import {
+  CODE_ERROR_MESSAGE,
+  CODE_DIGITS,
+  CODE_MIN_DIGITS,
+  CODE_REGEX,
+} from "../../constants/validation";
 
 const PHONE_ERROR_MESSAGE = "Ingrese un número de teléfono válido.";
 const CODE_EXISTS_MESSAGE = "Ya existe un estudiante con este código.";
@@ -49,6 +55,7 @@ const validationSchema = Yup.object({
       }
     }),
   code: Yup.string()
+    .matches(CODE_REGEX, CODE_ERROR_MESSAGE)
     .optional()
     .test("unique-code", CODE_EXISTS_MESSAGE, async function (value) {
       if (!value) return true;
@@ -255,6 +262,10 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
                       error={formik.touched.code && Boolean(formik.errors.code)}
                       helperText={formik.touched.code && formik.errors.code}
                       margin="normal"
+                      inputProps={{ 
+                        maxLength: CODE_DIGITS,
+                        minLength: CODE_MIN_DIGITS
+                      }}
                     />
                   </Grid>
                 </Grid>
