@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate, LoaderFunction } from "react-router-dom";
+import axios from "axios";
 
 import AuthGuard from "./AuthGuard";
 import RoleGuard from "./RoleGuard";
-
+import AppErrorBoundary from "../components/common/AppErrorBoundary";
 import Layout from "../layout/Layout";
 import LoginPage from "../pages/auth/LoginPage";
 import ErrorPage from "../pages/ErrorPage";
@@ -36,8 +37,30 @@ import { roles } from "../constants/roles";
 
 const { ADMIN, PROFESSOR, STUDENT, INTERN, PROGRAM_DIRECTOR, SUPERVISOR } = roles;
 
-const rootLoader: LoaderFunction = async () => getProcess();
-const studentLoader: LoaderFunction = async ({ params }) => getStudentById(Number(params.id));
+const rootLoader: LoaderFunction = async () => {
+  try {
+    return await getProcess();
+  } catch (error) {
+    // Si hay un error 401, redirigir al login
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      localStorage.removeItem("token");
+      throw new Response("Unauthorized", { status: 401 });
+    }
+    throw error;
+  }
+};
+
+const studentLoader: LoaderFunction = async ({ params }) => {
+  try {
+    return await getStudentById(Number(params.id));
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      localStorage.removeItem("token");
+      throw new Response("Unauthorized", { status: 401 });
+    }
+    throw error;
+  }
+};
 
 interface AppRoute {
   path?: string;
@@ -45,6 +68,7 @@ interface AppRoute {
   element: React.ReactNode;
   loader?: LoaderFunction;
   children?: AppRoute[];
+  errorElement?: React.ReactNode;
 }
 
 const routes: AppRoute[] = [
@@ -56,10 +80,12 @@ const routes: AppRoute[] = [
 
   {
     element: <AuthGuard />,
+    errorElement: <AppErrorBoundary />,
     children: [
       {
         path: "/",
         element: <Layout />,
+        errorElement: <AppErrorBoundary />,
         children: [
           { index: true, element: <Navigate to="/dashboard" replace /> },
 
@@ -75,6 +101,7 @@ const routes: AppRoute[] = [
           {
             path: "/process",
             loader: rootLoader,
+            errorElement: <AppErrorBoundary />,
             element: (
               <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR, STUDENT]}>
                 <GraduationProcessPage />
@@ -84,6 +111,7 @@ const routes: AppRoute[] = [
           {
             path: "/createProcess",
             loader: rootLoader,
+            errorElement: <AppErrorBoundary />,
             element: (
               <RoleGuard allowedRoles={[ADMIN, PROFESSOR, PROGRAM_DIRECTOR]}>
                 <CreateProcessPage />
@@ -93,6 +121,7 @@ const routes: AppRoute[] = [
           {
             path: "/studentProfile/:id",
             loader: studentLoader,
+            errorElement: <AppErrorBoundary />,
             element: (
               <RoleGuard allowedRoles={[ADMIN, STUDENT, INTERN, SUPERVISOR, PROFESSOR]}>
                 <ProcessInfoPage />

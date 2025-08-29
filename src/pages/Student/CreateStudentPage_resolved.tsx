@@ -32,7 +32,6 @@ import {
   CODE_REGEX,
 } from "../../constants/validation";
 
-
 const validationSchema = Yup.object({
   name: Yup.string()
     .max(20, "Máximo 20 caracteres")
@@ -117,13 +116,6 @@ const CreateStudentPage = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const codeStr = values.code.toString();
-
-        if (studentCodes.has(codeStr)) {
-          setMessage("El código de estudiante ya está en uso");
-          setSeverity("error");
-          setErrorDialog(true);
-          return;
-        }
 
         if (studentCodes.has(codeStr)) {
           setMessage("El código de estudiante ya está en uso");
