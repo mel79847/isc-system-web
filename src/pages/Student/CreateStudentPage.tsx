@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FormContainer } from "../CreateGraduation/components/FormContainer";
@@ -16,34 +16,53 @@ import {
   FormControlLabel,
   IconButton,
 } from "@mui/material";
-import { createStudent } from "../../services/studentService";
+import { createStudent, getStudents } from "../../services/studentService";
 import SuccessDialog from "../../components/common/SucessDialog";
 import ErrorDialog from "../../components/common/ErrorDialog";
 import { createIntern } from "../../services/internService";
 import {
   PHONE_ERROR_MESSAGE,
+  CODE_ERROR_MESSAGE,
   CODE_DIGITS,
+  CODE_MIN_DIGITS,
   PHONE_DIGITS,
+  LETTERS_REGEX,
+  EMAIL_REGEX,
   PHONE_REGEX,
   CODE_REGEX,
 } from "../../constants/validation";
+
 const validationSchema = Yup.object({
-  name: Yup.string().required("El nombre completo es obligatorio"),
-  lastname: Yup.string().required("El apellido es obligatorio"),
-  mothername: Yup.string().required("El apellido materno es obligatorio"),
+  name: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
+    .required("El nombre completo es obligatorio"),
+  lastname: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
+    .required("El apellido es obligatorio"),
+  mothername: Yup.string()
+    .max(20, "Máximo 20 caracteres")
+    .matches(LETTERS_REGEX, "Solo letras y espacios")
+    .required("El apellido materno es obligatorio"),
   email: Yup.string()
-    .email("Ingrese un correo electrónico válido")
+    .matches(EMAIL_REGEX, "Ingrese un correo electrónico válido")
+    .max(50, "Máximo 50 caracteres")
     .required("El correo electrónico es obligatorio"),
   phone: Yup.string()
     .matches(PHONE_REGEX, PHONE_ERROR_MESSAGE)
     .required("El número de teléfono es obligatorio"),
   code: Yup.string()
-    .matches(CODE_REGEX, `El código debe tener hasta ${CODE_DIGITS} dígitos`)
+    .matches(CODE_REGEX, CODE_ERROR_MESSAGE)
     .required("El código de estudiante es obligatorio"),
   isIntern: Yup.boolean(),
-  total_hours: Yup.number().when("isIntern", (isIntern, schema) => {
-    return isIntern ? schema.required("Las horas becarias son obligatorias") : schema.nullable();
-  }),
+  total_hours: Yup.number()
+    .min(0, "Las horas no pueden ser negativas.")
+    .when("isIntern", {
+      is: true,
+      then: (schema) => schema.required("Las horas becarias son obligatorias."),
+      otherwise: (schema) => schema.nullable(),
+    }),
 });
 
 const CreateStudentPage = () => {
@@ -52,8 +71,23 @@ const CreateStudentPage = () => {
   const [errorDialog, setErrorDialog] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState<"success" | "error">("success");
+  const [studentCodes, setStudentCodes] = useState<Set<string>>(new Set());
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await getStudents();
+        const students = response.data || [];
+        const codes = new Set<string>(students.map((s: any) => s.code.toString()));
+        setStudentCodes(codes);
+      } catch (error) {
+        setStudentCodes(new Set());
+      }
+    };
+    fetchStudents();
+  }, []);
 
   const handleBackNavigate = () => {
     navigate("/students");
@@ -74,14 +108,29 @@ const CreateStudentPage = () => {
       mothername: "",
       email: "",
       phone: "",
-      code: 0,
+      code: "",
       isIntern: false,
       total_hours: 0,
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
+        const codeStr = values.code.toString();
+
+        if (studentCodes.has(codeStr)) {
+          setMessage("El código de estudiante ya está en uso");
+          setSeverity("error");
+          setErrorDialog(true);
+          return;
+        }
+
         const { isIntern, total_hours, ...rest } = values;
+        
+        const studentData = {
+          ...rest,
+          is_scholarship: false,
+        };
+        
         if (isIntern) {
           await createIntern({
             ...rest,
@@ -90,16 +139,37 @@ const CreateStudentPage = () => {
             pending_hours: 0,
           });
         } else {
-          // @ts-ignore
-          await createStudent(rest);
+          await createStudent(studentData);
         }
+
+        setStudentCodes(new Set(studentCodes).add(codeStr));
+
         setMessage("Estudiante creado con éxito");
         setSeverity("success");
         setSuccessDialog(true);
         resetForm();
-      } catch (error) {
-        // @ts-ignore
-        setMessage(error.response.data.message);
+      } catch (error: any) {
+        let errorMessage = "Error al crear estudiante";
+        
+        if (error?.response?.data?.errors) {
+          errorMessage = error.response.data.errors;
+        } else if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+          if (
+            errorMessage.toLowerCase().includes("código") &&
+            errorMessage.toLowerCase().includes("ya está en uso")
+          ) {
+            errorMessage = "El código de estudiante ya está en uso";
+          }
+        } else if (error?.response?.status === 409) {
+          errorMessage = "El correo electrónico o código ya está registrado";
+        } else if (error?.response?.status === 400) {
+          errorMessage = "Datos inválidos. Verifique la información ingresada";
+        } else if (error?.response?.status >= 500) {
+          errorMessage = "Error del servidor. Intente nuevamente";
+        }
+        
+        setMessage(errorMessage);
         setSeverity("error");
         setErrorDialog(true);
       }
@@ -114,17 +184,11 @@ const CreateStudentPage = () => {
   };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (/^[0-9]*$/.test(value)) {
-      formik.setFieldValue("phone", value);
-    }
+    formik.handleChange(event);
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    if (/^[0-9]*$/.test(value)) {
-      formik.setFieldValue("code", value);
-    }
+    formik.handleChange(event);
   };
 
   return (
@@ -165,6 +229,7 @@ const CreateStudentPage = () => {
                         fullWidth
                         value={formik.values.name}
                         onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         error={formik.touched.name && Boolean(formik.errors.name)}
                         helperText={formik.touched.name && formik.errors.name}
                         margin="normal"
@@ -179,6 +244,7 @@ const CreateStudentPage = () => {
                         fullWidth
                         value={formik.values.lastname}
                         onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         error={formik.touched.lastname && Boolean(formik.errors.lastname)}
                         helperText={formik.touched.lastname && formik.errors.lastname}
                         margin="normal"
@@ -195,6 +261,7 @@ const CreateStudentPage = () => {
                         fullWidth
                         value={formik.values.mothername}
                         onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         error={formik.touched.mothername && Boolean(formik.errors.mothername)}
                         helperText={formik.touched.mothername && formik.errors.mothername}
                         margin="normal"
@@ -209,6 +276,7 @@ const CreateStudentPage = () => {
                         fullWidth
                         value={formik.values.code}
                         onChange={handleCodeChange}
+                        onBlur={formik.handleBlur}
                         error={formik.touched.code && Boolean(formik.errors.code)}
                         helperText={formik.touched.code && formik.errors.code}
                         margin="normal"
@@ -235,6 +303,7 @@ const CreateStudentPage = () => {
                     fullWidth
                     value={formik.values.email}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     error={formik.touched.email && Boolean(formik.errors.email)}
                     helperText={formik.touched.email && formik.errors.email}
                     margin="normal"
@@ -248,6 +317,7 @@ const CreateStudentPage = () => {
                     fullWidth
                     value={formik.values.phone}
                     onChange={handlePhoneChange}
+                    onBlur={formik.handleBlur}
                     error={formik.touched.phone && Boolean(formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
                     margin="normal"
