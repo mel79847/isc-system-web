@@ -108,7 +108,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
   return (
     <>
       <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>
-        Etapa 1: Seminario de Grado <ModeEditIcon onClick={editForm} style={{ cursor: "pointer" }} />
+        Etapa 1: Seminario de Grado<ModeEditIcon style={{ cursor: "not-allowed", opacity: 0.5 }}/>
       </Typography>
   
       <form onSubmit={formik.handleSubmit} className="mt-5 mx-16">
