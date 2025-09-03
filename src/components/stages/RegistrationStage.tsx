@@ -47,7 +47,7 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
   const studentProcess = useProcessStore((state) => state.process);
   const setProcess = useProcessStore((state) => state.setProcess);
   const [modes, setModes] = useState<Modes[]>([]);
-  const [readOnly, setReadOnly] = useState<boolean>(true);
+  const readOnly = true;
   const [isVisible, setIsVisible] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [, setError] = useState<any | null>(null);
@@ -95,10 +95,6 @@ export const RegistrationStage: FC<RegistrationStageProps> = ({ onNext }) => {
       }
     },
   });
-
-  const editForm = () => {
-    setReadOnly(false);
-  };
 
   const handleOnChange = (event: any) => {
     setEdited(true)
