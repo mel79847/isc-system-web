@@ -65,7 +65,10 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
       });
       setProfessor(response);
     } catch (error) {
-      // Error al obtener docente
+      console.error("Error al obtener docente:", error);
+      setMessage("No se pudo cargar la información del docente.");
+      setSeverity("error");
+      setOpen(true);
     }
   };
   useEffect(() => {
@@ -119,7 +122,7 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
       }
       
       try {
-        await updateProfessor(values);
+        await updateProfessor({ ...values, id: Number(id) });
         setMessage("Docente actualizado con éxito");
         setSeverity("success");
         setTimeout(() => {
@@ -311,7 +314,7 @@ const EditProfessorComponent: React.FC<{ id: number; onClose: () => void }> = ({
                   variant="contained" 
                   color="primary" 
                   type="submit"
-                  disabled={!formik.isValid || Object.keys(formik.errors).length > 0}
+                  disabled={!formik.isValid}
                 >
                   GUARDAR
                 </Button>

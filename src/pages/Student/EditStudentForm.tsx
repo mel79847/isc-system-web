@@ -112,8 +112,6 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
         const { role_id, ...dataToSend } = values;
         if (role_id === 4) {
           const internData = {
-            username: (dataToSend as any).username,  
-            password: (dataToSend as any).password,  
             name: dataToSend.name,
             lastname: dataToSend.lastname,
             mothername: dataToSend.mothername,
@@ -126,8 +124,6 @@ const EditStudentForm = ({ id, onSuccess, onClose }: EditStudentFormProps) => {
         } else {
          
           const dataToSendToAPI = {
-            username: (dataToSend as any).username,  
-            password: (dataToSend as any).password,  
             name: dataToSend.name,
             lastname: dataToSend.lastname,
             mothername: dataToSend.mothername,

@@ -15,13 +15,6 @@ import {
   CODE_REGEX,
 } from "../../constants/validation";
 
-console.log('=== EditProfessorPage - CONSTANTES ===');
-console.log('CODE_MIN_DIGITS:', CODE_MIN_DIGITS);
-console.log('CODE_DIGITS:', CODE_DIGITS);
-console.log('CODE_REGEX:', CODE_REGEX);
-console.log('CODE_ERROR_MESSAGE:', CODE_ERROR_MESSAGE);
-console.log('=====================================');
-
 const validationSchema = Yup.object({
   name: Yup.string()
     .matches(LETTERS_REGEX, "El nombre solo debe contener letras")
@@ -94,8 +87,6 @@ const EditProfessorPage = ({ id }:EditProfessorProps) => {
     onSubmit: async (values) => {
       try {
         const updatedValues = {
-          username: (values as any).username,     
-          password: (values as any).password,      
           name: values.name,
           lastname: values.lastname,
           mothername: values.mothername,
